@@ -32,7 +32,7 @@ a{color:var(--gold2)}
 @keyframes hp{0%{opacity:0;transform:scale(.4)}25%{opacity:1;transform:scale(1.1)}100%{opacity:0;transform:scale(1.3)}}
 .bar{position:absolute;left:0;right:0;bottom:calc(60px + env(safe-area-inset-bottom));height:3px;background:rgba(255,255,255,.2)}
 .bar i{display:block;height:100%;width:0;background:var(--gold2)}
-.acts{position:absolute;right:10px;bottom:calc(190px + env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center;gap:16px;z-index:5}
+.acts{position:absolute;left:10px;bottom:calc(76px + env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center;gap:16px;z-index:5}
 .ab{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;text-shadow:0 1px 3px #000}
 .ab .ic{width:32px;height:32px;filter:drop-shadow(0 1px 3px rgba(0,0,0,.7))}
 .ab.on .ic{fill:#ef4444;stroke:#ef4444}
@@ -40,16 +40,50 @@ a{color:var(--gold2)}
 .av img{width:100%;height:100%;object-fit:cover}
 .fol{position:absolute;bottom:-9px;left:50%;margin-left:-10px;width:20px;height:20px;border-radius:50%;background:var(--bad);display:flex;align-items:center;justify-content:center}
 .fol .ic{width:14px;height:14px}
-.cap{position:absolute;right:70px;left:14px;bottom:calc(132px + env(safe-area-inset-bottom));z-index:5;text-shadow:0 1px 4px #000;font-size:14px;line-height:1.6}
-.cap b{font-size:15px}
-.cap p{max-height:4.8em;overflow:hidden;margin-top:2px}
+.cap{position:absolute;right:14px;left:78px;bottom:calc(74px + env(safe-area-inset-bottom));z-index:5;text-shadow:0 1px 4px #000;font-size:15px;line-height:1.65}
+.cap.open{background:linear-gradient(transparent,rgba(0,0,0,.78) 28%);padding-top:36px;right:0;left:0;padding-inline:14px 78px;bottom:calc(60px + env(safe-area-inset-bottom));padding-bottom:14px}
+.cap.open{pointer-events:none}.cap.open>*{pointer-events:auto}
+.cap b{font-size:16px}
+.cap .dt{font-size:12px;opacity:.75;margin-inline-start:8px}
+.cap .ct{margin-top:3px;white-space:pre-wrap;word-break:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cap.open .ct{display:block;max-height:34dvh;overflow-y:auto}
+.cap .tg{color:#fbbf24;font-weight:700}
+.cap .more{color:#fff;opacity:.85;font-size:13px;font-weight:700;margin-top:2px;padding:2px 0}
+.disc{width:46px;height:46px;border-radius:50%;background:conic-gradient(#222,#555,#222,#555,#222);display:flex;align-items:center;justify-content:center;animation:spin 5s linear infinite;border:6px solid #1a1a1a}
+.disc i{width:22px;height:22px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:11px;font-style:normal;font-weight:700;overflow:hidden}
+.disc i img{width:100%;height:100%;object-fit:cover}
+@keyframes spin{to{transform:rotate(360deg)}}
+.cm{font-size:16px!important;padding:12px 0!important;gap:10px!important}
+.cav{width:38px;height:38px;border-radius:50%;background:var(--gold);flex:none;display:flex;align-items:center;justify-content:center;font-weight:700;overflow:hidden}
+.cav img{width:100%;height:100%;object-fit:cover}
+.ab.sv.on .ic{fill:#fbbf24;stroke:#fbbf24}
+.rpb{font-size:12px;opacity:.85;display:flex;align-items:center;gap:5px;margin-bottom:2px}
+.rpb:empty{display:none}.rpb .ic{width:14px;height:14px}
+.vsb{font-size:11px;background:rgba(255,255,255,.18);border-radius:8px;padding:1px 7px;margin-inline-start:6px}
+#tagbar{position:absolute;top:calc(58px + env(safe-area-inset-top));left:12px;right:12px;z-index:21;display:none;align-items:center;gap:10px;background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:8px 12px;font-size:14px}
+#tagbar b{color:#fbbf24;font-size:16px}#tagbar .mu{flex:1;color:#ddd}
+#tagbar button{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center}
+#tagbar .ic{width:14px;height:14px}
+.ptabs{display:flex;border-bottom:1px solid var(--line);margin-top:14px}
+.ptabs button{flex:1;padding:11px 2px;font-size:13px;color:var(--mu);border-bottom:3px solid transparent}
+.ptabs button.on{color:var(--tx);font-weight:700;border-bottom-color:var(--gold2)}
+.pbio{margin:8px auto 0;max-width:320px;font-size:14px;line-height:1.7;white-space:pre-wrap;word-break:break-word}
+.pstat>div.lk{cursor:pointer}
+.sbg.full{align-items:stretch;background:#0b1220}
+.sbg.full .sh{max-height:none;height:100%;border-radius:0;display:flex;flex-direction:column;padding-top:calc(10px + env(safe-area-inset-top))}
+.sbg.full .grab{display:none}
+.sbg.full #nl{flex:1;overflow-y:auto}
+.nhd{display:flex;align-items:center;gap:10px;margin-bottom:10px}.nhd button{padding:6px}.nhd h3{margin:0}
+.frow{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.cm .ctm{font-size:12px;opacity:.6;font-weight:400;margin-inline-start:6px}
 #top{position:absolute;top:0;left:0;right:0;z-index:20;display:none;align-items:center;justify-content:space-between;padding:calc(10px + env(safe-area-inset-top)) 12px 18px;background:linear-gradient(#000a,transparent);pointer-events:none}
 #top>*{pointer-events:auto}
 #top button{padding:6px}
 #logo{font-weight:800;font-size:20px;color:var(--gold2);letter-spacing:.5px;text-shadow:0 1px 4px #000;user-select:none}
 #fab{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom));z-index:30;padding:13px 26px;border-radius:30px;background:rgba(217,119,6,.5);border:1px solid rgba(255,255,255,.35);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;font-weight:800;font-size:16px;text-shadow:0 1px 3px rgba(0,0,0,.8);white-space:nowrap}
 #logo{flex:1}
-#bMenu{flex:1;display:flex;justify-content:flex-end}
+#bMenu{flex:none;display:flex;justify-content:flex-end}
+#svcBtn{flex:none;margin-inline:6px 10px;padding:7px 15px;border-radius:20px;background:rgba(217,119,6,.85);border:1px solid rgba(255,255,255,.4);color:#fff;font-size:13px;font-weight:700;text-shadow:none}
 #nav{position:absolute;left:0;right:0;bottom:0;z-index:30;display:none;align-items:center;justify-content:space-around;height:calc(60px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);background:#000;border-top:1px solid #222}
 #nav .nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:#fff;padding:6px 0}
 #nav .nb{position:relative}
@@ -150,7 +184,7 @@ th,td{padding:7px 4px;border-bottom:1px solid var(--line);text-align:right}
  <section id="flow" class="screen"></section>
  <section id="prof" class="screen"></section>
  <section id="adm" class="screen"></section>
- <div id="top"><div id="logo">طباخكم</div><button id="bMenu" aria-label="menu"></button></div>
+ <div id="tagbar"></div><div id="top"><div id="logo">طباخكم</div><button id="svcBtn"></button><button id="bMenu" aria-label="menu"></button></div>
  <div id="cartbar"></div>
  <div id="nav"><button class="nb" id="nHome"></button><button class="nb" id="nFr"></button><button class="npl" id="nPlus" aria-label="publish"><span></span></button><button class="nb" id="nNot"></button><button class="nb" id="nProf"></button></div>
  <button id="fab"></button>
@@ -174,6 +208,10 @@ const P={
  bell:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8M10 20a2 2 0 0 0 4 0"/>',
  users:'<circle cx="9" cy="8" r="3.5"/><path d="M2 20a7 7 0 0 1 14 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14a7 7 0 0 1 4 6"/>',
  menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',
+ bookmark:'<path d="M6 3h12v18l-6-4-6 4z"/>',
+ repeat:'<path d="M17 2l4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4M21 13v2a3 3 0 0 1-3 3H3"/>',
+ edit:'<path d="M4 20h4L19 9l-4-4L4 16zM14 6l4 4"/>',
+ lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
  back:'<path d="M9 6l6 6-6 6"/>',
  plus:'<path d="M12 5v14M5 12h14"/>',
@@ -194,7 +232,7 @@ function sheet(html,onclose){
  bg.addEventListener('click',e=>{if(e.target===bg)bg.close()});
  $('#app').appendChild(bg);return bg;
 }
-function imgBlob(file,max){return new Promise((res,rej)=>{const im=new Image(),u=URL.createObjectURL(file);im.onload=()=>{const k=Math.min(1,max/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(b=>b?res(b):rej(new Error('img')),'image/jpeg',.85)};im.onerror=()=>rej(new Error('img'));im.src=u})}
+function imgBlob(file,max){return new Promise((res,rej)=>{const im=new Image(),u=URL.createObjectURL(file);im.onload=()=>{const k=Math.min(1,max/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(b=>b?res(b):rej(new Error('img')),'image/jpeg',.85)};im.onerror=()=>{URL.revokeObjectURL(u);rej(new Error('img'))};im.src=u})}
 
 /* ================= اللغات ================= */
 const L={
@@ -274,7 +312,7 @@ async function loadMe(){
  }
  renderTop();
 }
-function renderTop(){$('#bMenu').innerHTML=ic('menu');
+function renderTop(){$('#bMenu').innerHTML=ic('menu');$('#svcBtn').textContent=t('services');
  $('#nHome').innerHTML=ic('home')+'<span>'+t('home')+'</span>';$('#nFr').innerHTML=ic('users')+'<span>'+t('friends')+'</span>';$('#nNot').innerHTML=ic('bell')+'<span>'+t('notifs')+'</span><b class="bdg" id="bdg"></b>';$('#nProf').innerHTML=ic('user')+'<span>'+t('profile')+'</span>';$('#nPlus span').innerHTML=ic('plus')}
 
 /* ================= الدخول والتسجيل ================= */
@@ -297,20 +335,21 @@ function authSheet(cb,mode){
   ev.target.disabled=true;
   try{
    if(reg){
-    const ex=await Q(sb.from('profiles').select('id').eq('username',u).maybeSingle());
+    const ex=await Q(sb.rpc('login_email',{p_name:u}));
     if(ex)throw new Error(t('dup'));
     const {data,error}=await sb.auth.signUp({email:em(u),password:w});
-    if(error)throw error;
+    if(error){if(/registered|exists/i.test(error.message||''))throw new Error(t('dup'));throw error}
     if(!data.session)throw new Error(t('confirmoff'));
     await Q(sb.from('profiles').insert({id:data.user.id,username:u}));
     await Q(sb.rpc('register_private',{p_phone:ph}));
    }else{
-    const {error}=await sb.auth.signInWithPassword({email:em(u),password:w});
+    let email=em(u);try{const lr=await sb.rpc('login_email',{p_name:u});if(lr.data)email=lr.data}catch(e){}
+    const {error}=await sb.auth.signInWithPassword({email,password:w});
     if(error)throw new Error(t('badlogin'));
    }
    s.close();await loadMe();toast(S.me?S.me.username:'');
    checkRating();cb&&cb();
-  }catch(e){toast(errMsg(e));ev.target.disabled=false}
+  }catch(e){toast(errMsg(e))}finally{ev.target.disabled=false}
  };
 }
 async function logout(){try{await sb.auth.signOut()}catch(e){}await loadMe();go('feed');reloadFeed()}
@@ -320,7 +359,7 @@ function go(n){
  S.screen=n;
  ['feed','flow','prof','adm'].forEach(x=>$('#'+x).classList.toggle('on',x===n));
  $('#top').style.display=n==='feed'?'flex':'none';
- $('#fab').style.display=n==='adm'?'none':'block';
+ $('#fab').style.display=(n==='adm'||n==='feed'||n==='prof')?'none':'block';
  $('#nav').style.display=n==='feed'?'flex':'none';
  $('#fab').style.bottom=n==='feed'?'calc(70px + env(safe-area-inset-bottom))':'';
  $('#fab').textContent=n==='feed'?t('services'):t('reels');
@@ -329,31 +368,41 @@ function go(n){
 }
 $('#fab').onclick=()=>{if(S.screen==='feed'){S.step='occ';renderFlow();go('flow')}else go('feed')};
 $('#bMenu').onclick=menuSheet;
+$('#svcBtn').onclick=()=>{S.step='occ';renderFlow();go('flow')};
 $('#nProf').onclick=()=>requireAuth(()=>openProfile(S.user.id));
 $('#nPlus').onclick=()=>requireAuth(publishSheet);
-$('#nHome').onclick=()=>{if(S.screen!=='feed'){go('feed');if(F.mode==='all')return}F.mode='all';setTabs();reloadFeed()};
-$('#nFr').onclick=()=>requireAuth(()=>{if(S.screen!=='feed')go('feed');if(F.mode==='fr')return;F.mode='fr';setTabs();reloadFeed()});
+$('#nHome').onclick=()=>{if(S.screen!=='feed'){go('feed');if(F.mode==='all'&&!F.tag)return}hideTag();F.mode='all';setTabs();reloadFeed()};
+$('#nFr').onclick=()=>requireAuth(()=>{if(S.screen!=='feed')go('feed');if(F.mode==='fr'&&!F.tag)return;hideTag();F.mode='fr';setTabs();reloadFeed()});
 $('#nNot').onclick=()=>notifSheet();
 function setTabs(){$('#nHome').classList.toggle('on',F.mode==='all');$('#nFr').classList.toggle('on',F.mode==='fr')}
 let taps=0,tapT;
 $('#logo').onclick=()=>{taps++;clearTimeout(tapT);tapT=setTimeout(()=>taps=0,2500);if(taps>=7){taps=0;if(S.adm)openAdmin();}};
 
 /* ================= الريلز ================= */
-const F={mode:'all',tok:0,off:0,busy:false,end:false,seen:new Set(),sound:false,cur:null,viewed:new Set()};
-const RID=(()=>{try{const r=new URLSearchParams(location.search).get('r');return /^[0-9a-f-]{36}$/i.test(r||'')?r:null}catch(e){return null}})();
+const F={mode:'all',tag:null,tok:0,off:0,busy:false,end:false,seen:new Set(),sound:true,cur:null,viewed:new Set()};
+let RID=(()=>{try{const r=new URLSearchParams(location.search).get('r');return /^[0-9a-f-]{36}$/i.test(r||'')?r:null}catch(e){return null}})();
 const io=new IntersectionObserver(es=>{es.forEach(en=>{if(en.isIntersecting)activate(en.target);else{const v=en.target.querySelector('video');v&&v.pause()}})},{root:$('#feed'),threshold:.65});
+function hideTag(){F.tag=null;$('#tagbar').style.display='none'}
+async function openTag(tag){
+ F.tag=tag;F.mode='all';setTabs();if(S.screen!=='feed')go('feed');
+ const tb=$('#tagbar');tb.style.display='flex';tb.innerHTML=`<b>#${esc(tag)}</b><span class="mu" id="tgs"></span><button id="tgx">${ic('x')}</button>`;
+ $('#tgx').onclick=()=>{hideTag();reloadFeed()};
+ reloadFeed();
+ try{const r=await Q(sb.rpc('hashtag_stats',{p_tag:tag}));const x=r[0]||{videos:0,users:0};if(F.tag===tag&&$('#tgs'))$('#tgs').textContent=x.videos+' فيديو، '+x.users+' مستخدم'}catch(e){}
+}
+function showReel(id){RID=id;hideTag();F.mode='all';setTabs();go('feed');reloadFeed()}
 function reloadFeed(){F.tok++;F.busy=false;F.off=0;F.end=false;F.seen=new Set();F.cur=null;$('#feed').innerHTML='';loadMore(true)}
 async function loadMore(first){
  if(F.busy||F.end)return;F.busy=true;const tok=F.tok,fr=F.mode==='fr';
  try{
   let rows=[];
-  if(first&&RID&&!fr){const r=await sb.rpc('feed',{p_offset:0,p_limit:1,p_id:RID});rows=r.data||[]}
+  if(first&&RID&&!fr&&!F.tag){const r=await sb.rpc('feed',{p_offset:0,p_limit:1,p_id:RID});rows=r.data||[];RID=null}
   let d=[],tries=0;const lim=fr?30:8;
   while(true){
-   const x=await Q(sb.rpc('feed',{p_offset:F.off,p_limit:lim}));
+   const x=await Q(sb.rpc('feed',F.tag?{p_offset:F.off,p_limit:lim,p_tag:F.tag}:{p_offset:F.off,p_limit:lim}));
    if(tok!==F.tok)return;
    F.off+=x.length;if(x.length<lim)F.end=true;
-   d=d.concat(fr?x.filter(r=>r.following):x);
+   d=d.concat(fr?x.filter(r=>r.following||r.reposted_by):x);
    if(d.length>=1||F.end||!fr||++tries>4)break;
   }
   rows=rows.concat(d).filter(x=>!F.seen.has(x.id));
@@ -365,6 +414,12 @@ async function loadMore(first){
  }
  F.busy=false;
 }
+function repLabel(r){return r.reposted?ic('repeat')+'أعدت نشره':(r.reposted_by?ic('repeat')+'أعاد نشره @'+esc(r.reposted_by):'')}
+function visBadge(r){const mine=S.user&&S.user.id===r.user_id;return mine&&r.visibility&&r.visibility!=='public'?`<span class="vsb">${r.visibility==='friends'?'أصدقاء':'خاص'}</span>`:''}
+function fmtCap(c){return esc(c).replace(/(^|\s)(#[\p{L}\p{N}_]+)/gu,'$1<span class="tg" data-tag="$2">$2</span>')}
+function fmtAgo(d){if(!d)return '';const x=new Date(d),m=(Date.now()-x)/6e4;
+ if(m<1)return 'الآن';if(m<60)return 'قبل '+Math.floor(m)+' دقيقة';if(m<1440)return 'قبل '+Math.floor(m/60)+' ساعة';
+ return x.toLocaleDateString('ar-IQ',{day:'numeric',month:'long',year:'numeric'})}
 function slideHtml(r){
  const ini=esc((r.username||'?').slice(0,1));
  const mine=S.user&&S.user.id===r.user_id;
@@ -374,11 +429,12 @@ function slideHtml(r){
   <div class="av" data-act="prof">${r.avatar_url?`<img src="${esc(r.avatar_url)}" alt="">`:ini}${(!mine&&!r.following)?`<span class="fol" data-act="fol">${ic('plus')}</span>`:''}</div>
   <button class="ab${r.liked?' on':''}" data-act="like">${ic('heart')}<span class="n">${r.likes}</span></button>
   <button class="ab" data-act="cm">${ic('comment')}<span class="n">${r.comments}</span></button>
+  <button class="ab sv${r.saved?' on':''}" data-act="save">${ic('bookmark')}<span>حفظ</span></button>
   <button class="ab" data-act="share">${ic('share')}<span class="n">${r.shares||''}</span></button>
   ${sv('show_book_btn','0')==='1'?`<button class="ab" data-act="book">${ic('book')}<span>${t('book')}</span></button>`:''}
-  <button class="ab" data-act="snd">${ic(F.sound?'son':'soff')}</button>
+  <div class="disc"><i>${r.avatar_url?`<img src="${esc(r.avatar_url)}" alt="">`:ini}</i></div>
  </div>
- <div class="cap"><b data-act="prof">@${esc(r.username)}</b><p>${esc(r.caption)}</p></div>`;
+ <div class="cap"><div class="rpb">${repLabel(r)}</div><div><b data-act="prof">@${esc(r.username)}</b><span class="dt">${fmtAgo(r.created_at)}</span>${visBadge(r)}</div>${r.caption?`<div class="ct">${fmtCap(r.caption)}</div>${(r.caption.length>70||r.caption.includes('\n'))?`<button class="more" data-act="more">عرض المزيد</button>`:''}`:''}</div>`;
 }
 function addSlide(r){
  const el=document.createElement('section');el.className='slide';el.dataset.id=r.id;el.dataset.uid=r.user_id;el.innerHTML=slideHtml(r);
@@ -410,18 +466,24 @@ function syncSnd(){document.querySelectorAll('#feed [data-act=snd]').forEach(b=>
 let lastTap=0,tapTm=null;
 $('#feed').addEventListener('click',e=>{
  const sl=e.target.closest('.slide');if(!sl)return;
+ const tg=e.target.closest('[data-tag]');if(tg){openTag(tg.dataset.tag.slice(1));return}
  const b=e.target.closest('[data-act]');
  if(b){reelAct(b.dataset.act,sl,b);return}
  if(!e.target.closest('.vwrap'))return;
  const now=Date.now();
  if(now-lastTap<320){clearTimeout(tapTm);lastTap=0;likeReel(sl,true);const h=sl.querySelector('.heart');h.classList.remove('go');void h.offsetWidth;h.classList.add('go');return}
  lastTap=now;
- tapTm=setTimeout(()=>{const v=sl.querySelector('video');if(!F.sound){F.sound=true;v.muted=false;syncSnd()}else if(v.paused)v.play().catch(()=>{});else v.pause()},320);
+ tapTm=setTimeout(()=>{const v=sl.querySelector('video');if(v.paused)v.play().catch(()=>{});else v.pause()},320);
 });
+document.addEventListener('pointerup',()=>{if(S.screen==='feed'&&!F.sound){F.sound=true;const v=F.cur&&F.cur.querySelector('video');if(v)v.muted=false}},true);
 function reelAct(a,sl,btn){
  const r=sl._r;
+ if(a==='more'){const c=sl.querySelector('.cap');const o=c.classList.toggle('open');btn.textContent=o?'عرض أقل':'عرض المزيد';return}
  if(a==='snd'){F.sound=!F.sound;const v=sl.querySelector('video');v.muted=!F.sound;if(v.paused)v.play().catch(()=>{});syncSnd()}
  else if(a==='like')likeReel(sl,false);
+ else if(a==='save')requireAuth(async()=>{const add=!r.saved;r.saved=add;btn.classList.toggle('on',add);
+  try{if(add)await Q(sb.from('saves').insert({reel_id:r.id,user_id:S.user.id}));else await Q(sb.from('saves').delete().eq('reel_id',r.id).eq('user_id',S.user.id));toast(add?'تم الحفظ، تلكاه ببروفايلك':'تم إلغاء الحفظ')}
+  catch(e){r.saved=!add;btn.classList.toggle('on',!add);toast(errMsg(e))}});
  else if(a==='cm')commentsSheet(sl);
  else if(a==='share')shareReel(sl);
  else if(a==='book'){S.step='occ';renderFlow();go('flow')}
@@ -440,17 +502,38 @@ function likeReel(sl,onlyAdd){
  });
 }
 async function shareReel(sl){
- const r=sl._r,url=location.origin+location.pathname+'?r='+r.id;
- try{if(navigator.share)await navigator.share({title:'طباخكم',text:r.caption||'طباخكم',url});else{await navigator.clipboard.writeText(url);toast('تم نسخ الرابط')}}catch(e){return}
- sb.rpc('add_share',{p_reel:r.id}).then(()=>{r.shares=(r.shares||0)+1;const n=sl.querySelector('[data-act=share] .n');if(n)n.textContent=r.shares});
+ const r=sl._r,url=location.origin+location.pathname+'?r='+r.id,txt=(r.caption||'طباخكم').slice(0,90),own=S.user&&S.user.id===r.user_id;
+ const count=()=>sb.rpc('add_share',{p_reel:r.id}).then(()=>{r.shares=(r.shares||0)+1;const n=sl.querySelector('[data-act=share] .n');if(n)n.textContent=r.shares});
+ const VL={public:'عام',friends:'الأصدقاء',private:'خاص'};
+ const vis=()=>['public','friends','private'].map(k=>`<button class="btn sm${(r.visibility||'public')===k?'':' sec'}" data-vis="${k}">${VL[k]}</button>`).join('');
+ const sh=sheet(`<h3>مشاركة</h3>
+  ${own?'':`<button class="btn sec" data-s="rp">${r.reposted?'إلغاء إعادة النشر':'إعادة نشر'}</button>`}
+  <button class="btn sec" data-s="wa">واتساب</button>
+  <button class="btn sec" data-s="tg">تيليجرام</button>
+  <button class="btn sec" data-s="cp">نسخ الرابط</button>
+  ${navigator.share?'<button class="btn sec" data-s="more">تطبيقات أخرى</button>':''}
+  ${own?`<h3 style="margin-top:18px">من يشاهد هذا المنشور؟</h3><div id="vb">${vis()}</div><div class="mu" style="margin-top:6px">عام: الكل. الأصدقاء: اللي تتابعهم ويتابعوك. خاص: أنت بس.</div>`:''}`);
+ sh.onclick=async e=>{
+  const v=e.target.closest('[data-vis]');
+  if(v){try{await Q(sb.rpc('set_visibility',{p_reel:r.id,p_vis:v.dataset.vis}));r.visibility=v.dataset.vis;sh.querySelector('#vb').innerHTML=vis();
+    const d=sl.querySelector('.cap .dt');const old=sl.querySelector('.cap .vsb');if(old)old.remove();if(d)d.insertAdjacentHTML('afterend',visBadge(r));toast('تم تغيير الخصوصية')}catch(x){toast(errMsg(x))}return}
+  const b=e.target.closest('[data-s]');if(!b)return;const k=b.dataset.s;
+  if(k==='rp'){sh.close();requireAuth(async()=>{const add=!r.reposted;try{
+    if(add)await Q(sb.from('reposts').insert({reel_id:r.id,user_id:S.user.id}));else await Q(sb.from('reposts').delete().eq('reel_id',r.id).eq('user_id',S.user.id));
+    r.reposted=add;const l=sl.querySelector('.rpb');if(l)l.innerHTML=repLabel(r);toast(add?'تمت إعادة النشر لمتابعيك':'تم إلغاء إعادة النشر')}catch(x){toast(errMsg(x))}});return}
+  if(k==='wa')window.open('https://wa.me/?text='+encodeURIComponent(txt+'\n'+url),'_blank');
+  else if(k==='tg')window.open('https://t.me/share/url?url='+encodeURIComponent(url)+'&text='+encodeURIComponent(txt),'_blank');
+  else if(k==='cp'){try{await navigator.clipboard.writeText(url);toast('تم نسخ الرابط')}catch(x){toast(url)}}
+  else{try{await navigator.share({title:'طباخكم',text:txt,url})}catch(x){return}}
+  sh.close();count()};
 }
 async function commentsSheet(sl){
  const r=sl._r;
- const s=sheet(`<h3>${t('comments')}</h3><div id="cl" style="max-height:46dvh;overflow-y:auto"></div>
+ const s=sheet(`<h3>${t('comments')}</h3><div id="cl" style="height:52dvh;overflow-y:auto"></div>
   <div class="row" style="margin-top:10px"><input id="ci" maxlength="300" placeholder="${t('addcomment')}"><button class="btn sm" id="cs" style="flex:none;margin:0">${t('send')}</button></div>`);
  const list=async()=>{try{
   const d=await Q(sb.from('comments').select('id,body,user_id,created_at,profiles(username)').eq('reel_id',r.id).order('created_at',{ascending:false}).limit(100));
-  s.querySelector('#cl').innerHTML=d.length?d.map(c=>`<div class="cm"><div style="flex:1"><b>${esc(c.profiles&&c.profiles.username)}</b><div>${esc(c.body)}</div></div>${(S.user&&(c.user_id===S.user.id||can('reels')))?`<button data-del="${c.id}" class="mu">${ic('x')}</button>`:''}</div>`).join(''):`<div class="empty">${t('no_comments')}</div>`;
+  s.querySelector('#cl').innerHTML=d.length?d.map(c=>`<div class="cm"><div class="cav">${esc(((c.profiles&&c.profiles.username)||'?').slice(0,1))}</div><div style="flex:1"><b>${esc(c.profiles&&c.profiles.username)}</b><span class="ctm">${fmtAgo(c.created_at)}</span><div>${esc(c.body)}</div></div>${(S.user&&(c.user_id===S.user.id||can('reels')))?`<button data-del="${c.id}" class="mu">${ic('x')}</button>`:''}</div>`).join(''):`<div class="empty">${t('no_comments')}</div>`;
   const n=sl.querySelector('[data-act=cm] .n');r.comments=d.length;if(n)n.textContent=d.length;
  }catch(e){toast(errMsg(e))}};
  s.querySelector('#cl').onclick=async e=>{const b=e.target.closest('[data-del]');if(!b)return;try{await Q(sb.from('comments').delete().eq('id',b.dataset.del));list()}catch(x){toast(errMsg(x))}};
@@ -459,27 +542,66 @@ async function commentsSheet(sl){
 }
 
 /* ================= الملف الشخصي والنشر ================= */
-async function openProfile(uid){
+function pickAvatar(done){
+ const i=document.createElement('input');i.type='file';i.accept='image/*';
+ i.onchange=async()=>{try{const f=i.files[0];if(!f)return;const b=await imgBlob(f,512),path=S.user.id+'/a_'+Date.now()+'.jpg';
+  await Q(sb.storage.from('avatars').upload(path,b,{contentType:'image/jpeg'}));
+  const u=sb.storage.from('avatars').getPublicUrl(path).data.publicUrl;
+  await Q(sb.from('profiles').update({avatar_url:u}).eq('id',S.user.id));await loadMe();done(u)}catch(e){toast(errMsg(e))}};
+ i.click();
+}
+function editProfile(p,after){
+ const chk=(id,on,txt)=>`<label style="display:flex;gap:10px;align-items:center;margin:10px 0;color:var(--tx);font-size:15px"><input type="checkbox" id="${id}" ${on?'checked':''} style="width:22px;height:22px;flex:none"><span>${txt}</span></label>`;
+ const s=sheet(`<h3>تعديل الملف الشخصي</h3>
+  <div style="text-align:center"><div class="av" id="eav" style="width:84px;height:84px;font-size:34px;margin:0 auto">${p.avatar_url?`<img src="${esc(p.avatar_url)}" alt="">`:esc((p.username||'?').slice(0,1))}</div><button class="lnk" id="echg">تغيير الصورة</button></div>
+  <label>اسم المستخدم</label><input id="en" maxlength="14" value="${esc(p.username)}">
+  <label>نبذة عنك</label><textarea id="eb" maxlength="150" rows="3" placeholder="اكتب نبذة قصيرة">${esc(p.bio||'')}</textarea><div class="mu" id="ebc" style="text-align:left"></div>
+  <label>الخصوصية</label>
+  ${chk('epl',p.show_likes,'يظهر للجميع المنشورات اللي أعجبتني')}
+  ${chk('epf',p.show_follows,'تظهر للجميع قائمة المتابعين والمتابَعين')}
+  ${chk('epr',p.show_reposts,'تظهر للجميع المنشورات اللي أعدت نشرها')}
+  <button class="btn" id="esv">حفظ</button>`);
+ const cnt=()=>s.querySelector('#ebc').textContent=s.querySelector('#eb').value.length+'/150';cnt();s.querySelector('#eb').oninput=cnt;
+ s.querySelector('#echg').onclick=()=>pickAvatar(u=>{const a=s.querySelector('#eav');a.innerHTML=`<img src="${esc(u)}" alt="">`;p.avatar_url=u});
+ s.querySelector('#esv').onclick=async ev=>{
+  const nm=s.querySelector('#en').value.trim();ev.target.disabled=true;
+  try{
+   if(nm!==p.username){if(nm.length<2||nm.length>14)throw new Error(t('baduser'));await Q(sb.rpc('rename_user',{p_name:nm}))}
+   await Q(sb.from('profiles').update({bio:s.querySelector('#eb').value.trim(),show_likes:s.querySelector('#epl').checked,show_follows:s.querySelector('#epf').checked,show_reposts:s.querySelector('#epr').checked}).eq('id',S.user.id));
+   await loadMe();s.close();toast('تم حفظ التعديلات');after()
+  }catch(e){toast(errMsg(e))}finally{ev.target.disabled=false}
+ };
+}
+async function followListSheet(uid,kind,p,own){
+ if(!own&&!p.show_follows)return toast('هذي القائمة خاصة');
+ const s=sheet(`<h3>${kind==='followers'?t('followers'):t('followings')}</h3><div id="fl" style="max-height:60dvh;overflow-y:auto"><div class="empty">...</div></div>`);
+ try{
+  const d=await Q(sb.rpc('follow_list',{p_uid:uid,p_kind:kind}));
+  s.querySelector('#fl').innerHTML=d.length?d.map(x=>`<div class="frow" data-u="${x.id}"><div class="cav">${x.avatar_url?`<img src="${esc(x.avatar_url)}" alt="">`:esc((x.username||'?').slice(0,1))}</div><b style="flex:1">@${esc(x.username)}</b></div>`).join(''):`<div class="empty">لا يوجد أحد بعد</div>`;
+  s.querySelector('#fl').onclick=e=>{const r=e.target.closest('[data-u]');if(r){s.close();openProfile(r.dataset.u)}};
+ }catch(e){s.querySelector('#fl').innerHTML=`<div class="empty">${esc(errMsg(e))}</div>`}
+}
+async function openProfile(uid,tab0){
  go('prof');const box=$('#prof');box.innerHTML=`<div class="hd"><button id="pb">${ic('back')}</button><b>${t('profile')}</b></div><div class="bd" id="pbd"><div class="empty">...</div></div>`;
  $('#pb').onclick=()=>go('feed');
  const own=S.user&&S.user.id===uid;
  try{
-  const cnt=(tb,col)=>sb.from(tb).select('*',{count:'exact',head:true}).eq(col,uid);
-  const [p,fr,fg,rl,isf]=await Promise.all([
-   Q(sb.from('profiles').select('id,username,avatar_url').eq('id',uid).single()),
-   cnt('follows','followee_id'),cnt('follows','follower_id'),
-   Q(sb.from('reels').select('id,video_url,views,hidden,caption').eq('user_id',uid).order('created_at',{ascending:false})),
+  const [p,st,isf]=await Promise.all([
+   Q(sb.from('profiles').select('id,username,avatar_url,bio,show_likes,show_follows,show_reposts').eq('id',uid).single()),
+   Q(sb.rpc('profile_stats',{p_uid:uid})),
    S.user&&!own?sb.from('follows').select('follower_id').eq('follower_id',S.user.id).eq('followee_id',uid).maybeSingle():Promise.resolve({data:null})]);
+  const x=st[0]||{followers:0,following:0,reels:0,hearts:0};
   let score=0,goal=Number(sv('goal',200)),pct=Number(sv('pct',10)),rws=[];
   if(own){try{score=await Q(sb.rpc('my_score'));rws=await Q(sb.from('rewards').select('*').eq('user_id',uid).order('created_at'))}catch(e){}}
   const ini=esc((p.username||'?').slice(0,1));
   let h=`<div style="text-align:center"><div class="av" id="pav" style="width:84px;height:84px;font-size:34px;margin:0 auto">${p.avatar_url?`<img src="${esc(p.avatar_url)}" alt="">`:ini}</div>
-   <h3 style="margin-top:8px">@${esc(p.username)}</h3></div>
-   <div class="pstat"><div><b>${fr.count||0}</b><span class="mu">${t('followers')}</span></div><div><b>${fg.count||0}</b><span class="mu">${t('followings')}</span></div><div><b>${rl.length}</b><span class="mu">${t('reelsn')}</span></div></div>`;
+   <h3 style="margin-top:8px">@${esc(p.username)}</h3>${p.bio?`<div class="pbio">${esc(p.bio)}</div>`:''}</div>
+   <div class="pstat"><div class="lk" data-fl="followers"><b>${x.followers}</b><span class="mu">${t('followers')}</span></div><div class="lk" data-fl="following"><b>${x.following}</b><span class="mu">${t('followings')}</span></div><div><b>${x.reels}</b><span class="mu">${t('reelsn')}</span></div><div><b>${x.hearts}</b><span class="mu">إعجابات</span></div></div>`;
   if(!own&&S.user!==undefined)h+=`<button class="btn" id="pfol">${isf.data?t('following'):t('follow')}</button>`;
   if(own){
-   const earned=Math.floor(score/Math.max(goal,1)),pend=rws.filter(x=>!x.approved).length,ok=rws.filter(x=>x.approved&&!x.used).length;
-   h+=`<div class="card"><b>${t('reward')}</b><div class="pbar"><i style="width:${Math.min(100,(score%Math.max(goal,1))/Math.max(goal,1)*100)}%"></i></div>
+   const earned=Math.floor(score/Math.max(goal,1)),pend=rws.filter(y=>!y.approved).length,ok=rws.filter(y=>y.approved&&!y.used).length;
+   h+=`<button class="btn sec" id="pedit">${ic('edit')} تعديل الملف الشخصي</button>
+    <div class="card" style="margin-top:14px"><b>${t('reward')}</b><div class="pbar"><i style="width:${Math.min(100,(score%Math.max(goal,1))/Math.max(goal,1)*100)}%"></i></div>
     <div class="mu">${score} ${t('reward_t')} — ${goal} = ${pct}%</div>
     ${earned>rws.length?`<button class="btn sm" id="pclaim">${t('claim')}</button>`:''}
     ${pend?`<div class="mu" style="margin-top:6px">${t('reward_p')}</div>`:''}${ok?`<div style="color:var(--ok);margin-top:6px">${t('reward_ok')}</div>`:''}</div>`;
@@ -488,15 +610,32 @@ async function openProfile(uid){
    }
    h+=`<button class="btn" id="ppub">${t('publish')}</button><button class="btn sec" id="pord">${t('my_orders')}</button><button class="btn sec" id="plog">${t('logout')}</button>`;
   }
-  h+=`<div class="tiles" style="margin-top:14px">${rl.map(x=>`<div class="tile" data-v="${esc(x.video_url)}"><video src="${esc(x.video_url)}#t=0.5" preload="metadata" muted playsinline></video><span>${x.views||0}</span>${x.hidden?'<b class="hid">مخفي</b>':''}${own?`<button class="x" data-d="${x.id}" data-u="${esc(x.video_url)}">${ic('x')}</button>`:''}</div>`).join('')}</div>`;
+  const TABS=[['reels','المنشورات'],['reposts','إعادة النشر'],['likes','الإعجابات']].concat(own?[['saved','المحفوظات']]:[]);
+  h+=`<div class="ptabs" id="ptabs">${TABS.map(k=>`<button data-pt="${k[0]}">${k[1]}</button>`).join('')}</div><div id="ptc" style="margin-top:10px"></div>`;
   const bd=$('#pbd');bd.innerHTML=h;
-  bd.onclick=async e=>{
-   const d=e.target.closest('[data-d]');
-   if(d){e.stopPropagation();if(!confirm(t('sure')))return;try{await Q(sb.from('reels').delete().eq('id',d.dataset.d));const m=d.dataset.u.split('/reels/')[1];if(m)await sb.storage.from('reels').remove([decodeURIComponent(m.split('?')[0])]);openProfile(uid);reloadFeed()}catch(x){toast(errMsg(x))}return}
-   const tl=e.target.closest('[data-v]');if(tl){const s=sheet(`<video src="${tl.dataset.v}" controls autoplay playsinline style="width:100%;max-height:70dvh;border-radius:12px;background:#000"></video>`,()=>{});return}
+  const tiles=(rows,del)=>rows.length?`<div class="tiles">${rows.map(y=>`<div class="tile" data-v="${esc(y.video_url)}"><video src="${esc(y.video_url)}#t=0.5" preload="metadata" muted playsinline></video><span>${y.views||0}</span>${y.hidden?'<b class="hid">مخفي</b>':(y.visibility&&y.visibility!=='public'?`<b class="hid" style="background:#475569">${y.visibility==='friends'?'أصدقاء':'خاص'}</b>`:'')}${del?`<button class="x" data-d="${y.id}" data-u="${esc(y.video_url)}">${ic('x')}</button>`:''}</div>`).join('')}</div>`:`<div class="empty">لا يوجد شي هنا بعد</div>`;
+  const locked=`<div class="empty">${ic('lock')}<div style="margin-top:6px">هذي القائمة خاصة</div></div>`;
+  const loadTab=async k=>{
+   bd.querySelectorAll('#ptabs button').forEach(b=>b.classList.toggle('on',b.dataset.pt===k));
+   const c=$('#ptc');c.innerHTML='<div class="empty">...</div>';
+   try{
+    if(k==='reels')c.innerHTML=tiles(await Q(sb.from('reels').select('id,video_url,views,hidden,caption,visibility').eq('user_id',uid).order('created_at',{ascending:false})),own);
+    else if(k==='reposts')c.innerHTML=(!own&&!p.show_reposts)?locked:tiles(await Q(sb.rpc('profile_reposts',{p_uid:uid})),false);
+    else if(k==='likes')c.innerHTML=(!own&&!p.show_likes)?locked:tiles(await Q(sb.rpc('profile_likes',{p_uid:uid})),false);
+    else c.innerHTML=tiles(await Q(sb.rpc('my_saves')),false);
+   }catch(e){c.innerHTML=`<div class="empty">${esc(errMsg(e))}</div>`}
   };
+  bd.onclick=async e=>{
+   const pt=e.target.closest('[data-pt]');if(pt){loadTab(pt.dataset.pt);return}
+   const fl=e.target.closest('[data-fl]');if(fl){followListSheet(uid,fl.dataset.fl,p,own);return}
+   const d=e.target.closest('[data-d]');
+   if(d){e.stopPropagation();if(!confirm(t('sure')))return;try{await Q(sb.from('reels').delete().eq('id',d.dataset.d));const m=d.dataset.u.split('/reels/')[1];if(m)await sb.storage.from('reels').remove([decodeURIComponent(m.split('?')[0])]);openProfile(uid);reloadFeed()}catch(y){toast(errMsg(y))}return}
+   const tl=e.target.closest('[data-v]');if(tl){sheet(`<video src="${tl.dataset.v}" controls autoplay playsinline style="width:100%;max-height:70dvh;border-radius:12px;background:#000"></video>`,()=>{});return}
+  };
+  loadTab(tab0||'reels');
   if(own){
-   $('#pav').onclick=()=>{const i=document.createElement('input');i.type='file';i.accept='image/*';i.onchange=async()=>{try{const f=i.files[0];if(!f)return;const b=await imgBlob(f,512),path=S.user.id+'/a_'+Date.now()+'.jpg';await Q(sb.storage.from('avatars').upload(path,b,{contentType:'image/jpeg'}));const u=sb.storage.from('avatars').getPublicUrl(path).data.publicUrl;await Q(sb.from('profiles').update({avatar_url:u}).eq('id',S.user.id));await loadMe();openProfile(uid)}catch(e){toast(errMsg(e))}};i.click()};
+   $('#pav').onclick=()=>pickAvatar(()=>openProfile(uid));
+   $('#pedit').onclick=()=>editProfile(p,()=>openProfile(uid));
    const cl=$('#pclaim');if(cl)cl.onclick=async()=>{try{await Q(sb.rpc('claim_reward'));openProfile(uid)}catch(e){toast(errMsg(e))}};
    $('#ppub').onclick=publishSheet;$('#pord').onclick=openOrders;$('#plog').onclick=logout;
    const pv=$('#pver');if(pv)pv.onclick=startVerify;
@@ -515,22 +654,24 @@ async function startVerify(){
  }catch(e){toast(errMsg(e))}
 }
 function publishSheet(){
+ let pu=null;const rv=()=>{if(pu){try{URL.revokeObjectURL(pu)}catch(e){}pu=null}};
  const s=sheet(`<h3>${t('publish')}</h3>
   <button class="btn" id="prc">${t('record')}</button><button class="btn sec" id="prg">${t('gallery')}</button>
-  <div id="pbox"></div>`);
+  <div id="pbox"></div>`,rv);
  const fileStep=(blob,ext)=>{
-  const url=URL.createObjectURL(blob);
+  rv();const url=pu=URL.createObjectURL(blob);
   s.querySelector('#pbox').innerHTML=`<video src="${url}" controls playsinline style="width:100%;max-height:36dvh;margin-top:12px;border-radius:12px;background:#000"></video>
-   <label>${t('caption')}</label><textarea id="pcap" maxlength="200" rows="2"></textarea><button class="btn" id="pgo">${t('upload')}</button>`;
+   <label>${t('caption')}</label><textarea id="pcap" maxlength="200" rows="2" placeholder="اكتب وصف وهاشتاك مثل #طباخكم"></textarea>
+   <label>من يشاهد المنشور؟</label><select id="pvis"><option value="public">عام</option><option value="friends">الأصدقاء فقط</option><option value="private">خاص (أنا فقط)</option></select><button class="btn" id="pgo">${t('upload')}</button>`;
   s.querySelector('#pgo').onclick=async ev=>{
    ev.target.disabled=true;ev.target.textContent=t('uploading');
    try{
     const path=S.user.id+'/'+Date.now()+'.'+ext;
     await Q(sb.storage.from('reels').upload(path,blob,{contentType:blob.type||('video/'+ext)}));
     const u=sb.storage.from('reels').getPublicUrl(path).data.publicUrl;
-    await Q(sb.from('reels').insert({user_id:S.user.id,caption:s.querySelector('#pcap').value.trim(),video_url:u}));
+    await Q(sb.from('reels').insert({user_id:S.user.id,caption:s.querySelector('#pcap').value.trim(),video_url:u,visibility:s.querySelector('#pvis').value}));
     s.close();toast('تم النشر');openProfile(S.user.id);reloadFeed();
-   }catch(e){toast(errMsg(e));ev.target.disabled=false;ev.target.textContent=t('upload')}
+   }catch(e){toast(errMsg(e))}finally{ev.target.disabled=false;ev.target.textContent=t('upload')}
   };
  };
  s.querySelector('#prg').onclick=()=>{
@@ -646,7 +787,7 @@ function checkout(){
     <button class="btn" id="dok">${t('close')}</button>`);
    d.querySelector('#dok').onclick=()=>{d.close();go('feed')};
    renderFlow();
-  }catch(e){toast(errMsg(e),4500);btn.disabled=false}
+  }catch(e){toast(errMsg(e),4500)}finally{btn.disabled=false}
  });
 }
 
@@ -702,27 +843,31 @@ async function refreshBadge(){
 }
 setInterval(refreshBadge,60000);setTimeout(refreshBadge,2500);
 async function notifSheet(){
- const s=sheet(`<h3>${t('notifs')}</h3><div class="tabs" id="nt"><button class="tab on" data-k="all">${t('nt_all')}</button><button class="tab" data-k="act">${t('nt_act')}</button><button class="tab" data-k="msg">${t('nt_msg')}</button><button class="tab" data-k="gen">${t('nt_gen')}</button></div><div id="nl"><div class="empty">...</div></div>`);
- const G={act:['comment','like','follow'],msg:['msg','order'],gen:['general']};
+ const s=sheet(`<div class="nhd"><button id="nx">${ic('back')}</button><h3>${t('notifs')}</h3></div><div class="tabs" id="nt"><button class="tab on" data-k="all">${t('nt_all')}</button><button class="tab" data-k="act">${t('nt_act')}</button><button class="tab" data-k="msg">${t('nt_msg')}</button><button class="tab" data-k="gen">${t('nt_gen')}</button></div><div id="nl"><div class="empty">...</div></div>`);
+ s.classList.add('full');s.querySelector('#nx').onclick=()=>s.close();
+ const G={act:['comment','like','follow','repost'],msg:['msg','order'],gen:['general']};
  const seen=gseen();let rows=[],tab='all';
  const txt=r=>{const u='@'+esc(r.actor&&r.actor.username||'');
   if(r.kind==='comment')return `<b>${u}</b> علّق على ريلزك: ${esc(r.body)}`;
   if(r.kind==='like')return `<b>${u}</b> أعجبه ريلزك`;
   if(r.kind==='follow')return `<b>${u}</b> بدأ بمتابعتك`;
+  if(r.kind==='repost')return `<b>${u}</b> أعاد نشر ريلزك`;
   if(r.kind==='msg')return `<b>رسالة من خدمة الزبائن</b><br>${esc(r.body)}`;
   if(r.kind==='order')return `<b>${esc(r.title||'')}</b><br>${esc(r.body)}`;
   return `<b>${esc(r.title||'')}</b><br>${esc(r.body)}`};
  const draw=()=>{
   const l=rows.filter(r=>tab==='all'||G[tab].includes(r.kind));
   s.querySelector('#nl').innerHTML=l.length?l.map(r=>{const un=r.user_id?!r.read:r.created_at>seen;
-   return `<div class="card" data-i="${r.id}" style="display:flex;gap:8px;align-items:flex-start${un?';border:1px solid var(--gold)':''}"><div style="flex:1;font-size:14px;line-height:1.7">${txt(r)}<div class="mu">${new Date(r.created_at).toLocaleString(lang==='en'?'en-GB':'ar-IQ',{dateStyle:'short',timeStyle:'short'})}</div></div></div>`}).join(''):`<div class="empty">${t('nt_none')}</div>`};
+   const ac=r.actor,av=r.actor_id?`<div class="cav">${ac&&ac.avatar_url?`<img src="${esc(ac.avatar_url)}" alt="">`:esc(((ac&&ac.username)||'?').slice(0,1))}</div>`:`<div class="cav" style="background:var(--card2)">${ic('bell')}</div>`;
+   return `<div class="card" data-i="${r.id}" style="display:flex;gap:10px;align-items:flex-start${un?';border:1px solid var(--gold)':''}">${av}<div style="flex:1;font-size:14px;line-height:1.7">${txt(r)}<div class="mu">${new Date(r.created_at).toLocaleString(lang==='en'?'en-GB':'ar-IQ',{dateStyle:'short',timeStyle:'short'})}</div></div></div>`}).join(''):`<div class="empty">${t('nt_none')}</div>`};
  s.querySelector('#nt').onclick=e=>{const b=e.target.closest('[data-k]');if(!b)return;tab=b.dataset.k;s.querySelectorAll('#nt .tab').forEach(x=>x.classList.toggle('on',x===b));draw()};
  s.querySelector('#nl').onclick=e=>{const c=e.target.closest('[data-i]');if(!c)return;const r=rows.find(x=>x.id===c.dataset.i);if(!r)return;
   if(r.kind==='follow'&&r.actor_id){s.close();openProfile(r.actor_id)}
+  else if(['like','comment','repost'].includes(r.kind)&&r.reel_id){s.close();showReel(r.reel_id)}
   else if(r.kind==='msg'&&r.booking_id){s.close();openChat(r.booking_id,false)}
   else if(r.kind==='order'){s.close();openOrders()}};
  try{
-  rows=await Q(sb.from('notifications').select('id,kind,title,body,reel_id,booking_id,read,created_at,user_id,actor_id,actor:profiles!actor_id(username)').order('created_at',{ascending:false}).limit(80));
+  rows=await Q(sb.from('notifications').select('id,kind,title,body,reel_id,booking_id,read,created_at,user_id,actor_id,actor:profiles!actor_id(username,avatar_url)').order('created_at',{ascending:false}).limit(80));
   draw();
   store.set('tk_gseen',new Date().toISOString());
   if(S.user)await sb.from('notifications').update({read:true}).eq('user_id',S.user.id).eq('read',false);
@@ -888,7 +1033,7 @@ function itemForm(it,catId){
    const row={name:g('in'),unit:g('iu'),price:Math.max(0,Number(g('ip'))||0),discount:Math.min(100,Math.max(0,Number(g('id'))||0)),profit_pct:Math.min(100,Math.max(0,Number(g('ir'))||0)),image_url:url,occasions:occ.length?occ:null,active:s.querySelector('#ia').checked};
    if(n)await Q(sb.from('items').insert({...row,category_id:it.category_id,sort:S.items.length+1}));else await Q(sb.from('items').update(row).eq('id',it.id));
    s.close();admItems();
-  }catch(e){toast(errMsg(e));ev.target.disabled=false}
+  }catch(e){toast(errMsg(e))}finally{ev.target.disabled=false}
  };
 }
 async function admReels(){
@@ -1021,10 +1166,11 @@ async function admSettings(){
  const t0=Date.now();
  if(!sb){$('#splash').querySelector('.lg').textContent='تعذر تحميل التطبيق، تأكد من الإنترنت';return}
  go('feed');
- try{await Promise.all([loadSettings(),loadMe(),loadCatalog()])}catch(e){}
+ try{await Promise.all([loadSettings(),loadMe()])}catch(e){}
+ loadCatalog().then(()=>{try{cartBar()}catch(e){}});
  loadMore(true);
  sb.auth.onAuthStateChange((ev)=>{if(ev==='SIGNED_OUT')loadMe()});
- setTimeout(()=>{$('#splash').classList.add('out');setTimeout(()=>$('#splash').remove(),400);checkRating()},Math.max(0,1000-(Date.now()-t0)));
+ setTimeout(()=>{$('#splash').classList.add('out');setTimeout(()=>$('#splash').remove(),400);checkRating()},Math.max(0,250-(Date.now()-t0)));
 })();
 </script>
 </body>
