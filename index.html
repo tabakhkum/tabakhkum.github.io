@@ -1747,6 +1747,7 @@ async function admOrders(){
   if(A.filter)q=q.eq('status',A.filter);
   const d=await Q(q);
   try{if(d.length){const nn=await Q(sb.from('booking_notes').select('*').in('booking_id',d.map(x=>x.id)));const mp={};nn.forEach(x=>mp[x.booking_id]=x.note);d.forEach(x=>x.staff_note=mp[x.id]||'')}}catch(e){}
+  let bpm={},pvm={};try{if(d.length){const [bq,pq]=await Promise.all([Q(sb.from('booking_provider').select('*').in('booking_id',d.map(x=>x.id))),Q(sb.from('providers').select('id,name,tab,online,active,user_id'))]);bq.forEach(x=>bpm[x.booking_id]=x);pq.forEach(x=>pvm[x.id]=x);A.pvs=pq}}catch(e){}
   let pf={};if(can('profit')&&d.length){const r=await Q(sb.from('booking_profit').select('*').in('booking_id',d.map(x=>x.id)));r.forEach(x=>pf[x.booking_id]=x)}
   box.innerHTML=`<div class="tabs"><button class="tab${A.filter===''?' on':''}" data-f="">الكل</button>${ST.map(s=>`<button class="tab${A.filter===s?' on':''}" data-f="${s}">${t('st_'+s)}</button>`).join('')}</div>`+
   (d.length?d.map(b=>`<div class="card oc" data-id="${b.id}">
@@ -1756,8 +1757,10 @@ async function admOrders(){
    العنوان: ${esc(b.address)}${b.lat?` | <a target="_blank" rel="noopener" href="https://www.google.com/maps?q=${Number(b.lat)},${Number(b.lng)}">الخريطة</a>`:''}<br>
    ${(b.items||[]).map(l=>esc(l.name)+' × '+l.qty).join('، ')}<br>
    المجموع: <b>${money(b.total)}</b>${b.discount>0?` (خصم ${b.discount}%)`:''}${pf[b.id]?` | الربح: <b style="color:var(--ok)">${money(pf[b.id].profit)}</b>`:''}
+   ${bpm[b.id]?`<br>المقدم: <b>${esc((pvm[bpm[b.id].provider_id]||{}).name||'')}</b> | الأجرة: <b>${money(bpm[b.id].pay)}</b> | <b style="color:${bpm[b.id].state==='accepted'?'var(--ok)':bpm[b.id].state==='declined'?'var(--bad)':'inherit'}">${bpm[b.id].state==='accepted'?'قبل الطلب':bpm[b.id].state==='declined'?'رفض الطلب':'بانتظار رده'}</b>`:''}
    ${b.call_stars?`<br>تقييم المكالمة: <b>${'★'.repeat(b.call_stars)}</b> ${esc(b.call_note||'')}`:b.rate_requested?'<br>بانتظار تقييم الزبون':''}</div>
    ${can('status')?ST.filter(s=>s!==b.status).map(s=>`<button class="btn sm ${s==='cancelled'?'bad':'sec'}" data-st="${s}">${t('st_'+s)}</button>`).join(''):''}
+   ${can('status')&&b.status!=='delivered'&&b.status!=='cancelled'?`<button class="btn sm sec" data-pv="1">${bpm[b.id]?'تغيير المقدم':'تعيين مقدم'}</button>`:''}
    ${can('ratings')?`<button class="btn sm sec" data-rt="1">انتهت المكالمة: اطلب التقييم</button>`:''}
    ${can('chat')?`<button class="btn sm sec" data-ch="1">محادثة</button>`:''}
    <textarea rows="2" maxlength="500" placeholder="ملاحظة داخلية / بيانات مقدم الخدمة" data-note="1" style="margin-top:6px">${esc(b.staff_note||'')}</textarea><button class="btn sm" data-sn="1">حفظ الملاحظة</button></div>`).join(''):'<div class="empty">لا توجد طلبات</div>');
@@ -1766,6 +1769,7 @@ async function admOrders(){
    const c=e.target.closest('.oc');if(!c)return;const id=c.dataset.id;
    try{
     const st=e.target.closest('[data-st]');if(st){await Q(sb.rpc('set_status',{p_id:id,p_status:st.dataset.st}));return admOrders()}
+    if(e.target.closest('[data-pv]'))return assignForm(id,bpm[id]);
     if(e.target.closest('[data-rt]')){await Q(sb.rpc('request_rating',{p_id:id}));toast('تم إرسال طلب التقييم للزبون');return admOrders()}
     if(e.target.closest('[data-ch]'))return openChat(id,true);
     if(e.target.closest('[data-sn]')){await Q(sb.rpc('set_note',{p_id:id,p_note:c.querySelector('[data-note]').value}));toast('تم الحفظ')}
@@ -1862,7 +1866,7 @@ async function admProviders(){
   const [ap,pv]=await Promise.all([Q(sb.from('provider_applications').select('*').eq('status','new').order('created_at',{ascending:false})),Q(sb.from('providers').select('*').order('created_at',{ascending:false}))]);
   let h=`<h3>طلبات الانضمام (${ap.length})</h3>`+(ap.map(a=>`<div class="card oc" data-id="${a.id}"><b>${esc(a.name)}</b> - ${esc(a.specialty)}<div class="l">${esc(a.area||'')}<br>${esc(a.note||'')}<br><a href="tel:${esc(a.phone)}">${esc(a.phone)}</a> | <a target="_blank" rel="noopener" href="${waLink(a.phone)}">واتساب</a></div>
    <button class="btn sm" data-p="acc">قبول</button><button class="btn sm bad" data-p="rej">رفض</button></div>`).join('')||'<div class="mu">لا توجد طلبات</div>');
-  h+=`<h3 style="margin-top:18px">مقدمو الخدمات (${pv.length})</h3><button class="btn sm" data-p="add">+ إضافة مقدم خدمة</button>`+pv.map(p=>`<div class="card oc" data-id="${p.id}"><b>${esc(p.name)}</b> ${p.tab?'- '+t('tab_'+p.tab):''}<div class="l">${esc(p.area||'')} ${esc(p.note||'')}<br><a href="tel:${esc(p.phone)}">${esc(p.phone)}</a> | <a target="_blank" rel="noopener" href="${waLink(p.phone)}">واتساب</a></div><button class="btn sm bad" data-p="del">حذف</button></div>`).join('');
+  h+=`<h3 style="margin-top:18px">مقدمو الخدمات (${pv.length})</h3><button class="btn sm" data-p="add">+ إضافة مقدم خدمة</button>`+pv.map(p=>`<div class="card oc" data-id="${p.id}"><b>${esc(p.name)}</b> ${p.tab?'- '+t('tab_'+p.tab):''}<div class="l">${esc(p.area||'')} ${esc(p.note||'')}<br><a href="tel:${esc(p.phone)}">${esc(p.phone)}</a> | <a target="_blank" rel="noopener" href="${waLink(p.phone)}">واتساب</a><br>التطبيق: <b>${p.user_id?'مفعّل':'غير مفعّل'}</b>${p.user_id?' | الحالة: <b style="color:'+(p.online?'var(--ok)':'var(--bad)')+'">'+(p.online?'تشغيل':'إطفاء')+'</b>':''}${p.code?'<br>الكود: <b style="font-size:18px;letter-spacing:2px">'+esc(p.code)+'</b>':''}</div><button class="btn sm" data-p="code">${p.user_id||p.code?'كود جديد':'إنشاء كود'}</button>${p.user_id?'<button class="btn sm sec" data-p="unl">إلغاء الربط</button>':''}<button class="btn sm bad" data-p="del">حذف</button></div>`).join('');
   box.innerHTML=h;
   const spTab={'طباخ':'cooks','قصاب':'butchers','مؤجر مستلزمات':'rentals','مصور':'photo','مواد غذائية وخضروات':'supplies'};
   box.onclick=async e=>{
@@ -1870,12 +1874,20 @@ async function admProviders(){
    try{
     if(k==='add')return provForm();
     const c=b.closest('.oc'),id=c.dataset.id;
-    if(k==='del'){if(!confirm(t('sure')))return;await Q(sb.from('providers').delete().eq('id',id))}
+    if(k==='code'){if((c.querySelector('.l b')||{}).textContent==='مفعّل'&&!confirm('الكود الجديد يفصل حساب المقدم الحالي، متأكد؟'))return;await Q(sb.rpc('admin_make_code',{p_provider:id}))}
+    else if(k==='unl'){if(!confirm('تفصل حساب المقدم؟'))return;await Q(sb.rpc('admin_unlink_provider',{p_provider:id}))}
+    else if(k==='del'){if(!confirm(t('sure')))return;await Q(sb.from('providers').delete().eq('id',id))}
     else{const a=ap.find(x=>x.id===id);if(k==='acc'){await Q(sb.from('providers').insert({name:a.name,phone:a.phone,tab:spTab[a.specialty]||null,area:a.area,note:a.note||''}));await Q(sb.from('provider_applications').update({status:'accepted'}).eq('id',id))}else await Q(sb.from('provider_applications').update({status:'rejected'}).eq('id',id))}
     admProviders();
    }catch(x){toast(errMsg(x))}
   };
  }catch(e){box.innerHTML=`<div class="empty">${esc(errMsg(e))}</div>`}
+}
+function assignForm(id,cur){
+ const list=(A.pvs||[]).filter(p=>p.active&&p.user_id&&p.online);
+ const s=sheet(`<h3>تعيين مقدم خدمة</h3>${list.length?`<label>المقدم (المشغّلون فقط)</label><select id="apv">${list.map(p=>`<option value="${p.id}"${cur&&cur.provider_id===p.id?' selected':''}>${esc(p.name)}${p.tab?' - '+t('tab_'+p.tab):''}</option>`).join('')}</select><label>أجرة المقدم (دينار)</label><input id="apy" type="text" inputmode="numeric" value="${cur?Number(cur.pay)||'':''}"><button class="btn" id="apg">إرسال للمقدم</button>${cur?'<button class="btn sec" id="apx">إلغاء التعيين</button>':''}`:'<div class="empty">لا يوجد مقدم مشغّل ومفعّل حسابه</div>'}`);
+ const g=s.querySelector('#apg');if(g)g.onclick=async ev=>{if(ev.target.disabled)return;ev.target.disabled=true;try{await Q(sb.rpc('admin_assign_provider',{p_id:id,p_provider:s.querySelector('#apv').value,p_pay:Number(ad(s.querySelector('#apy').value.trim()))||0}));s.close();toast('تم الإرسال للمقدم');admOrders()}catch(e){toast(errMsg(e))}finally{ev.target.disabled=false}};
+ const x=s.querySelector('#apx');if(x)x.onclick=async()=>{try{await Q(sb.rpc('admin_unassign_provider',{p_id:id}));s.close();admOrders()}catch(e){toast(errMsg(e))}};
 }
 function provForm(){
  const s=sheet(`<h3>إضافة مقدم خدمة</h3><label>الاسم</label><input id="pn" maxlength="60"><label>الهاتف</label><input id="pp" type="tel" inputmode="tel"><label>التخصص</label><select id="pt">${TABS.map(x=>`<option value="${x}">${t('tab_'+x)}</option>`).join('')}</select><label>المنطقة</label><input id="pa" maxlength="80"><label>ملاحظة</label><input id="po" maxlength="200"><button class="btn" id="pg">حفظ</button>`);
