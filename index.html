@@ -9,8 +9,8 @@
 <link rel="preconnect" href="https://gnppreizkbhelssugazl.supabase.co" crossorigin>
 <meta name="theme-color" content="#0f172a">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -52,7 +52,7 @@ a{color:var(--gold2)}
 .slide{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .slide .cap .ct{-webkit-user-select:none;user-select:none}
 #app.clean .acts,#app.clean .cap,#app.clean .bar,#app.clean .tm,#app.clean #top,#app.clean #nav,#app.clean #fab,#app.clean #tagbar,#app.clean #cartbar{display:none!important}
-.cdesc{background:var(--card);border-radius:12px;padding:10px 12px;margin:6px 0 8px;max-height:20dvh;overflow-y:auto;font-size:14px;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+.cdesc{background:var(--card);border-radius:12px;padding:10px 12px;margin:6px 0 8px;max-height:calc(var(--vh,1vh)*20);overflow-y:auto;font-size:14px;line-height:1.6;white-space:pre-wrap;word-break:break-word}
 .cdesc .ctm{font-size:12px;opacity:.6;margin-inline-start:6px}
 .cdesc .tg{color:var(--gold2);font-weight:700}
 .wmb{height:8px;border-radius:4px;background:var(--card2);overflow:hidden;margin:10px 0}.wmb i{display:block;height:100%;width:0;background:var(--gold2)}
@@ -68,7 +68,7 @@ a{color:var(--gold2)}
 .cap b{font-size:14px}
 .cap .dt{font-size:11px;opacity:.75;margin-inline-start:8px}
 .cap .ct{margin-top:3px;white-space:pre-wrap;word-break:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.cap.open .ct{display:block;max-height:32dvh;overflow-y:auto;-webkit-line-clamp:unset}
+.cap.open .ct{display:block;max-height:calc(var(--vh,1vh)*32);overflow-y:auto;-webkit-line-clamp:unset}
 .cap .tg{color:#fbbf24;font-weight:700}
 .cap .more{color:#fff;opacity:.9;font-size:12px;font-weight:700;margin-top:3px;padding:3px 0}
 .disc{width:46px;height:46px;border-radius:50%;background:conic-gradient(#222,#555,#222,#555,#222);display:flex;align-items:center;justify-content:center;animation:spin 5s linear infinite;border:6px solid #1a1a1a}
@@ -157,13 +157,13 @@ a{color:var(--gold2)}
 #cartbar.on{display:flex}
 #cartbar .btn{margin:0;width:auto;padding:10px 18px}
 .sbg{position:absolute;top:0;right:0;bottom:0;left:0;z-index:60;background:rgba(0,0,0,.6);display:flex;align-items:flex-end}
-.sh{width:100%;max-height:90dvh;overflow-y:auto;background:#111c33;border-radius:20px 20px 0 0;padding:10px 16px calc(20px + env(safe-area-inset-bottom))}
+.sh{width:100%;max-height:calc(var(--vh,1vh)*90);overflow-y:auto;background:#111c33;border-radius:20px 20px 0 0;padding:10px 16px calc(20px + env(safe-area-inset-bottom))}
 .grab{width:42px;height:4px;background:var(--line);border-radius:3px;margin:0 auto 12px}
 .chip{display:inline-block;padding:3px 10px;border-radius:12px;font-size:12px;background:var(--card2)}
 .chip.new{background:#1d4ed8}.chip.confirmed{background:#7c3aed}.chip.provider_found{background:#0e7490}.chip.delivered{background:var(--ok)}.chip.cancelled{background:var(--bad)}
 .row{display:flex;gap:8px;align-items:center}
 .row>*{flex:1}
-.msgs{max-height:48dvh;overflow-y:auto;display:flex;flex-direction:column;gap:6px;padding:4px 0}
+.msgs{max-height:calc(var(--vh,1vh)*48);overflow-y:auto;display:flex;flex-direction:column;gap:6px;padding:4px 0}
 .msg{max-width:80%;padding:8px 11px;border-radius:12px;background:var(--card2);font-size:14px;word-break:break-word}
 .msg.me{background:var(--gold);align-self:flex-start}
 .msg.st{align-self:flex-end}
@@ -188,7 +188,7 @@ a{color:var(--gold2)}
 .rec .shot{width:68px;height:68px;border-radius:50%;border:4px solid #fff;display:flex;align-items:center;justify-content:center}
 .rec .shot i{display:block;width:46px;height:46px;border-radius:50%;background:var(--bad)}
 .rec .shot.on i{width:26px;height:26px;border-radius:6px}
-.rec .tm{position:absolute;top:calc(14px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);background:#000a;padding:4px 12px;border-radius:12px;font-weight:700}
+.rec .tm{display:block;position:absolute;top:calc(14px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);background:#000a;padding:4px 12px;border-radius:12px;font-weight:700}
 .admt{display:flex;gap:6px;overflow-x:auto;padding:8px 12px;flex:none;border-bottom:1px solid var(--line);scrollbar-width:none}
 .admt::-webkit-scrollbar{display:none}
 .oc .l{font-size:13px;color:var(--mu);line-height:1.8}
@@ -410,7 +410,7 @@ const P={
 Object.assign(P,{pause:'<rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>',music:'<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',img:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 8"/>'});
 const ic=n=>'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+P[n]+'</svg>';
 function toast(m,ms){const e=$('#toast');e.textContent=m;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',ms||2800)}
-function errMsg(e){const m=(e&&e.message)||String(e);if(/fetch|network|Failed|Load failed/i.test(m))return t('neterr');if(/row-level security|permission denied/i.test(m))return t('denied');if(/duplicate key|already/i.test(m))return t('dup');return m}
+function errMsg(e){const m=(e&&e.message)||String(e);if(/fetch|network|Failed|Load failed/i.test(m))return t('neterr');if(/row-level security|permission denied/i.test(m))return t('denied');if(/duplicate key|already/i.test(m))return /username|profiles/i.test(m)?t('dup'):'تمت العملية مسبقاً';return m}
 async function Q(p){const r=await p;if(r.error)throw r.error;return r.data}
 const money=n=>Math.round(Number(n)||0).toLocaleString('en-US')+' '+t('iqd');
 const ad=x=>String(x==null?'':x).replace(/[٠-٩]/g,c=>c.charCodeAt(0)-1632).replace(/[۰-۹]/g,c=>c.charCodeAt(0)-1776);
@@ -420,7 +420,7 @@ const tomorrow=()=>new Date(Date.now()+864e5-new Date().getTimezoneOffset()*6e4)
 const BADW=/(^|[^\u0621-\u064Aa-z])(سكس|نيك|نياكة|نياكه|اباحي|إباحي|اباحية|إباحية|اباحيه|إباحيه|عاهرة|عاهره|شرموطة|شرموطه|قحبة|قحبه|منيوك|متناك|porn|porno|sex|xxx)(?=$|[^\u0621-\u064Aa-z])/i;
 const isBad=x=>BADW.test(String(x||'').replace(/[\u064B-\u0652\u0640]/g,''));
 const BADMSG='ممنوع كتابة ألفاظ أو أوصاف مخلّة بالحياء';
-let HOURS=0;const pushOne=()=>{try{history.pushState({tk:1},'');HOURS++}catch(e){}};
+const pushOne=()=>{};
 function sheet(html,onclose){
  const bg=document.createElement('div');bg.className='sbg';
  bg.innerHTML='<div class="sh"><div class="grab"></div>'+html+'</div>';
@@ -491,7 +491,7 @@ const saveCart=()=>store.set('cart',JSON.stringify(S.cart));
 
 async function loadSettings(){try{const r=await Q(sb.from('settings').select('*'));S.set={};r.forEach(x=>S.set[x.key]=x.value)}catch(e){}}
 async function loadCatalog(){try{
- const [c,i]=await Promise.all([Q(sb.from('categories').select('*').order('sort')),Q(sb.from('items').select('*').order('sort'))]);
+ const [c,i]=await Promise.all([Q(sb.from('categories').select('*').order('sort')),Q(sb.from('items').select('id,category_id,name,unit,price,discount,image_url,occasions,active,sort').order('sort'))]);
  S.cats=c;S.items=i;
  Object.keys(S.cart).forEach(id=>{if(!S.items.find(x=>x.id===id&&x.active))delete S.cart[id]});saveCart();
 }catch(e){}}
@@ -583,7 +583,7 @@ $('#bMenu').onclick=menuSheet;
 $('#srBtn').onclick=()=>searchSheet();
 $('#vback').onclick=()=>{const b=F.custom&&F.custom.back;F.custom=null;$('#vback').style.display='none';if(b)b();else{reloadFeed();go('feed')}};
 function searchSheet(){
- const s=sheet(`<h3>بحث بالريلز</h3><div class="row"><input id="si" maxlength="40" placeholder="حساب أو كلمة بالوصف أو #هاشتاك" enterkeyhint="search"><button class="btn sm" id="sg" style="flex:none;margin:0">بحث</button></div><div id="sr" style="margin-top:10px;max-height:62dvh;overflow-y:auto"></div>`);
+ const s=sheet(`<h3>بحث بالريلز</h3><div class="row"><input id="si" maxlength="40" placeholder="حساب أو كلمة بالوصف أو #هاشتاك" enterkeyhint="search"><button class="btn sm" id="sg" style="flex:none;margin:0">بحث</button></div><div id="sr" style="margin-top:10px;max-height:calc(var(--vh,1vh)*62);overflow-y:auto"></div>`);
  const inp=s.querySelector('#si'),out=s.querySelector('#sr');
  const run=async()=>{
   const raw=inp.value.trim(),q=raw.replace(/^[@#]+/,'').trim();
@@ -626,7 +626,7 @@ async function viewReels(ids,startId,back,fallbackUrl){
   if(el)requestAnimationFrame(()=>el.scrollIntoView());
  }catch(e){
   F.custom=null;
-  if(fallbackUrl)sheet(`<video src="${esc(fallbackUrl)}" controls autoplay playsinline style="width:100%;max-height:70dvh;border-radius:12px;background:#000"></video>`,()=>{});
+  if(fallbackUrl)sheet(`<video src="${esc(fallbackUrl)}" controls autoplay playsinline style="width:100%;max-height:calc(var(--vh,1vh)*70);border-radius:12px;background:#000"></video>`,()=>{});
   else toast(errMsg(e))
  }
 }
@@ -671,10 +671,10 @@ async function loadMore(first){
   try{await attachSnd(rows)}catch(e){}
   if(tok!==F.tok)return;
   rows.forEach(x=>{F.seen.add(x.id);addSlide(x)});
-  if(!$('#feed').children.length)$('#feed').innerHTML=`<div class="empty" style="padding-top:40dvh">${t(fr?'nofr':'nofeed')}</div>`;
+  if(!$('#feed').children.length)$('#feed').innerHTML=`<div class="empty" style="padding-top:calc(var(--vh,1vh)*40)">${t(fr?'nofr':'nofeed')}</div>`;
  }catch(e){
   if(tok!==F.tok)return;
-  if(!$('#feed').querySelector('.slide'))$('#feed').innerHTML=`<div class="empty" style="padding-top:40dvh">${esc(errMsg(e))}<br><button class="btn sm" id="rtry">${t('retry')}</button></div>`,$('#rtry').onclick=()=>{$('#feed').innerHTML='';loadMore(true)};
+  if(!$('#feed').querySelector('.slide'))$('#feed').innerHTML=`<div class="empty" style="padding-top:calc(var(--vh,1vh)*40)">${esc(errMsg(e))}<br><button class="btn sm" id="rtry">${t('retry')}</button></div>`,$('#rtry').onclick=()=>{$('#feed').innerHTML='';loadMore(true)};
  }
  F.busy=false;
 }
@@ -706,11 +706,11 @@ function addSlide(r){
  const v=el.querySelector('video');
  applyLoop(v);v.addEventListener('ended',()=>{if((!lp('loop')||lp('autoscroll'))&&el.nextElementSibling)el.nextElementSibling.scrollIntoView({behavior:'smooth'})});
  const bar=el.querySelector('.bar'),bi=bar.querySelector('i'),tm=el.querySelector('.tm');
- v.addEventListener('timeupdate',()=>{if(!bar.classList.contains('seek')&&v.duration)bi.style.width=(v.currentTime/v.duration*100)+'%'});
+ v.addEventListener('timeupdate',()=>{if(!bar.classList.contains('seek')&&isFinite(v.duration)&&v.duration)bi.style.width=(v.currentTime/v.duration*100)+'%'});
  const mmss=x=>{x=Math.max(0,Math.floor(x||0));return Math.floor(x/60)+':'+String(x%60).padStart(2,'0')};
  let wasPlaying=false;
- const seekTo=e=>{if(!v.duration)return;const rc=bar.getBoundingClientRect();const p=Math.min(1,Math.max(0,(e.clientX-rc.left)/rc.width));bi.style.width=(p*100)+'%';v.currentTime=p*v.duration;tm.textContent=mmss(p*v.duration)+' / '+mmss(v.duration)};
- bar.addEventListener('pointerdown',e=>{e.stopPropagation();if(!v.duration)return;try{bar.setPointerCapture(e.pointerId)}catch(x){}wasPlaying=!v.paused;v.pause();bar.classList.add('seek');tm.classList.add('on');seekTo(e)});
+ const seekTo=e=>{if(!isFinite(v.duration)||!v.duration)return;const rc=bar.getBoundingClientRect();const p=Math.min(1,Math.max(0,(e.clientX-rc.left)/rc.width));bi.style.width=(p*100)+'%';v.currentTime=p*v.duration;tm.textContent=mmss(p*v.duration)+' / '+mmss(v.duration)};
+ bar.addEventListener('pointerdown',e=>{e.stopPropagation();if(!isFinite(v.duration)||!v.duration)return;try{bar.setPointerCapture(e.pointerId)}catch(x){}wasPlaying=!v.paused;v.pause();bar.classList.add('seek');tm.classList.add('on');seekTo(e)});
  bar.addEventListener('pointermove',e=>{if(bar.classList.contains('seek'))seekTo(e)});
  const endSeek=()=>{if(!bar.classList.contains('seek'))return;bar.classList.remove('seek');tm.classList.remove('on');if(wasPlaying)v.play().catch(()=>{})};
  bar.addEventListener('pointerup',endSeek);bar.addEventListener('pointercancel',endSeek);
@@ -838,7 +838,7 @@ function dropSlide(sl){
  const nx=sl.nextElementSibling||sl.previousElementSibling;
  try{io.unobserve(sl)}catch(e){}sl.remove();
  if(nx&&nx.classList.contains('slide'))nx.scrollIntoView();
- else if(!$('#feed').querySelector('.slide'))$('#feed').innerHTML=`<div class="empty" style="padding-top:40dvh">${t('nofeed')}</div>`;
+ else if(!$('#feed').querySelector('.slide'))$('#feed').innerHTML=`<div class="empty" style="padding-top:calc(var(--vh,1vh)*40)">${t('nofeed')}</div>`;
 }
 const RATES=[[0.5,'0.5x'],[1,'1x (عادي)'],[1.5,'1.5x'],[2,'2x']];
 function reelMenu(sl){
@@ -922,7 +922,8 @@ async function saveWm(sl){
    if(cancel)return;
    const blob=new Blob(chunks,{type:mt.split(';')[0]});
    if(!blob.size){toast('فشل التجهيز');s.close();return}
-   done=true;url=URL.createObjectURL(blob);
+   done=true;cancelAnimationFrame(raf);clearTimeout(tmo);try{ac&&ac.close()}catch(e){}try{vid.pause();vid.removeAttribute('src');vid.load()}catch(e){}
+   url=URL.createObjectURL(blob);
    const ext=mt.startsWith('video/mp4')?'mp4':'webm',name='tabakhkum-'+r.username+'.'+ext;
    const file=new File([blob],name,{type:blob.type});
    const canShare=navigator.canShare&&navigator.canShare({files:[file]});
@@ -954,9 +955,9 @@ function reelAct(a,sl,btn){
  if(a==='sound')return soundSheet(sl);
  if(a==='snd'){F.sound=!F.sound;const v=sl.querySelector('video');setMuted(v);if(v.paused)v.play().catch(()=>{});syncSnd()}
  else if(a==='like')likeReel(sl,false);
- else if(a==='save')requireAuth(async()=>{const add=!r.saved;r.saved=add;btn.classList.toggle('on',add);
+ else if(a==='save')requireAuth(async()=>{if(r._sv)return;r._sv=1;const add=!r.saved;r.saved=add;btn.classList.toggle('on',add);
   try{if(add)await Q(sb.from('saves').insert({reel_id:r.id,user_id:S.user.id}));else await Q(sb.from('saves').delete().eq('reel_id',r.id).eq('user_id',S.user.id));toast(add?'تم الحفظ، تلكاه ببروفايلك':'تم إلغاء الحفظ')}
-  catch(e){r.saved=!add;btn.classList.toggle('on',!add);toast(errMsg(e))}});
+  catch(e){r.saved=!add;btn.classList.toggle('on',!add);toast(errMsg(e))}finally{r._sv=0}});
  else if(a==='cm')commentsSheet(sl);
  else if(a==='share')shareReel(sl);
  else if(a==='book'){S.step='occ';renderFlow();go('flow')}
@@ -967,11 +968,13 @@ function likeReel(sl,onlyAdd){
  requireAuth(async()=>{
   const r=sl._r,btn=sl.querySelector('[data-act=like]'),n=btn.querySelector('.n');
   if(onlyAdd&&r.liked)return;
+  if(r._lk)return;r._lk=1;
   const add=!r.liked;r.liked=add;r.likes+=add?1:-1;btn.classList.toggle('on',add);n.textContent=r.likes;
   try{
    if(add)await Q(sb.from('likes').insert({reel_id:r.id,user_id:S.user.id}));
    else await Q(sb.from('likes').delete().eq('reel_id',r.id).eq('user_id',S.user.id));
   }catch(e){r.liked=!add;r.likes+=add?-1:1;btn.classList.toggle('on',!add);n.textContent=r.likes;toast(errMsg(e))}
+  finally{r._lk=0}
  });
 }
 async function shareReel(sl){
@@ -994,8 +997,8 @@ async function shareReel(sl){
   if(k==='rp'){sh.close();requireAuth(async()=>{const add=!r.reposted;try{
     if(add)await Q(sb.from('reposts').insert({reel_id:r.id,user_id:S.user.id}));else await Q(sb.from('reposts').delete().eq('reel_id',r.id).eq('user_id',S.user.id));
     r.reposted=add;const l=sl.querySelector('.rpb');if(l)l.innerHTML=repLabel(r);toast(add?'تمت إعادة النشر لمتابعيك':'تم إلغاء إعادة النشر')}catch(x){toast(errMsg(x))}});return}
-  if(k==='wa')window.open('https://wa.me/?text='+encodeURIComponent(txt+'\n'+url),'_blank');
-  else if(k==='tg')window.open('https://t.me/share/url?url='+encodeURIComponent(url)+'&text='+encodeURIComponent(txt),'_blank');
+  if(k==='wa')window.open('https://wa.me/?text='+encodeURIComponent(txt+'\n'+url),'_blank','noopener');
+  else if(k==='tg')window.open('https://t.me/share/url?url='+encodeURIComponent(url)+'&text='+encodeURIComponent(txt),'_blank','noopener');
   else if(k==='cp'){try{await navigator.clipboard.writeText(url);toast('تم نسخ الرابط')}catch(x){toast(url)}}
   else{try{await navigator.share({title:'طباخكم',text:txt,url})}catch(x){return}}
   sh.close();count()};
@@ -1004,7 +1007,7 @@ async function commentsSheet(sl){
  const r=sl._r;
  const isRO=!!(S.user&&r.user_id===S.user.id);
  let rows=[],replyTo=null;const open=new Set();let sending=false;
- const s=sheet(`<h3>${t('comments')}</h3>${r.caption?`<div class="cdesc"><b>@${esc(r.username)}</b><span class="ctm">${fmtAgo(r.created_at)}</span><div>${fmtCap(r.caption)}</div></div>`:''}<div id="cl" style="height:${r.caption?'38':'50'}dvh;overflow-y:auto"></div>
+ const s=sheet(`<h3>${t('comments')}</h3>${r.caption?`<div class="cdesc"><b>@${esc(r.username)}</b><span class="ctm">${fmtAgo(r.created_at)}</span><div>${fmtCap(r.caption)}</div></div>`:''}<div id="cl" style="height:calc(var(--vh,1vh)*${r.caption?'38':'50'});overflow-y:auto"></div>
   ${r.can_comment===false?'<div class="mu" style="margin-top:12px;text-align:center">التعليقات مقفلة على هذا المنشور</div>':`<div id="rpl" class="mu" style="display:none;margin-top:8px;font-size:13px"></div><div class="row" style="margin-top:10px"><input id="ci" maxlength="300" placeholder="${t('addcomment')}"><button class="btn sm" id="cs" style="flex:none;margin:0">${t('send')}</button></div>`}`);
  const heartIc=on=>`<svg class="ic" viewBox="0 0 24 24" style="width:18px;height:18px;${on?'fill:#ef4444;stroke:#ef4444':'fill:none;stroke:currentColor'};stroke-width:2"><path d="M12 21s-8-5.5-8-11a5 5 0 0 1 8-3.5A5 5 0 0 1 20 10c0 5.5-8 11-8 11z"/></svg>`;
  const cavH=c=>`<div class="cav" data-u="${c.user_id}">${c.avatar_url?`<img src="${esc(c.avatar_url)}" alt="" style="width:100%;height:100%;object-fit:cover">`:esc((c.username||'?').slice(0,1))}</div>`;
@@ -1091,7 +1094,7 @@ function editProfile(p,after){
 }
 async function followListSheet(uid,kind,allowed){
  if(!allowed)return toast('هذي القائمة خاصة');
- const s=sheet(`<h3>${kind==='followers'?t('followers'):t('followings')}</h3><div id="fl" style="max-height:60dvh;overflow-y:auto"><div class="empty">...</div></div>`);
+ const s=sheet(`<h3>${kind==='followers'?t('followers'):t('followings')}</h3><div id="fl" style="max-height:calc(var(--vh,1vh)*60);overflow-y:auto"><div class="empty">...</div></div>`);
  try{
   const d=await Q(sb.rpc('follow_list',{p_uid:uid,p_kind:kind}));
   s.querySelector('#fl').innerHTML=d.length?d.map(x=>`<div class="frow" data-u="${x.id}"><div class="cav">${x.avatar_url?`<img src="${esc(x.avatar_url)}" alt="">`:esc((x.username||'?').slice(0,1))}</div><b style="flex:1">@${esc(x.username)}</b></div>`).join(''):`<div class="empty">لا يوجد أحد بعد</div>`;
@@ -1121,7 +1124,7 @@ async function openProfile(uid,tab0){
   const hidden=!own&&(p.deactivated||(p.is_private&&fstate!=='following'));
   if(!own&&S.user)$('#prof .hd').insertAdjacentHTML('beforeend',`<button id="pmore">${ic('dots')}</button>`),$('#pmore').onclick=()=>profMenu(uid,p,rl,()=>openProfile(uid));
   const x=st[0]||{followers:0,following:0,reels:0,hearts:0};
-  let score=0,goal=Number(sv('goal',200)),pct=Number(sv('pct',10)),rws=[];
+  let score=0,goal=Number(ad(sv('goal',200)))||200,pct=Number(ad(sv('pct',10)))||10,rws=[];
   if(own){try{score=await Q(sb.rpc('my_score'));rws=await Q(sb.from('rewards').select('*').eq('user_id',uid).order('created_at'))}catch(e){}}
   const ini=esc((p.username||'?').slice(0,1));
   let h=`<div style="text-align:center"><div class="av" id="pav" style="width:84px;height:84px;font-size:34px;margin:0 auto">${p.avatar_url?`<img src="${esc(p.avatar_url)}" alt="">`:ini}</div>
@@ -1185,7 +1188,7 @@ async function openProfile(uid,tab0){
 function avatarMenu(p,own,after){
  const view=()=>{
   if(!p.avatar_url)return toast('لا توجد صورة شخصية');
-  const s=sheet(`<img src="${esc(p.avatar_url)}" alt="" style="width:100%;max-height:72dvh;object-fit:contain;border-radius:14px;background:#000"><button class="btn sec" id="avx">إغلاق</button>`);
+  const s=sheet(`<img src="${esc(p.avatar_url)}" alt="" style="width:100%;max-height:calc(var(--vh,1vh)*72);object-fit:contain;border-radius:14px;background:#000"><button class="btn sec" id="avx">إغلاق</button>`);
   s.querySelector('#avx').onclick=()=>s.close();
  };
  if(!own)return view();
@@ -1222,7 +1225,7 @@ function publishSheet(snd){
  const fileStep=(blob,ext)=>{
   if(!s.isConnected)return;
   rv();const url=pu=URL.createObjectURL(blob);
-  s.querySelector('#pbox').innerHTML=`<video src="${url}" controls playsinline style="width:100%;max-height:36dvh;margin-top:12px;border-radius:12px;background:#000"></video>
+  s.querySelector('#pbox').innerHTML=`<video src="${url}" controls playsinline style="width:100%;max-height:calc(var(--vh,1vh)*36);margin-top:12px;border-radius:12px;background:#000"></video>
    <label>${t('caption')}</label><textarea id="pcap" maxlength="200" rows="2" placeholder="اكتب وصف وهاشتاك مثل #طباخكم"></textarea>
    <label>من يشاهد المنشور؟</label><select id="pvis"><option value="public">عام</option><option value="friends">الأصدقاء فقط</option><option value="private">خاص (أنا فقط)</option></select><div class="plz">ممنوع نشر المحتوى الإباحي أو كتابة وصف مخلّ بالشرف، وأي مخالفة تُحذف بدون تحذير.</div><button class="btn" id="pgo">${t('upload')}</button>`;
   s.querySelector('#pvis').value=(S.me&&S.me.default_vis)||'public';
@@ -1524,9 +1527,9 @@ function openChat(bid,staff){
   ml.innerHTML=d.map(m=>`<div class="msg ${m.sender_id===S.user.id?'me':'st'}">${esc(m.body)}</div>`).join('');
   if(atEnd||!ml.dataset.i){ml.scrollTop=ml.scrollHeight;ml.dataset.i=1}
  }catch(e){}};
- s.querySelector('#ms').onclick=async()=>{const i=s.querySelector('#mi'),v=i.value.trim();if(!v)return;i.value='';try{await Q(sb.from('order_messages').insert({booking_id:bid,sender_id:S.user.id,is_staff:!!staff,body:v}));load()}catch(e){toast(errMsg(e))}};
+ s.querySelector('#ms').onclick=async()=>{const i=s.querySelector('#mi'),v=i.value.trim();if(!v)return;try{await Q(sb.from('order_messages').insert({booking_id:bid,sender_id:S.user.id,is_staff:!!staff,body:v}));i.value='';load()}catch(e){toast(errMsg(e))}};
  s.querySelector('#mi').addEventListener('keydown',e=>{if(e.key==='Enter')s.querySelector('#ms').click()});
- load();iv=setInterval(load,5000);
+ load();iv=setInterval(()=>{if(!document.hidden)load()},5000);
 }
 function rateSheet(bid,after){
  let n=0;
@@ -1750,7 +1753,7 @@ async function admOrders(){
    <div class="row"><b style="flex:2">${esc(b.name)}</b><span class="chip ${b.status}" style="flex:none">${t('st_'+b.status)}</span></div>
    <div class="l">${fmtDT(b.created_at)}<br><b>${t(b.occasion)} - ${t(b.meal)}</b> | التاريخ: <b>${esc(b.event_date)}</b><br>
    الهاتف: <a href="tel:${esc(b.phone)}">${esc(b.phone)}</a>${b.phone2?` / <a href="tel:${esc(b.phone2)}">${esc(b.phone2)}</a>`:''} | <a target="_blank" rel="noopener" href="${waLink(b.phone)}">واتساب</a><br>
-   العنوان: ${esc(b.address)}${b.lat?` | <a target="_blank" rel="noopener" href="https://www.google.com/maps?q=${b.lat},${b.lng}">الخريطة</a>`:''}<br>
+   العنوان: ${esc(b.address)}${b.lat?` | <a target="_blank" rel="noopener" href="https://www.google.com/maps?q=${Number(b.lat)},${Number(b.lng)}">الخريطة</a>`:''}<br>
    ${(b.items||[]).map(l=>esc(l.name)+' × '+l.qty).join('، ')}<br>
    المجموع: <b>${money(b.total)}</b>${b.discount>0?` (خصم ${b.discount}%)`:''}${pf[b.id]?` | الربح: <b style="color:var(--ok)">${money(pf[b.id].profit)}</b>`:''}
    ${b.call_stars?`<br>تقييم المكالمة: <b>${'★'.repeat(b.call_stars)}</b> ${esc(b.call_note||'')}`:b.rate_requested?'<br>بانتظار تقييم الزبون':''}</div>
@@ -1801,7 +1804,8 @@ function catForm(){
  const s=sheet(`<h3>قسم جديد</h3><label>اسم القسم</label><input id="cn" maxlength="80"><label>يظهر في تبويب</label><select id="ct">${TABS.map(x=>`<option value="${x}">${t('tab_'+x)}</option>`).join('')}</select><button class="btn" id="cg">حفظ</button>`);
  s.querySelector('#cg').onclick=async()=>{const n=s.querySelector('#cn').value.trim();if(!n)return;try{await Q(sb.from('categories').insert({title:n,tab:s.querySelector('#ct').value,sort:S.cats.length+1}));s.close();admItems()}catch(e){toast(errMsg(e))}};
 }
-function itemForm(it,catId){
+async function itemForm(it,catId){
+ if(it){try{const m=await Q(sb.rpc('admin_items'));const f=(m||[]).find(x=>x.id===it.id);if(f)it=Object.assign({},it,{profit_pct:f.profit_pct})}catch(e){}}
  const n=!it;it=it||{name:'',unit:'',price:0,discount:0,profit_pct:0,image_url:'',occasions:null,active:true,category_id:catId};
  const oc=it.occasions||[];
  const s=sheet(`<h3>${n?'أيتم جديد':'تعديل الأيتم'}</h3>
@@ -1937,7 +1941,7 @@ async function admReports(){
  const box=$('#abd');
  try{
   const d=await Q(sb.rpc('pending_reports'));
-  box.innerHTML=d.length?d.map(r=>`<div class="card oc" data-id="${r.reel_id}"><b>@${esc(r.username)}</b> — ${r.cnt} بلاغ${r.hidden?' (مخفي)':''}<div class="l">${esc(r.reasons)}<br>${esc((r.caption||'').slice(0,100))}</div><video src="${esc(r.video_url)}#t=0.5" controls preload="metadata" playsinline style="width:100%;max-height:34dvh;border-radius:10px;background:#000;margin:6px 0"></video><button class="btn sm bad" data-h="1">إخفاء المنشور</button><button class="btn sm sec" data-h="0">تجاهل البلاغ</button></div>`).join(''):'<div class="empty">لا توجد بلاغات</div>';
+  box.innerHTML=d.length?d.map(r=>`<div class="card oc" data-id="${r.reel_id}"><b>@${esc(r.username)}</b> — ${r.cnt} بلاغ${r.hidden?' (مخفي)':''}<div class="l">${esc(r.reasons)}<br>${esc((r.caption||'').slice(0,100))}</div><video src="${esc(r.video_url)}#t=0.5" controls preload="metadata" playsinline style="width:100%;max-height:calc(var(--vh,1vh)*34);border-radius:10px;background:#000;margin:6px 0"></video><button class="btn sm bad" data-h="1">إخفاء المنشور</button><button class="btn sm sec" data-h="0">تجاهل البلاغ</button></div>`).join(''):'<div class="empty">لا توجد بلاغات</div>';
   box.onclick=async e=>{const b=e.target.closest('[data-h]');if(!b)return;try{await Q(sb.rpc('resolve_report',{p_reel:b.closest('.oc').dataset.id,p_hide:b.dataset.h==='1'}));toast(b.dataset.h==='1'?'تم إخفاء المنشور':'تم تجاهل البلاغ');admReports()}catch(x){toast(errMsg(x))}};
  }catch(e){box.innerHTML=`<div class="empty">${esc(errMsg(e))}</div>`}
 }
@@ -1960,7 +1964,7 @@ async function admSettings(){
  rw.map(r=>`<div class="card oc" data-id="${r.id}"><b>@${esc(r.profiles&&r.profiles.username)}</b> - خصم ${r.pct}%<br><button class="btn sm" data-w="1">موافقة</button><button class="btn sm bad" data-w="0">رفض</button></div>`).join('');
  box.querySelector('#ssv').onclick=async()=>{
   try{
-   const rows=[...box.querySelectorAll('[data-k]')].map(i=>({key:i.dataset.k,value:i.type==='checkbox'?(i.checked?'1':'0'):i.value.trim()}));
+   const rows=[...box.querySelectorAll('[data-k]')].map(i=>({key:i.dataset.k,value:i.type==='checkbox'?(i.checked?'1':'0'):ad(i.value.trim())}));
    const ch=rows.filter(r=>String(S.set[r.key]===undefined?'':S.set[r.key])!==r.value);
    if(!ch.length)return toast('ما في تغيير');
    await Q(sb.from('settings').upsert(ch));await loadSettings();toast('تم الحفظ');
@@ -2476,7 +2480,7 @@ PG.terms={t:'الخصوصية والشروط',r:async()=>`<div style="font-size:
  <p>2. يمنع منعاً باتاً نشر المحتوى الإباحي أو الإيحاءات الجنسية، أو كتابة وصف أو تعليق مخلّ بالحياء والشرف. تُحذف المخالفة بدون تحذير، وقد يُغلق الحساب نهائياً.</p>
  <p>3. يمنع نشر مقاطع أشخاص دون إذنهم، خصوصاً في مجالس العزاء.</p>
  <p>4. يمنع كتابة أرقام الهواتف في الوصف أو النبذة أو التعليقات.</p>
- <p>5. يطلب التطبيق إذن الموقع عند كل دخول لتحديد منطقتك، ولا نشاركه مع أحد.</p></div>`};
+ <p>5. يطلب التطبيق موقعك عند تأكيد الطلب فقط لتحديد منطقتك وتوصيل الخدمة، ولا نشاركه مع أحد.</p></div>`};
 
 /* ----- مشاركة الملف الشخصي ----- */
 async function shareProfile(name){
@@ -2541,15 +2545,34 @@ Object.assign(P,{wallet:'<rect x="3" y="6" width="18" height="14" rx="3"/><path 
 
 
 /* ===== زر الرجوع بالموبايل: يغلق الطبقة العليا بدل الخروج من التطبيق ===== */
-window.addEventListener('popstate',()=>{
- if(HOURS>0)HOURS--;
+let HOK=0,HG=0,HD=0,HSKIP=0,HARM=0,HST=0;
+const layers=()=>document.querySelectorAll('#app>.sbg').length+(document.querySelector('#app>.rec')?1:0)
+ +(S.screen!=='feed'?1:0)+(F.custom?1:0)+(S.screen==='flow'?(S.step==='svc'?2:S.step==='meal'?1:0):0);
+const hPush=()=>{try{history.pushState({tk:1},'');return 1}catch(e){return 0}};
+['pointerup','touchend','click','keydown'].forEach(n=>window.addEventListener(n,()=>{HOK=1},true));
+function hSync(){
+ if(!HOK||HSKIP)return;
+ if(!HG&&HD===0&&Date.now()>HARM&&hPush())HG=1;
+ const n=layers();
+ while(HD<n&&hPush())HD++;
+ if(HD>n){const k=HD-n;HD=n;HSKIP++;clearTimeout(HST);HST=setTimeout(()=>{HSKIP=0},1500);try{history.go(-k)}catch(e){HSKIP=0}}
+}
+setInterval(hSync,150);
+function hClose(){
  const rec=document.querySelector('#app>.rec');if(rec){const x=rec.querySelector('#rx');if(x)x.click();return}
  const sh=[...document.querySelectorAll('#app>.sbg')];
  if(sh.length){const top=sh[sh.length-1];if(top.close)top.close();else top.remove();return}
- if(S.screen==='flow'&&S.step==='svc'){S.step='meal';renderFlow();pushOne();return}
- if(S.screen==='flow'&&S.step==='meal'){S.step='occ';renderFlow();pushOne();return}
+ if(S.screen==='flow'&&S.step==='svc'){S.step='meal';renderFlow();return}
+ if(S.screen==='flow'&&S.step==='meal'){S.step='occ';renderFlow();return}
  if(S.screen!=='feed'){go('feed');return}
  if(F.custom){const b=$('#vback');if(b)b.click()}
+}
+window.addEventListener('popstate',()=>{
+ if(HSKIP>0){HSKIP--;if(!HSKIP)clearTimeout(HST);return}
+ if(HD>0){HD--;hClose();return}
+ HG=0;
+ if(layers()>0){hClose();return}
+ HARM=Date.now()+2200;toast('اضغط رجوع مرة ثانية للخروج',2000);
 });
 /* ===== تثبيت التطبيق ===== */
 let _ip=null;
