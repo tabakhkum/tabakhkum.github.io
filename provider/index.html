@@ -54,7 +54,7 @@ a{color:#38bdf8}
 var SB_URL='https://gnppreizkbhelssugazl.supabase.co',SB_KEY='sb_publishable_DkwqeHAmyh_xnhI7jmijSw_mDStselK';
 var sb=null;try{sb=supabase.createClient(SB_URL,SB_KEY)}catch(e){}
 var app=document.getElementById('app');
-var ME=null,ORD=[],EARN=[],PEND=0,TAB='orders',MONTH=new Date(),LAST=0,TM=null,SEEN={};
+var ME=null,OFF=[],ORD=[],EARN=[],PEND=0,TAB='orders',MONTH=new Date(),LAST=0,TM=null,SEEN={};
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function ad(s){return String(s==null?'':s).replace(/[٠-٩]/g,function(d){return String(d.charCodeAt(0)-1632)}).replace(/[۰-۹]/g,function(d){return String(d.charCodeAt(0)-1776)})}
 function money(n){return Math.round(Number(n)||0).toLocaleString('en-US')+' دينار'}
@@ -98,8 +98,10 @@ async function logout(){try{await sb.auth.signOut()}catch(e){}ME=null;clearInter
 async function loadMe(){var r=await Q(sb.rpc('provider_me'));ME=r&&r.length?r[0]:null}
 async function loadAll(quiet){
  try{
+  var of=await Q(sb.rpc('provider_open_offers'));OFF=of||[];
   var o=await Q(sb.rpc('provider_orders'));
   var n=0;o.forEach(function(x){if(x.state==='offered'){n++;if(!SEEN[x.booking_id]){SEEN[x.booking_id]=1;if(LAST&&!quiet)beep()}}});
+  OFF.forEach(function(x){n++;if(!SEEN['o'+x.booking_id]){SEEN['o'+x.booking_id]=1;if(LAST&&!quiet)beep()}});
   ORD=o;LAST=1;
   var e=await Q(sb.rpc('provider_earnings'));EARN=e||[];
   var p=await Q(sb.rpc('provider_pending_pay'));PEND=Number(p)||0;
@@ -110,7 +112,7 @@ async function loadAll(quiet){
 
 /* ---------- الواجهة ---------- */
 function shell(){
- var offered=ORD.filter(function(x){return x.state==='offered'}).length;
+ var offered=ORD.filter(function(x){return x.state==='offered'}).length+OFF.length;
  app.innerHTML='<div class="top"><div><b>'+esc(ME.name)+'</b><div class="mu">'+esc(ME.active?'':'حسابك موقوف')+'</div></div><div class="sw"><span id="st">'+(ME.online?'تشغيل':'إطفاء')+'</span><button class="tg'+(ME.online?' on':'')+'" id="tg" aria-label="تشغيل أو إطفاء"></button></div></div><div class="w" id="body"></div><div class="nav"><button data-t="orders">الطلبات'+(offered?'<span class="dot">'+offered+'</span>':'')+'</button><button data-t="cal">الجدول</button><button data-t="earn">الأرباح</button></div>';
  document.getElementById('tg').onclick=async function(ev){
   var want=!ME.online;ev.target.disabled=true;
@@ -128,9 +130,10 @@ function items(l){return (l||[]).map(function(x){return esc(x.name)+' × '+esc(x
 function vOrders(){
  var h='';
  if(!ME.online)h+='<div class="off-note">أنت مطفأ. الطلبات الجديدة ما تظهر لك. شغّل المفتاح فوق لما تكون جاهز.</div>';
- var off=ORD.filter(function(x){return x.state==='offered'}),acc=ORD.filter(function(x){return x.state==='accepted'&&x.status!=='delivered'}),done=ORD.filter(function(x){return x.state==='accepted'&&x.status==='delivered'});
- h+='<h2>طلبات جديدة ('+off.length+')</h2>';
- h+=off.length?off.map(function(o){return '<div class="card" data-id="'+o.booking_id+'"><span class="tag new">جديد</span> <b>'+esc(occ(o.occasion))+' - '+esc(meal(o.meal))+'</b><div class="mu" style="margin:6px 0">'+esc(dname(o.event_date))+'<br>المنطقة: '+esc(o.area||'')+'<br>'+items(o.items)+'</div><div>أجرتك: <span class="big">'+money(o.pay)+'</span></div><div class="row"><button class="btn ok" data-a="1">قبول</button><button class="btn bad" data-a="0">رفض</button></div></div>'}).join(''):'<div class="empty">ما كو طلبات جديدة</div>';
+ var off=ORD.filter(function(x){return x.state==='offered'}),offs=OFF,acc=ORD.filter(function(x){return x.state==='accepted'&&x.status!=='delivered'}),done=ORD.filter(function(x){return x.state==='accepted'&&x.status==='delivered'});
+ h+='<h2>طلبات جديدة ('+(off.length+offs.length)+')</h2>';
+ h+=offs.map(function(o){return '<div class="card" data-id="'+o.booking_id+'" data-open="1"><span class="tag new">متاح للجميع</span> <b>'+esc(occ(o.occasion))+' - '+esc(meal(o.meal))+'</b><div class="mu" style="margin:6px 0">'+esc(dname(o.event_date))+'<br>المنطقة: '+esc(o.area||'')+'<br>'+items(o.items)+'</div><div>أجرتك: <span class="big">'+money(o.pay)+'</span></div><div class="mu">أول مقدم يقبل ياخذه</div><div class="row"><button class="btn ok" data-a="1">قبول</button><button class="btn sec" data-a="0">تجاهل</button></div></div>'}).join('');
+ h+=off.length?off.map(function(o){return '<div class="card" data-id="'+o.booking_id+'"><span class="tag new">جديد</span> <b>'+esc(occ(o.occasion))+' - '+esc(meal(o.meal))+'</b><div class="mu" style="margin:6px 0">'+esc(dname(o.event_date))+'<br>المنطقة: '+esc(o.area||'')+'<br>'+items(o.items)+'</div><div>أجرتك: <span class="big">'+money(o.pay)+'</span></div><div class="row"><button class="btn ok" data-a="1">قبول</button><button class="btn bad" data-a="0">رفض</button></div></div>'}).join(''):(offs.length?'':'<div class="empty">ما كو طلبات جديدة</div>');
  h+='<h2>طلباتي المقبولة ('+acc.length+')</h2>';
  h+=acc.length?acc.map(function(o){var map=(o.lat!=null&&o.lng!=null)?'<a target="_blank" rel="noopener" href="https://www.google.com/maps?q='+Number(o.lat)+','+Number(o.lng)+'">فتح الخريطة</a>':'';return '<div class="card"><span class="tag ok">مقبول</span> <b>'+esc(occ(o.occasion))+' - '+esc(meal(o.meal))+'</b><div class="mu" style="margin:6px 0">'+esc(dname(o.event_date))+'<br>الزبون: '+esc(o.cust_name||'')+'<br>العنوان: '+esc(o.address||o.area||'')+' '+map+'<br>'+items(o.items)+'</div><div>أجرتك: <b>'+money(o.pay)+'</b></div></div>'}).join(''):'<div class="empty">ما كو طلبات مقبولة</div>';
  if(done.length){h+='<h2>تم تقديمها</h2>'+done.slice(0,10).map(function(o){return '<div class="card"><b>'+esc(occ(o.occasion))+'</b> <span class="mu">'+esc(dstr(o.event_date))+'</span> - '+money(o.pay)+'</div>'}).join('')}
@@ -157,10 +160,10 @@ function bind(b){
  b.onclick=async function(e){
   var a=e.target.closest&&e.target.closest('[data-a]');
   if(a){
-   var id=a.closest('[data-id]').getAttribute('data-id'),acc=a.getAttribute('data-a')==='1';
-   if(!acc&&!confirm('ترفض هذا الطلب؟ ما راح يوصل لغيرك من تلقائي، الإدارة تقرر.'))return;
+   var card=a.closest('[data-id]'),id=card.getAttribute('data-id'),acc=a.getAttribute('data-a')==='1',open=card.getAttribute('data-open')==='1';
+   if(!acc&&!open&&!confirm('ترفض هذا الطلب؟ ما راح يوصل لغيرك من تلقائي، الإدارة تقرر.'))return;
    a.disabled=true;
-   try{await Q(sb.rpc('provider_respond',{p_id:id,p_accept:acc}));toast(acc?'تم قبول الطلب':'تم الرفض');await loadAll(true);shell();render()}catch(x){toast(errMsg(x),3500);a.disabled=false}
+   try{await Q(sb.rpc(open?'provider_take_offer':'provider_respond',{p_id:id,p_accept:acc}));toast(acc?'تم قبول الطلب':(open?'تم التجاهل':'تم الرفض'));await loadAll(true);shell();render()}catch(x){toast(errMsg(x),3500);a.disabled=false}
    return;
   }
   var m=e.target.closest&&e.target.closest('[data-m]');

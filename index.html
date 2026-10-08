@@ -1747,7 +1747,7 @@ async function admOrders(){
   if(A.filter)q=q.eq('status',A.filter);
   const d=await Q(q);
   try{if(d.length){const nn=await Q(sb.from('booking_notes').select('*').in('booking_id',d.map(x=>x.id)));const mp={};nn.forEach(x=>mp[x.booking_id]=x.note);d.forEach(x=>x.staff_note=mp[x.id]||'')}}catch(e){}
-  let bpm={},pvm={};try{if(d.length){const [bq,pq]=await Promise.all([Q(sb.from('booking_provider').select('*').in('booking_id',d.map(x=>x.id))),Q(sb.from('providers').select('id,name,tab,online,active,user_id'))]);bq.forEach(x=>bpm[x.booking_id]=x);pq.forEach(x=>pvm[x.id]=x);A.pvs=pq}}catch(e){}
+  let bpm={},pvm={},bom={};try{if(d.length){const ids=d.map(x=>x.id);const [bq,pq,oq]=await Promise.all([Q(sb.from('booking_provider').select('*').in('booking_id',ids)),Q(sb.from('providers').select('id,name,tab,online,active,user_id')),Q(sb.from('booking_offer').select('*').in('booking_id',ids))]);bq.forEach(x=>(bpm[x.booking_id]=bpm[x.booking_id]||[]).push(x));oq.forEach(x=>(bom[x.booking_id]=bom[x.booking_id]||[]).push(x));pq.forEach(x=>pvm[x.id]=x);A.pvs=pq}}catch(e){}
   let pf={};if(can('profit')&&d.length){const r=await Q(sb.from('booking_profit').select('*').in('booking_id',d.map(x=>x.id)));r.forEach(x=>pf[x.booking_id]=x)}
   box.innerHTML=`<div class="tabs"><button class="tab${A.filter===''?' on':''}" data-f="">الكل</button>${ST.map(s=>`<button class="tab${A.filter===s?' on':''}" data-f="${s}">${t('st_'+s)}</button>`).join('')}</div>`+
   (d.length?d.map(b=>`<div class="card oc" data-id="${b.id}">
@@ -1757,10 +1757,10 @@ async function admOrders(){
    العنوان: ${esc(b.address)}${b.lat?` | <a target="_blank" rel="noopener" href="https://www.google.com/maps?q=${Number(b.lat)},${Number(b.lng)}">الخريطة</a>`:''}<br>
    ${(b.items||[]).map(l=>esc(l.name)+' × '+l.qty).join('، ')}<br>
    المجموع: <b>${money(b.total)}</b>${b.discount>0?` (خصم ${b.discount}%)`:''}${pf[b.id]?` | الربح: <b style="color:var(--ok)">${money(pf[b.id].profit)}</b>`:''}
-   ${bpm[b.id]?`<br>المقدم: <b>${esc((pvm[bpm[b.id].provider_id]||{}).name||'')}</b> | الأجرة: <b>${money(bpm[b.id].pay)}</b> | <b style="color:${bpm[b.id].state==='accepted'?'var(--ok)':bpm[b.id].state==='declined'?'var(--bad)':'inherit'}">${bpm[b.id].state==='accepted'?'قبل الطلب':bpm[b.id].state==='declined'?'رفض الطلب':'بانتظار رده'}</b>`:''}
+   ${(bpm[b.id]||[]).map(r=>`<br>${t('tab_'+r.tab)||''} - المقدم: <b>${esc((pvm[r.provider_id]||{}).name||'')}</b> | الأجرة: <b>${money(r.pay)}</b> | <b style="color:${r.state==='accepted'?'var(--ok)':r.state==='declined'?'var(--bad)':'inherit'}">${r.state==='accepted'?'قبل الطلب':r.state==='declined'?'رفض الطلب':'بانتظار رده'}</b>`).join('')}${(bom[b.id]||[]).filter(o=>!(bpm[b.id]||[]).some(r=>r.tab===o.tab&&r.state==='accepted')).map(o=>`<br>${t('tab_'+o.tab)} - معروض على الكل بأجرة <b>${money(o.pay)}</b>`).join('')}
    ${b.call_stars?`<br>تقييم المكالمة: <b>${'★'.repeat(b.call_stars)}</b> ${esc(b.call_note||'')}`:b.rate_requested?'<br>بانتظار تقييم الزبون':''}</div>
    ${can('status')?ST.filter(s=>s!==b.status).map(s=>`<button class="btn sm ${s==='cancelled'?'bad':'sec'}" data-st="${s}">${t('st_'+s)}</button>`).join(''):''}
-   ${can('status')&&b.status!=='delivered'&&b.status!=='cancelled'?`<button class="btn sm sec" data-pv="1">${bpm[b.id]?'تغيير المقدم':'تعيين مقدم'}</button>`:''}
+   ${can('status')&&b.status!=='delivered'&&b.status!=='cancelled'?`<button class="btn sm" data-ofr="1">نشر للمقدمين</button><button class="btn sm sec" data-pv="1">تعيين مباشر</button>`:''}
    ${can('ratings')?`<button class="btn sm sec" data-rt="1">انتهت المكالمة: اطلب التقييم</button>`:''}
    ${can('chat')?`<button class="btn sm sec" data-ch="1">محادثة</button>`:''}
    <textarea rows="2" maxlength="500" placeholder="ملاحظة داخلية / بيانات مقدم الخدمة" data-note="1" style="margin-top:6px">${esc(b.staff_note||'')}</textarea><button class="btn sm" data-sn="1">حفظ الملاحظة</button></div>`).join(''):'<div class="empty">لا توجد طلبات</div>');
@@ -1769,7 +1769,8 @@ async function admOrders(){
    const c=e.target.closest('.oc');if(!c)return;const id=c.dataset.id;
    try{
     const st=e.target.closest('[data-st]');if(st){await Q(sb.rpc('set_status',{p_id:id,p_status:st.dataset.st}));return admOrders()}
-    if(e.target.closest('[data-pv]'))return assignForm(id,bpm[id]);
+    if(e.target.closest('[data-pv]'))return assignForm(id,(bpm[id]||[])[0]);
+    if(e.target.closest('[data-ofr]'))return offerForm(id,bom[id]||[],bpm[id]||[]);
     if(e.target.closest('[data-rt]')){await Q(sb.rpc('request_rating',{p_id:id}));toast('تم إرسال طلب التقييم للزبون');return admOrders()}
     if(e.target.closest('[data-ch]'))return openChat(id,true);
     if(e.target.closest('[data-sn]')){await Q(sb.rpc('set_note',{p_id:id,p_note:c.querySelector('[data-note]').value}));toast('تم الحفظ')}
@@ -1883,11 +1884,18 @@ async function admProviders(){
   };
  }catch(e){box.innerHTML=`<div class="empty">${esc(errMsg(e))}</div>`}
 }
+async function offerForm(id,offs,taken){
+ let tabs=[];try{tabs=await Q(sb.rpc('admin_booking_tabs',{p_id:id}))||[]}catch(e){}
+ const all=['cooks','butchers','rentals','photo','supplies'];
+ const s=sheet(`<h3>نشر الطلب للمقدمين</h3><p class="mu">يظهر لكل مقدم مشغّل من نفس الصنف، وأول واحد يقبل ياخذه.</p>${all.map(k=>{const o=offs.find(x=>x.tab===k),tk=taken.find(x=>x.tab===k&&x.state==='accepted');return `<div class="card"><label style="display:flex;gap:8px;align-items:center"><input type="checkbox" data-tb="${k}" ${tk?'disabled':(o||tabs.includes(k))?'checked':''} style="width:auto"> <b>${t('tab_'+k)}</b>${tk?' (أخذه مقدم)':''}</label>${tk?'':`<input type="text" inputmode="numeric" placeholder="الأجرة بالدينار" data-py="${k}" value="${o?Number(o.pay)||'':''}">`}</div>`}).join('')}<button class="btn" id="ofg">نشر</button>${offs.length?'<button class="btn sec" id="ofx">سحب كل العروض</button>':''}`);
+ s.querySelector('#ofg').onclick=async ev=>{if(ev.target.disabled)return;ev.target.disabled=true;try{let n=0;for(const k of all){const c=s.querySelector('[data-tb="'+k+'"]');if(!c||c.disabled)continue;const had=offs.some(x=>x.tab===k);if(c.checked){const pv=Number(ad(s.querySelector('[data-py="'+k+'"]').value.trim()))||0;await Q(sb.rpc('admin_publish_offer',{p_id:id,p_tab:k,p_pay:pv}));n++}else if(had){await Q(sb.rpc('admin_withdraw_offer',{p_id:id,p_tab:k}))}}s.close();toast(n?'تم النشر':'تم');admOrders()}catch(e){toast(errMsg(e))}finally{ev.target.disabled=false}};
+ const x=s.querySelector('#ofx');if(x)x.onclick=async()=>{try{for(const o of offs)await Q(sb.rpc('admin_withdraw_offer',{p_id:id,p_tab:o.tab}));s.close();admOrders()}catch(e){toast(errMsg(e))}};
+}
 function assignForm(id,cur){
  const list=(A.pvs||[]).filter(p=>p.active&&p.user_id&&p.online);
  const s=sheet(`<h3>تعيين مقدم خدمة</h3>${list.length?`<label>المقدم (المشغّلون فقط)</label><select id="apv">${list.map(p=>`<option value="${p.id}"${cur&&cur.provider_id===p.id?' selected':''}>${esc(p.name)}${p.tab?' - '+t('tab_'+p.tab):''}</option>`).join('')}</select><label>أجرة المقدم (دينار)</label><input id="apy" type="text" inputmode="numeric" value="${cur?Number(cur.pay)||'':''}"><button class="btn" id="apg">إرسال للمقدم</button>${cur?'<button class="btn sec" id="apx">إلغاء التعيين</button>':''}`:'<div class="empty">لا يوجد مقدم مشغّل ومفعّل حسابه</div>'}`);
  const g=s.querySelector('#apg');if(g)g.onclick=async ev=>{if(ev.target.disabled)return;ev.target.disabled=true;try{await Q(sb.rpc('admin_assign_provider',{p_id:id,p_provider:s.querySelector('#apv').value,p_pay:Number(ad(s.querySelector('#apy').value.trim()))||0}));s.close();toast('تم الإرسال للمقدم');admOrders()}catch(e){toast(errMsg(e))}finally{ev.target.disabled=false}};
- const x=s.querySelector('#apx');if(x)x.onclick=async()=>{try{await Q(sb.rpc('admin_unassign_provider',{p_id:id}));s.close();admOrders()}catch(e){toast(errMsg(e))}};
+ const x=s.querySelector('#apx');if(x)x.onclick=async()=>{try{await Q(sb.rpc('admin_unassign_provider',{p_id:id,p_provider:cur.provider_id}));s.close();admOrders()}catch(e){toast(errMsg(e))}};
 }
 function provForm(){
  const s=sheet(`<h3>إضافة مقدم خدمة</h3><label>الاسم</label><input id="pn" maxlength="60"><label>الهاتف</label><input id="pp" type="tel" inputmode="tel"><label>التخصص</label><select id="pt">${TABS.map(x=>`<option value="${x}">${t('tab_'+x)}</option>`).join('')}</select><label>المنطقة</label><input id="pa" maxlength="80"><label>ملاحظة</label><input id="po" maxlength="200"><button class="btn" id="pg">حفظ</button>`);
