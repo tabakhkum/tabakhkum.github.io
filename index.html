@@ -176,6 +176,12 @@ a{color:var(--gold2)}
 .stars button.on{color:var(--gold2)}
 .pstat{display:flex;justify-content:space-around;text-align:center;margin:12px 0}
 .pstat b{display:block;font-size:18px}
+.hrow{display:flex;gap:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:4px 2px 12px;margin-top:6px}
+.hrow .btn{flex:none;width:auto;min-width:92px;margin:0;padding:12px 12px;white-space:nowrap;display:flex;flex-direction:column;align-items:center;gap:7px;font-size:14px}
+.hrow .btn .ic{width:28px;height:28px}
+.trs{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.trs .trc{padding:9px 13px;border-radius:20px;background:var(--card,#1e293b);border:1px solid var(--bd,#334155);font-size:14px}
+.trs .trc b{color:var(--gold2)}
 .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
 .tile{position:relative;aspect-ratio:9/14;background:#000;overflow:hidden;border-radius:6px}
 .tile video{width:100%;height:100%;object-fit:cover}
@@ -391,7 +397,9 @@ applyLp();
 const P={
  heart:'<path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9z"/>',
  comment:'<path d="M21 12a8 8 0 0 1-11.5 7.2L3 21l1.8-5.5A8 8 0 1 1 21 12z"/>',
- share:'<path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v14"/>',
+ share:'<path d="M15 4l6 6-6 6M21 10H9a6 6 0 0 0-6 6v4"/>',
+ chat2:'<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M9 9.5c.4 2.2 2.3 4 5 5"/>',
+ plane:'<path d="M21 3L3 10.5l6.5 2.5L12 20l2.5-5.5L21 3zM9.5 13L21 3"/>',
  book:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
  son:'<path d="M11 5L6 9H3v6h3l5 4V5zM15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/>',
  soff:'<path d="M11 5L6 9H3v6h3l5 4V5zM22 9l-6 6M16 9l6 6"/>',
@@ -585,11 +593,12 @@ $('#bMenu').onclick=menuSheet;
 $('#srBtn').onclick=()=>searchSheet();
 $('#vback').onclick=()=>{const b=F.custom&&F.custom.back;F.custom=null;$('#vback').style.display='none';if(b)b();else{reloadFeed();go('feed')}};
 function searchSheet(){
- const s=sheet(`<h3>بحث بالريلز</h3><div class="row"><input id="si" maxlength="40" placeholder="حساب أو كلمة بالوصف أو #هاشتاك" enterkeyhint="search"><button class="btn sm" id="sg" style="flex:none;margin:0">بحث</button></div><div id="sr" style="margin-top:10px;max-height:calc(var(--vh,1vh)*62);overflow-y:auto"></div>`);
+ const s=sheet(`<h3>بحث بالريلز</h3><div class="row"><input id="si" maxlength="40" placeholder="حساب أو كلمة بالوصف أو #هاشتاك" enterkeyhint="search"><button class="btn sm" id="sg" style="flex:none;margin:0">بحث</button></div><div id="sr" style="margin-top:10px;max-height:calc(var(--vh,1vh)*62);overflow-y:auto"><div class="mu">الهاشتاكات الرائجة</div><div class="trs" id="trs"><span class="mu">...</span></div></div>`);
  const inp=s.querySelector('#si'),out=s.querySelector('#sr');
+ (async()=>{try{const r=await Q(sb.rpc('trending_tags',{p_days:7,p_limit:15}));const x=s.querySelector('#trs');if(!x)return;x.innerHTML=(r&&r.length)?r.map(a=>`<span class="trc" data-tag="${esc(a.tag)}"><b>#${esc(a.tag)}</b> <span class="mu">${a.videos} فيديو - ${a.users} مستخدم</span></span>`).join(''):'<span class="mu">ما كو هاشتاكات بعد. اكتب #هاشتاك بوصف منشورك.</span>'}catch(e){const x=s.querySelector('#trs');if(x)x.innerHTML=''}})();
  const run=async()=>{
   const raw=inp.value.trim(),q=raw.replace(/^[@#]+/,'').trim();
-  if(q.length<2)return toast('اكتب حرفين على الأقل');
+  if(q.length<2){if(raw)toast('اكتب حرفين على الأقل');return}
   out.innerHTML='<div class="empty">...</div>';
   const lk='%'+q.replace(/[\\%_]/g,'\\$&')+'%';
   try{
@@ -600,12 +609,17 @@ function searchSheet(){
    if(/^#/.test(raw)||/^[\p{L}\p{N}_]+$/u.test(q))h+=`<div class="srrow" data-tag="${esc(q)}"><b style="color:var(--gold2)">#${esc(q)}</b><span class="mu" style="flex:1">افتح فيديوهات الهاشتاك</span></div>`;
    const us=(u.data||[]);
    if(us.length)h+=hd('الحسابات')+us.map(x=>`<div class="srrow" data-u="${x.id}"><div class="cav">${x.avatar_url?`<img src="${esc(x.avatar_url)}" alt="">`:esc((x.username||'?').slice(0,1))}</div><b style="flex:1">@${esc(x.username)}</b></div>`).join('');
-   const rs=(rv.data||[]);
+   let up=[];
+   if(us.length){try{const ids=us.slice(0,3).map(x=>x.id);const pr=await sb.from('reels').select('id,video_url,views,user_id').in('user_id',ids).is('deleted_at',null).eq('hidden',false).order('created_at',{ascending:false}).limit(30);up=pr.data||[]}catch(e){}}
+   if(up.length)h+=hd('منشورات '+(us.length>1?'الحسابات':'@'+us[0].username))+`<div class="tiles">${up.map(y=>`<div class="tile" data-r="${y.id}"><video src="${esc(y.video_url)}#t=0.5" preload="metadata" muted playsinline></video><span>${y.views||0}</span></div>`).join('')}</div>`;
+   const upIds=new Set(up.map(y=>y.id));
+   const rs=(rv.data||[]).filter(y=>!upIds.has(y.id));
    if(rs.length)h+=hd('الفيديوهات')+`<div class="tiles">${rs.map(y=>`<div class="tile" data-r="${y.id}"><video src="${esc(y.video_url)}#t=0.5" preload="metadata" muted playsinline></video><span>${y.views||0}</span></div>`).join('')}</div>`;
    out.innerHTML=h||'<div class="empty">ما لقيت نتائج</div>';
   }catch(e){out.innerHTML=`<div class="empty">${esc(errMsg(e))}</div>`}
  };
- s.querySelector('#sg').onclick=run;inp.onkeydown=e=>{if(e.key==='Enter')run()};
+ s.querySelector('#sg').onclick=run;inp.onkeydown=e=>{if(e.key==='Enter'){clearTimeout(inp._t);run()}};
+ inp.oninput=()=>{clearTimeout(inp._t);const q=inp.value.replace(/^[@#]+/,'').trim();if(q.length>=2)inp._t=setTimeout(()=>{if(s.parentNode)run()},500)};
  out.onclick=e=>{
   const g=e.target.closest('[data-tag]');if(g){s.close();openTag(g.dataset.tag);return}
   const u=e.target.closest('[data-u]');if(u){s.close();openProfile(u.dataset.u);return}
@@ -763,13 +777,24 @@ async function attachSnd(rows){
  const M={};b.data.forEach(x=>M[x.id]=x);
  rows.forEach(r=>{const x=M[m[r.id]];if(x)r.snd={id:x.id,url:x.video_url,username:x.profiles&&x.profiles.username,avatar:x.profiles&&x.profiles.avatar_url}});
 }
-function soundSheet(sl){
+async function soundSheet(sl){
  const r=sl._r,src=r.snd||{id:r.id,username:r.username,avatar:r.avatar_url};
- const s=sheet(`<div style="text-align:center"><div class="av" style="width:90px;height:90px;font-size:36px;margin:6px auto 0;animation:spin 6s linear infinite">${src.avatar?`<img src="${esc(src.avatar)}" alt="">`:esc((src.username||'?').slice(0,1))}</div><h3 style="margin-top:12px">صوت أصلي</h3><div class="mu">@${esc(src.username||'')}</div></div>
-  <div class="plz">تكدر تسوي فيديو جديد بنفس هذا الصوت، ويظهر اسم صاحب الصوت تحت الفيديو.</div>
-  <button class="btn" id="usn">استخدم هذا الصوت</button><button class="btn sec" id="usc">إغلاق</button>`);
+ const s=sheet(`<div style="text-align:center"><div class="av" style="width:90px;height:90px;font-size:36px;margin:6px auto 0;animation:spin 6s linear infinite">${src.avatar?`<img src="${esc(src.avatar)}" alt="">`:esc((src.username||'?').slice(0,1))}</div><h3 style="margin-top:12px">صوت أصلي</h3><div class="mu">صاحب الصوت: <b>@${esc(src.username||'')}</b></div><div class="mu" id="snc"></div></div>
+  <button class="btn" id="usn">استخدم هذا الصوت</button>
+  <h3 style="margin-top:16px">المنشورات الي استخدمت الصوت</h3><div id="snp" style="max-height:calc(var(--vh,1vh)*38);overflow-y:auto"><div class="empty">...</div></div>
+  <button class="btn sec" id="usc">إغلاق</button>`);
  s.querySelector('#usc').onclick=()=>s.close();
  s.querySelector('#usn').onclick=()=>{s.close();requireAuth(()=>publishSheet({id:src.id,username:src.username}))};
+ s.querySelector('#snp').onclick=e=>{const t=e.target.closest('[data-r]');if(t){s.close();showReel(t.dataset.r)}};
+ try{
+  const q=await sb.from('reels').select('id,video_url,views',{count:'exact'}).eq('sound_reel',src.id).is('deleted_at',null).eq('hidden',false).order('created_at',{ascending:false}).limit(30);
+  const o=await sb.from('reels').select('id,video_url,views').eq('id',src.id).is('deleted_at',null).eq('hidden',false).limit(1);
+  if(!s.parentNode)return;
+  const list=(o.data||[]).concat(q.data||[]);
+  const n=Number(q.count)||0;
+  s.querySelector('#snc').textContent=n+' منشور استخدم هذا الصوت';
+  s.querySelector('#snp').innerHTML=list.length?`<div class="tiles">${list.map(y=>`<div class="tile" data-r="${y.id}"><video src="${esc(y.video_url)}#t=0.5" preload="metadata" muted playsinline></video><span>${y.views||0}</span></div>`).join('')}</div>`:'<div class="empty">ما كو منشورات بعد، كن أول واحد</div>';
+ }catch(e){const x=s.querySelector('#snp');if(x)x.innerHTML='<div class="empty">تعذر تحميل المنشورات</div>'}
 }
 function setRate(x){setLp('rate',x);document.querySelectorAll('#feed video').forEach(y=>y.playbackRate=x);cbUpd()}
 /* ===== شاشة خالية: شريط التحكم ===== */
@@ -986,11 +1011,13 @@ async function shareReel(sl){
  const VL={public:'عام',friends:'الأصدقاء',private:'خاص'};
  const vis=()=>['public','friends','private'].map(k=>`<button class="btn sm${(r.visibility||'public')===k?'':' sec'}" data-vis="${k}">${VL[k]}</button>`).join('');
  const sh=sheet(`<h3>مشاركة</h3>
-  ${(own||(r.can_repost===false&&!r.reposted))?'':`<button class="btn sec" data-s="rp">${r.reposted?'إلغاء إعادة النشر':'إعادة نشر'}</button>`}
-  <button class="btn sec" data-s="wa">واتساب</button>
-  <button class="btn sec" data-s="tg">تيليجرام</button>
-  <button class="btn sec" data-s="cp">نسخ الرابط</button>
-  ${navigator.share?'<button class="btn sec" data-s="more">تطبيقات أخرى</button>':''}
+  <div class="hrow">
+  ${(own||(r.can_repost===false&&!r.reposted))?'':`<button class="btn sec" data-s="rp">${ic('repeat')}${r.reposted?'إلغاء إعادة النشر':'إعادة نشر'}</button>`}
+  <button class="btn sec" data-s="wa">${ic('chat2')}واتساب</button>
+  <button class="btn sec" data-s="tg">${ic('plane')}تيليجرام</button>
+  <button class="btn sec" data-s="cp">${ic('link')}نسخ الرابط</button>
+  ${navigator.share?'<button class="btn sec" data-s="more">'+ic('dots')+'تطبيقات أخرى</button>':''}
+  </div>
   ${own?`<h3 style="margin-top:18px">من يشاهد هذا المنشور؟</h3><div id="vb">${vis()}</div><div class="mu" style="margin-top:6px">عام: الكل. الأصدقاء: اللي تتابعهم ويتابعوك. خاص: أنت بس.</div>`:''}`);
  sh.onclick=async e=>{
   const v=e.target.closest('[data-vis]');
