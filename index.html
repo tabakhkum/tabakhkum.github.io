@@ -41,6 +41,8 @@ a{color:var(--gold2)}
 .heart{position:absolute;left:50%;top:50%;width:90px;height:90px;margin:-45px 0 0 -45px;color:#ef4444;opacity:0;pointer-events:none;transform:scale(.4)}
 .heart svg{fill:#ef4444;stroke:#ef4444;width:100%;height:100%}
 .heart.go{animation:hp .7s ease-out}
+.pico{position:absolute;left:50%;top:50%;width:76px;height:76px;margin:-38px 0 0 -38px;border-radius:50%;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transform:scale(.8);transition:opacity .15s,transform .15s}
+.slide.upz .pico{opacity:1;transform:scale(1)}
 @keyframes hp{0%{opacity:0;transform:scale(.4)}25%{opacity:1;transform:scale(1.1)}100%{opacity:0;transform:scale(1.3)}}
 .bar{position:absolute;left:0;right:0;bottom:calc(60px + env(safe-area-inset-bottom));height:3px;background:rgba(255,255,255,.22);direction:ltr;touch-action:none;z-index:6;transition:height .12s}
 .bar::before{content:'';position:absolute;left:0;right:0;top:-20px;bottom:-6px}
@@ -687,7 +689,7 @@ function fmtAgo(d){if(!d)return '';const x=new Date(d),m=(Date.now()-x)/6e4;
 function slideHtml(r){
  const ini=esc((r.username||'?').slice(0,1));
  const mine=S.user&&S.user.id===r.user_id;
- return `<div class="vwrap"><video playsinline loop muted preload="none" data-src="${esc(r.video_url)}"></video><div class="heart">${ic('heart')}</div></div>
+ return `<div class="vwrap"><video playsinline loop muted preload="none" data-src="${esc(r.video_url)}"></video><div class="heart">${ic('heart')}</div><div class="pico"><svg viewBox="0 0 24 24" width="34" height="34" fill="#fff"><rect x="6" y="4" width="4.2" height="16" rx="1.2"/><rect x="13.8" y="4" width="4.2" height="16" rx="1.2"/></svg></div></div>
  <div class="bar"><i></i></div><div class="tm"></div>
  <div class="acts">
   <div class="av" data-act="prof">${r.avatar_url?`<img src="${esc(r.avatar_url)}" alt="">`:ini}${(!mine&&!r.following)?`<span class="fol" data-act="fol">${ic('plus')}</span>`:''}</div>
@@ -801,8 +803,9 @@ $('#feed').addEventListener('click',e=>{
  const now=Date.now();
  if(now-lastTap<320){clearTimeout(tapTm);lastTap=0;likeReel(sl,true);const h=sl.querySelector('.heart');h.classList.remove('go');void h.offsetWidth;h.classList.add('go');return}
  lastTap=now;
- tapTm=setTimeout(()=>{const v=sl.querySelector('video');if(v.paused)v.play().catch(()=>{});else v.pause()},320);
+ tapTm=setTimeout(()=>{const v=sl.querySelector('video');if(v.paused){sl.classList.remove('upz');v.play().catch(()=>{})}else{v.pause();sl.classList.add('upz')}},320);
 });
+document.addEventListener('play',e=>{try{const sl=e.target.closest&&e.target.closest('.slide');if(sl)sl.classList.remove('upz')}catch(x){}},true);
 document.addEventListener('pointerup',()=>{if(S.screen==='feed'&&!F.sound&&!lp('mutestart')){F.sound=true;const v=F.cur&&F.cur.querySelector('video');if(v)setMuted(v)}},true);
 /* ===== ضغطة مطولة + إصبعين + سحب لليسار ===== */
 (function(){
