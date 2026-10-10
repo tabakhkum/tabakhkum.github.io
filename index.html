@@ -1528,8 +1528,9 @@ async function openOrders(mode){
    <div class="mu">${esc(b.event_date)} | ${money(b.total)}${b.wallet_used>0?' (من المحفظة '+money(b.wallet_used)+')':''}</div>
    <div class="mu">${(b.items||[]).map(l=>esc(l.name)+' × '+l.qty).join('، ')}</div>
    <button class="btn sm" data-t="${b.id}">تتبع الطلب</button> <button class="btn sm sec" data-c="${b.id}">${t('chat')}</button>
-   ${b.rate_requested&&!b.call_stars?`<button class="btn sm" data-r="${b.id}">${t('rate_q')}</button>`:''}${b.call_stars?`<span class="mu"> ${'★'.repeat(b.call_stars)}</span>`:''}</div>`).join(''):`<div class="empty">${mode==='active'?'ما عندك طلبات حالية':t('no_orders')}</div>`;
-  s.querySelector('#ol').onclick=e=>{const tt=e.target.closest('[data-t]');if(tt)return trackSheet(tt.dataset.t);const c=e.target.closest('[data-c]');if(c)return openChat(c.dataset.c,false);const r=e.target.closest('[data-r]');if(r)rateSheet(r.dataset.r,()=>{s.close();openOrders(mode)})};
+   ${b.rate_requested&&!b.call_stars?`<button class="btn sm" data-r="${b.id}">${t('rate_q')}</button>`:''}${b.call_stars?`<span class="mu"> مكالمة ${'★'.repeat(b.call_stars)}</span>`:''}
+   ${b.status==='delivered'&&!b.service_stars?`<button class="btn sm" data-sv="${b.id}">قيّم الخدمة</button>`:''}${b.service_stars?`<span class="mu"> الخدمة ${'★'.repeat(b.service_stars)}</span>`:''}${b.chat_stars?`<span class="mu"> المحادثة ${'★'.repeat(b.chat_stars)}</span>`:''}</div>`).join(''):`<div class="empty">${mode==='active'?'ما عندك طلبات حالية':t('no_orders')}</div>`;
+  s.querySelector('#ol').onclick=e=>{const tt=e.target.closest('[data-t]');if(tt)return trackSheet(tt.dataset.t);const c=e.target.closest('[data-c]');if(c)return openChat(c.dataset.c,false);const r=e.target.closest('[data-r]');if(r)return rateSheet(r.dataset.r,()=>{s.close();openOrders(mode)});const sv=e.target.closest('[data-sv]');if(sv)rateSheet(sv.dataset.sv,()=>{s.close();openOrders(mode)},'service')};
  }catch(e){s.querySelector('#ol').innerHTML=`<div class="empty">${esc(errMsg(e))}</div>`}
 }
 async function trackSheet(bid){
@@ -1550,7 +1551,8 @@ async function trackSheet(bid){
 }
 function openChat(bid,staff){
  let iv=null;
- const s=sheet(`<h3>${t('chat')}</h3><div class="msgs" id="ml"></div><div class="row" style="margin-top:8px"><input id="mi" maxlength="500" placeholder="${t('write')}"><button class="btn sm" id="ms" style="flex:none;margin:0">${t('send')}</button></div>`,()=>clearInterval(iv));
+ const s=sheet(`<h3>${t('chat')}</h3>${staff?'':'<button class="btn sm sec" id="mrate">قيّم المحادثة مع خدمة العملاء</button>'}<div class="msgs" id="ml"></div><div class="row" style="margin-top:8px"><input id="mi" maxlength="500" placeholder="${t('write')}"><button class="btn sm" id="ms" style="flex:none;margin:0">${t('send')}</button></div>`,()=>clearInterval(iv));
+ const mr=s.querySelector('#mrate');if(mr)mr.onclick=()=>rateSheet(bid,null,'chat');
  const load=async()=>{try{
   const d=await Q(sb.from('order_messages').select('id,body,is_staff,sender_id,created_at').eq('booking_id',bid).order('created_at').limit(200));
   const ml=s.querySelector('#ml'),atEnd=ml.scrollTop+ml.clientHeight>=ml.scrollHeight-30;
@@ -1561,12 +1563,19 @@ function openChat(bid,staff){
  s.querySelector('#mi').addEventListener('keydown',e=>{if(e.key==='Enter')s.querySelector('#ms').click()});
  load();iv=setInterval(()=>{if(!document.hidden)load()},5000);
 }
-function rateSheet(bid,after){
- let n=0;
- const s=sheet(`<h3>${t('rate_q')}</h3><div class="stars">${[1,2,3,4,5].map(i=>`<button data-s="${i}">★</button>`).join('')}</div><label>${t('rate_note')}</label><textarea id="rn" rows="2" maxlength="300"></textarea><button class="btn" id="rg">${t('rate_send')}</button>`);
+const RATE_K={call:['rate_call',null],service:['rate_service','كيف كانت الخدمة؟'],chat:['rate_chat','كيف كانت المحادثة مع خدمة العملاء؟']};
+function rateSheet(bid,after,kind){
+ let n=0;kind=RATE_K[kind]?kind:'call';const rk=RATE_K[kind];
+ const s=sheet(`<h3>${rk[1]||t('rate_q')}</h3><div class="stars">${[1,2,3,4,5].map(i=>`<button data-s="${i}">★</button>`).join('')}</div><label>${t('rate_note')}</label><textarea id="rn" rows="2" maxlength="300"></textarea><button class="btn" id="rg">${t('rate_send')}</button>`);
  s.querySelector('.stars').onclick=e=>{const b=e.target.closest('[data-s]');if(!b)return;n=Number(b.dataset.s);s.querySelectorAll('.stars button').forEach((x,i)=>x.classList.toggle('on',i<n))};
- s.querySelector('#rg').onclick=async()=>{if(!n)return;try{await Q(sb.rpc('rate_call',{p_id:bid,p_stars:n,p_note:s.querySelector('#rn').value}));s.close();toast(t('thanks'));after&&after()}catch(e){toast(errMsg(e))}};
+ s.querySelector('#rg').onclick=async()=>{if(!n)return;try{await Q(sb.rpc(rk[0],{p_id:bid,p_stars:n,p_note:s.querySelector('#rn').value}));s.close();toast(t('thanks'));after&&after()}catch(e){toast(errMsg(e))}};
 }
+function feedbackSheet(){requireAuth(()=>{
+ let kind='complaint';
+ const s=sheet(`<h3>شكوى أو اقتراح</h3><div class="row"><button class="btn sm" data-k="complaint">شكوى</button><button class="btn sm sec" data-k="suggestion">اقتراح</button></div><label>اكتب هنا</label><textarea id="fbt" rows="5" maxlength="1000" placeholder="اكتب شكواك أو اقتراحك بوضوح"></textarea><button class="btn" id="fbs">إرسال</button>`);
+ s.querySelector('.row').onclick=e=>{const b=e.target.closest('[data-k]');if(!b)return;kind=b.dataset.k;s.querySelectorAll('.row [data-k]').forEach(x=>x.classList.toggle('sec',x!==b))};
+ s.querySelector('#fbs').onclick=async()=>{const btn=s.querySelector('#fbs'),v=s.querySelector('#fbt').value.trim();if(v.length<3)return toast('اكتب كم كلمة على الأقل');btn.disabled=true;try{await Q(sb.rpc('send_feedback',{p_kind:kind,p_body:v}));s.close();toast('وصلتنا رسالتك، شكراً لك',3500)}catch(e){toast(errMsg(e),4500);btn.disabled=false}};
+})}
 const ratedShown=new Set();
 async function checkRating(){
  if(!S.user||document.querySelector('.sbg'))return;
@@ -1688,8 +1697,9 @@ function menuSheet(){
 }
 function supportSheet(){
  const ph=[sv('support_phone',''),sv('support_phone2','')].filter(Boolean);
- sheet(`<h3>${t('support')}</h3>${ph.map(p=>`<a class="btn sec" style="text-decoration:none" href="tel:${esc(p)}">${t('callus')} ${esc(p)}</a>`).join('')}
-  <a class="btn" style="text-decoration:none" target="_blank" rel="noopener" href="https://wa.me/${esc(sv('wa','9647817964134'))}">${t('whats')}</a>`);
+ const sp=sheet(`<h3>${t('support')}</h3>${ph.map(p=>`<a class="btn sec" style="text-decoration:none" href="tel:${esc(p)}">${t('callus')} ${esc(p)}</a>`).join('')}
+  <a class="btn" style="text-decoration:none" target="_blank" rel="noopener" href="https://wa.me/${esc(sv('wa','9647817964134'))}">${t('whats')}</a><button class="btn sec" id="sfb">شكوى أو اقتراح</button>`);
+ sp.querySelector('#sfb').onclick=()=>{sp.close();feedbackSheet()};
 }
 function langSheet(){
  const s=sheet(`<h3>${t('language')}</h3><button class="btn sec" data-l="ar">العربية</button><button class="btn sec" data-l="en">English</button>`);
@@ -1731,6 +1741,7 @@ function openAdmin(){
  if(can('items'))tabs.push(['itm','الأيتمات']);
  if(can('reels'))tabs.push(['rl','الريلزات']);
  if(can('reels'))tabs.push(['rpt','البلاغات']);
+ if(can('orders'))tabs.push(['fb','الشكاوى والاقتراحات']);
  if(can('providers'))tabs.push(['prv','مقدمو الخدمات']);
  if(can('settings'))tabs.push(['ver','التوثيق']);
  if(can('profit'))tabs.push(['rep','الحسابات']);
@@ -1744,7 +1755,7 @@ function openAdmin(){
 }
 function admTab(k){
  A.tab=k;document.querySelectorAll('#adm .admt .tab').forEach(b=>b.classList.toggle('on',b.dataset.t===k));
- const f={ord:admOrders,itm:admItems,rl:admReels,prv:admProviders,rep:admReport,stf:admStaff,set:admSettings,ver:admVerify,rpt:admReports,flt:admFilters}[k];
+ const f={ord:admOrders,itm:admItems,rl:admReels,prv:admProviders,rep:admReport,stf:admStaff,set:admSettings,ver:admVerify,rpt:admReports,flt:admFilters,fb:admFeedback}[k];
  $('#abd').innerHTML='<div class="empty">...</div>';f&&f();
 }
 const waLink=(p,txt)=>'https://wa.me/'+norm(p)+(txt?'?text='+encodeURIComponent(txt):'');
@@ -1788,7 +1799,7 @@ async function admOrders(){
    ${(b.items||[]).map(l=>esc(l.name)+' × '+l.qty).join('، ')}<br>
    المجموع: <b>${money(b.total)}</b>${b.discount>0?` (خصم ${b.discount}%)`:''}${pf[b.id]?` | الربح: <b style="color:var(--ok)">${money(pf[b.id].profit)}</b>`:''}
    ${(bpm[b.id]||[]).map(r=>`<br>${t('tab_'+r.tab)||''} - المقدم: <b>${esc((pvm[r.provider_id]||{}).name||'')}</b> | الأجرة: <b>${money(r.pay)}</b> | <b style="color:${r.state==='accepted'?'var(--ok)':r.state==='declined'?'var(--bad)':'inherit'}">${r.state==='accepted'?'قبل الطلب':r.state==='declined'?'رفض الطلب':'بانتظار رده'}</b>`).join('')}${(bom[b.id]||[]).filter(o=>!(bpm[b.id]||[]).some(r=>r.tab===o.tab&&r.state==='accepted')).map(o=>`<br>${t('tab_'+o.tab)} - معروض على الكل بأجرة <b>${money(o.pay)}</b>`).join('')}
-   ${b.call_stars?`<br>تقييم المكالمة: <b>${'★'.repeat(b.call_stars)}</b> ${esc(b.call_note||'')}`:b.rate_requested?'<br>بانتظار تقييم الزبون':''}</div>
+   ${b.call_stars?`<br>تقييم المكالمة: <b>${'★'.repeat(b.call_stars)}</b> ${esc(b.call_note||'')}`:b.rate_requested?'<br>بانتظار تقييم الزبون':''}${b.service_stars?`<br>تقييم الخدمة: <b>${'★'.repeat(b.service_stars)}</b> ${esc(b.service_note||'')}`:''}${b.chat_stars?`<br>تقييم المحادثة: <b>${'★'.repeat(b.chat_stars)}</b> ${esc(b.chat_note||'')}`:''}</div>
    ${can('status')?ST.filter(s=>s!==b.status).map(s=>`<button class="btn sm ${s==='cancelled'?'bad':'sec'}" data-st="${s}">${t('st_'+s)}</button>`).join(''):''}
    ${can('status')&&b.status!=='delivered'&&b.status!=='cancelled'?`<button class="btn sm" data-ofr="1">نشر للمقدمين</button><button class="btn sm sec" data-pv="1">تعيين مباشر</button>`:''}
    ${can('ratings')?`<button class="btn sm sec" data-rt="1">انتهت المكالمة: اطلب التقييم</button>`:''}
@@ -1986,6 +1997,14 @@ function staffForm(uname,perms){
   const pm={};s.querySelectorAll('[data-p]').forEach(x=>pm[x.dataset.p]=x.checked);
   try{await Q(sb.rpc('add_staff',{p_username:u,p_perms:pm}));s.close();admStaff()}catch(e){toast(errMsg(e))}
  };
+}
+async function admFeedback(){
+ const box=$('#abd');
+ try{
+  const d=await Q(sb.from('feedback').select('id,kind,body,status,created_at,booking_id,profiles(username)').order('created_at',{ascending:false}).limit(100));
+  box.innerHTML=d.length?d.map(f=>`<div class="card" data-id="${f.id}"><div class="row"><b style="flex:1">${f.kind==='complaint'?'شكوى':'اقتراح'} من ${esc((f.profiles||{}).username||'مستخدم')}</b><span class="chip ${f.status==='new'?'new':'delivered'}" style="flex:none">${f.status==='new'?'جديد':'تمت المراجعة'}</span></div><div class="mu">${fmtDT(f.created_at)}${f.booking_id?' | مرتبط بطلب':''}</div><div style="white-space:pre-wrap;margin:8px 0">${esc(f.body)}</div><button class="btn sm sec" data-s="${f.status==='new'?'1':'0'}">${f.status==='new'?'تمت المراجعة':'إرجاعها كجديدة'}</button></div>`).join(''):'<div class="empty">لا توجد شكاوى أو اقتراحات</div>';
+  box.onclick=async e=>{const b=e.target.closest('[data-s]');if(!b)return;const id=b.closest('[data-id]').dataset.id;try{await Q(sb.rpc('admin_feedback_seen',{p_id:id,p_seen:b.dataset.s==='1'}));admFeedback()}catch(er){toast(errMsg(er))}};
+ }catch(e){box.innerHTML=`<div class="empty">${esc(errMsg(e))}</div>`}
 }
 async function admReports(){
  const box=$('#abd');
