@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="طباخكم">
+<meta name="apple-mobile-web-app-title" content="Tabakhkum">
 <meta name="format-detection" content="telephone=no">
 <title>طباخكم</title>
 <style>
@@ -138,6 +138,7 @@ a{color:var(--gold2)}
 .big{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 12px;text-align:center;font-size:17px;font-weight:700}
 .big:active{border-color:var(--gold)}
 .big.off{opacity:.45}
+.big.on{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset}
 .big small{display:block;font-weight:400;color:var(--mu);font-size:12px;margin-top:6px}
 .tabs{display:flex;gap:6px;overflow-x:auto;padding:0 0 10px;scrollbar-width:none;flex:none}
 .tabs::-webkit-scrollbar{display:none}
@@ -160,6 +161,13 @@ a{color:var(--gold2)}
 #cartbar .btn{margin:0;width:auto;padding:10px 18px}
 .sbg{position:absolute;top:0;right:0;bottom:0;left:0;z-index:60;background:rgba(0,0,0,.6);display:flex;align-items:flex-end}
 .sh{width:100%;max-height:calc(var(--vh,1vh)*90);overflow-y:auto;background:#111c33;border-radius:20px 20px 0 0;padding:10px 16px calc(20px + env(safe-area-inset-bottom))}
+.sbg.drw{align-items:stretch;justify-content:flex-end}
+.sbg.drw .grab{display:none}
+.sbg.drw .sh{width:min(78%,340px);max-height:none;height:100%;border-radius:0 20px 20px 0;padding:calc(14px + env(safe-area-inset-top)) 14px calc(20px + env(safe-area-inset-bottom));animation:drin .22s ease-out}
+@keyframes drin{from{transform:translateX(-100%)}to{transform:none}}
+.dh{display:flex;align-items:center;gap:10px;padding:4px 4px 14px;border-bottom:1px solid var(--line);margin-bottom:4px;font-size:17px}
+.dl{display:block;width:100%;text-align:start;background:none;border:0;border-bottom:1px solid var(--line);color:var(--tx);font-size:16px;padding:15px 6px}
+.dl:active{background:rgba(255,255,255,.06)}
 .grab{width:42px;height:4px;background:var(--line);border-radius:3px;margin:0 auto 12px}
 .chip{display:inline-block;padding:3px 10px;border-radius:12px;font-size:12px;background:var(--card2)}
 .chip.new{background:#1d4ed8}.chip.confirmed{background:#7c3aed}.chip.provider_found{background:#0e7490}.chip.delivered{background:var(--ok)}.chip.cancelled{background:var(--bad)}
@@ -424,8 +432,13 @@ function errMsg(e){const m=(e&&e.message)||String(e);if(/fetch|network|Failed|Lo
 async function Q(p){const r=await p;if(r.error)throw r.error;return r.data}
 const money=n=>Math.round(Number(n)||0).toLocaleString('en-US')+' '+t('iqd');
 const ad=x=>String(x==null?'':x).replace(/[٠-٩]/g,c=>c.charCodeAt(0)-1632).replace(/[۰-۹]/g,c=>c.charCodeAt(0)-1776);
+const okPhone=v=>/^07[5789][0-9]{8}$/.test(ad(String(v||'')).replace(/[\s\-]/g,''));
+const PHONE_MSG='رقم الموبايل لازم يكون 11 رقم ويبدأ بـ 075 أو 077 أو 078 أو 079';
 const norm=p=>{let d=ad(p).replace(/\D/g,'');if(d.startsWith('0'))d='964'+d.slice(1);return d};
 const today=()=>new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
+const bgNow=()=>new Date(Date.now()+10800000);
+const bgToday=()=>bgNow().toISOString().slice(0,10);
+const bgHour=()=>bgNow().getUTCHours();
 const tomorrow=()=>new Date(Date.now()+864e5-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
 const BADW=/(^|[^\u0621-\u064Aa-z])(سكس|نيك|نياكة|نياكه|اباحي|إباحي|اباحية|إباحية|اباحيه|إباحيه|عاهرة|عاهره|شرموطة|شرموطه|قحبة|قحبه|منيوك|متناك|porn|porno|sex|xxx)(?=$|[^\u0621-\u064Aa-z])/i;
 const isBad=x=>BADW.test(String(x||'').replace(/[\u064B-\u0652\u0640]/g,''));
@@ -446,10 +459,10 @@ ar:{iqd:'د.ع',neterr:'تعذر الاتصال بالإنترنت',denied:'غي
 services:'خدمات طباخكم',settings:'الإعدادات والخصوصية',reels:'الريلزات',menu:'القائمة',login:'تسجيل الدخول',register:'إنشاء حساب',logout:'تسجيل الخروج',username:'اسم المستخدم',password:'كلمة السر',phone:'رقم الموبايل',
 needlogin:'سجّل الدخول أولاً',noacc:'ليس لديك حساب؟ أنشئ حساباً',hasacc:'لديك حساب؟ سجّل الدخول',badlogin:'اسم المستخدم أو كلمة السر غير صحيحة',shortpw:'كلمة السر 6 أحرف على الأقل',baduser:'اسم المستخدم من 2 إلى 14 حرفاً',badphone:'اكتب رقم موبايل صحيح',confirmoff:'تعذر الدخول التلقائي، يجب تعطيل تأكيد البريد من إعدادات Supabase',
 occ_q:'ما نوع المناسبة؟',engagement:'خطوبة',wedding:'حفل زفاف',mourning:'مجلس عزاء',other:'مناسبات أخرى',other_s:'تشمل كل الخدمات',
-meal_q:'ما هي الوجبة؟',lunch:'غداء',dinner:'عشاء',lunch_note:'',
+meal_q:'ما هي الوجبة؟',lunch:'غداء',dinner:'عشاء',both:'غداء وعشاء',lunch_note:'',
 tab_cooks:'الطباخين',tab_butchers:'القصابين',tab_rentals:'المؤجرين',tab_photo:'المصورين',tab_supplies:'مسواكم',
 change:'تغيير',cart:'السلة',total:'المجموع',checkout:'إتمام الطلب',onreq:'حسب الطلب',empty:'لا توجد عناصر',
-name:'الاسم',phone2:'رقم إضافي (اختياري)',date:'تاريخ المناسبة',address:'العنوان (المنطقة وأقرب نقطة دالة)',locate:'تحديد موقعي على الخريطة',located:'تم تحديد الموقع',locerr:'تعذر تحديد الموقع، فعّل GPS',
+name:'الاسم',phone2:'رقم إضافي',date:'تاريخ المناسبة',address:'العنوان (المنطقة وأقرب نقطة دالة)',locate:'تحديد موقعي على الخريطة',located:'تم تحديد الموقع',locerr:'تعذر تحديد الموقع، فعّل GPS',
 confirm:'تأكيد الطلب',done:'تم استلام طلبك',done2:'سيتصل بك فريق خدمة الزبائن قريباً لتأكيد التفاصيل',sendwa:'أرسل التفاصيل على واتساب',close:'إغلاق',
 my_orders:'طلباتي',no_orders:'لا توجد طلبات بعد',chat:'محادثة',write:'اكتب رسالة',send:'إرسال',
 st_new:'جديد',st_confirmed:'تم التأكيد',st_provider_found:'تم العثور على مقدم خدمات',st_delivered:'تم تقديم الخدمات',st_cancelled:'ملغي',
@@ -468,10 +481,10 @@ en:{iqd:'IQD',neterr:'No internet connection',denied:'Not allowed or account not
 services:'Tabakhkum Services',settings:'Settings and privacy',reels:'Reels',menu:'Menu',login:'Log in',register:'Create account',logout:'Log out',username:'Username',password:'Password',phone:'Mobile number',
 needlogin:'Please log in first',noacc:'No account? Create one',hasacc:'Have an account? Log in',badlogin:'Wrong username or password',shortpw:'Password must be 6+ characters',baduser:'Username must be 2 to 14 characters',badphone:'Enter a valid mobile number',confirmoff:'Auto login failed, disable email confirmation in Supabase',
 occ_q:'What is the occasion?',engagement:'Engagement',wedding:'Wedding',mourning:'Condolence',other:'Other occasions',other_s:'Shows all services',
-meal_q:'Which meal?',lunch:'Lunch',dinner:'Dinner',lunch_note:'',
+meal_q:'Which meal?',lunch:'Lunch',dinner:'Dinner',both:'Lunch and dinner',lunch_note:'',
 tab_cooks:'Cooks',tab_butchers:'Butchers',tab_rentals:'Rentals',tab_photo:'Photographers',tab_supplies:'Groceries',
 change:'Change',cart:'Cart',total:'Total',checkout:'Checkout',onreq:'On request',empty:'Nothing here',
-name:'Name',phone2:'Extra number (optional)',date:'Event date',address:'Address (area and nearest landmark)',locate:'Pin my location',located:'Location saved',locerr:'Could not get location, enable GPS',
+name:'Name',phone2:'Extra number',date:'Event date',address:'Address (area and nearest landmark)',locate:'Pin my location',located:'Location saved',locerr:'Could not get location, enable GPS',
 confirm:'Confirm order',done:'Order received',done2:'Customer service will call you soon to confirm details',sendwa:'Send details on WhatsApp',close:'Close',
 my_orders:'My orders',no_orders:'No orders yet',chat:'Chat',write:'Write a message',send:'Send',
 st_new:'New',st_confirmed:'Confirmed',st_provider_found:'Provider found',st_delivered:'Service delivered',st_cancelled:'Cancelled',
@@ -493,7 +506,7 @@ function applyLang(){document.documentElement.lang=lang;document.documentElement
 
 /* ================= الحالة العامة ================= */
 let sb=null;try{sb=supabase.createClient(SB_URL,SB_KEY)}catch(e){}
-const S={user:null,me:null,priv:null,adm:null,set:{},cats:[],items:[],cart:{},occ:null,meal:null,tab:'cooks',step:'occ',screen:'feed'};
+const S={urgent:false,user:null,me:null,priv:null,adm:null,set:{},cats:[],items:[],cart:{},occ:null,meal:null,tab:'cooks',step:'occ',screen:'feed'};
 const can=p=>!!(S.adm&&(S.adm.role==='owner'||(S.adm.perms&&S.adm.perms[p]===true)));
 const sv=(k,d)=>(S.set[k]!==undefined&&S.set[k]!==''?S.set[k]:d);
 try{S.cart=JSON.parse(store.get('cart')||'{}')||{}}catch(e){S.cart={}}
@@ -533,7 +546,7 @@ function authSheet(cb,mode){
  const reg=mode==='reg';
  const s=sheet(`<h3>${t(reg?'register':'login')}</h3>
   <label>${t('username')}</label><input id="au" maxlength="14" autocomplete="username">
-  ${reg?`<label>${t('phone')}</label><input id="ap" type="tel" inputmode="tel" placeholder="07xxxxxxxxx">`:''}
+  ${reg?`<label>${t('phone')}</label><input id="ap" type="tel" inputmode="numeric" maxlength="11" placeholder="07xxxxxxxxx">`:''}
   <label>${t('password')}</label><input id="aw" type="password" autocomplete="${reg?'new-password':'current-password'}">
   ${reg?`<label style="display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--tx);margin-top:12px"><input type="checkbox" id="atm" style="margin-top:3px"><span>أقر بأن عمري 18 سنة أو أكثر وأوافق على <a href="#" id="atl">شروط الاستخدام</a></span></label>`:''}
   <button class="btn" id="ago">${t(reg?'register':'login')}</button>
@@ -544,7 +557,7 @@ function authSheet(cb,mode){
   const u=s.querySelector('#au').value.trim(),w=s.querySelector('#aw').value,ph=reg?s.querySelector('#ap').value:'';
   if(u.length<2||u.length>14)return toast(t('baduser'));
   if(w.length<6)return toast(t('shortpw'));
-  if(reg&&(norm(ph).length<10||norm(ph).length>15))return toast(t('badphone'));
+  if(reg&&!okPhone(ph))return toast(PHONE_MSG,4500);
   if(reg&&!s.querySelector('#atm').checked)return toast('لازم توافق على الشروط وتؤكد عمرك 18 سنة فأكثر',4000);
   if(ev.target.disabled)return;
   ev.target.disabled=true;
@@ -1135,7 +1148,7 @@ async function openProfile(uid,tab0){
  go('prof');const box=$('#prof');box.innerHTML=`<div class="hd"><button id="pb">${ic('back')}</button><b>${t('profile')}</b></div><div class="bd" id="pbd"><div class="empty">...</div></div>`;
  $('#pb').onclick=()=>go('feed');
  const own=S.user&&S.user.id===uid;
- if(own)$('#prof .hd').insertAdjacentHTML('beforeend',`<button id="pset">${ic('gear')}</button>`),$('#pset').onclick=()=>openSettings();
+ if(own)$('#prof .hd').insertAdjacentHTML('beforeend',`<button id="pedit" aria-label="تعديل الملف الشخصي">${ic('edit')}</button><button id="pshp" aria-label="مشاركة الملف الشخصي">${ic('share')}</button><button id="pset" aria-label="الإعدادات">${ic('gear')}</button>`),$('#pset').onclick=()=>openSettings();
  try{
   const PC='id,username,avatar_url,bio,is_private,deactivated,vis_follows,vis_likes,vis_reposts';
   const pq=async()=>{const r=await sb.from('profiles').select(PC).eq('id',uid).single();if(r.error){const r2=await sb.from('profiles').select('id,username,avatar_url,bio').eq('id',uid).single();if(r2.error)throw r2.error;return r2.data}return r.data};
@@ -1158,21 +1171,19 @@ async function openProfile(uid,tab0){
   if(own){try{score=await Q(sb.rpc('my_score'));rws=await Q(sb.from('rewards').select('*').eq('user_id',uid).order('created_at'))}catch(e){}}
   const ini=esc((p.username||'?').slice(0,1));
   let h=`<div style="text-align:center"><div class="av" id="pav" style="width:84px;height:84px;font-size:34px;margin:0 auto">${p.avatar_url?`<img src="${esc(p.avatar_url)}" alt="">`:ini}</div>
-   <h3 style="margin-top:8px">@${esc(p.username)}${p.is_private?` <span class="mu" style="display:inline-block;vertical-align:middle">${ic('lock')}</span>`:''}</h3>${p.bio&&!p.deactivated?`<div class="pbio">${esc(p.bio)}</div>`:''}</div>
+   <h3 dir="ltr" style="margin-top:8px">@${esc(p.username)}${p.is_private?` <span class="mu" style="display:inline-block;vertical-align:middle">${ic('lock')}</span>`:''}</h3>${p.bio&&!p.deactivated?`<div class="pbio">${esc(p.bio)}</div>`:''}</div>
    <div class="pstat"><div class="lk" data-fl="followers"><b>${x.followers}</b><span class="mu">${t('followers')}</span></div><div class="lk" data-fl="following"><b>${x.following}</b><span class="mu">${t('followings')}</span></div><div><b>${x.reels}</b><span class="mu">${t('reelsn')}</span></div><div><b>${x.hearts}</b><span class="mu">إعجابات</span></div></div>`;
   if(!own&&!rl.block)h+=`<button class="btn${fstate==='none'?'':' sec'}" id="pfol" data-st="${fstate}">${fstate==='following'?t('following'):(fstate==='requested'?'تم إرسال الطلب':t('follow'))}</button>`;
   if(!own&&rl.block)h+=`<div class="mu" style="text-align:center;margin-top:10px">هذا الحساب محظور</div><button class="btn sec" id="punb">إلغاء الحظر</button>`;
   if(own){
    const earned=Math.floor(score/Math.max(goal,1)),pend=rws.filter(y=>!y.approved).length,ok=rws.filter(y=>y.approved&&!y.used).length;
-   h+=`<button class="btn sec" id="pedit">${ic('edit')} تعديل الملف الشخصي</button>
-    <div class="card" style="margin-top:14px"><b>${t('reward')}</b><div class="pbar"><i style="width:${Math.min(100,(score%Math.max(goal,1))/Math.max(goal,1)*100)}%"></i></div>
-    <div class="mu">${score} ${t('reward_t')} — ${goal} = ${pct}%</div>
+   h+=`<div class="card" style="margin-top:14px"><b>${t('reward')}</b><div class="pbar"><i style="width:${Math.min(100,(score%Math.max(goal,1))/Math.max(goal,1)*100)}%"></i></div>
+    <div class="mu">عدد التفاعلات على ريلزاتك: ${score} من أصل ${goal}</div><div class="mu" style="margin-top:4px">عند كل ${goal} تفاعل تحصل على خصم ${pct} بالمئة على طلبك</div>
     ${earned>rws.length?`<button class="btn sm" id="pclaim">${t('claim')}</button>`:''}
     ${pend?`<div class="mu" style="margin-top:6px">${t('reward_p')}</div>`:''}${ok?`<div style="color:var(--ok);margin-top:6px">${t('reward_ok')}</div>`:''}</div>`;
    if(true){
     h+=`<div class="card"><b>${S.priv&&S.priv.phone_verified?t('verified'):t('verify')}</b>${S.priv&&S.priv.phone_verified?'':`<button class="btn sm" id="pver">${t('verify_go')}</button>`}</div>`;
    }
-   h+=`<button class="btn" id="ppub">${t('publish')}</button><button class="btn sec" id="pord">${t('my_orders')}</button><button class="btn sec" id="pshp">مشاركة الملف الشخصي</button>`;
   }
   const TABS=[['reels','المنشورات'],['reposts','إعادة النشر'],['likes','الإعجابات']].concat(own?[['saved','المحفوظات']]:[]);
   if(hidden)h+=`<div class="pvlock">${ic('lock')}<div>${p.deactivated?'هذا الحساب غير متاح':'هذا الحساب خاص'}</div>${p.deactivated?'':'<div class="mu" style="margin-top:4px">تابع الحساب حتى تشاهد منشوراته</div>'}</div>`;
@@ -1204,7 +1215,7 @@ async function openProfile(uid,tab0){
    $('#pav').onclick=()=>avatarMenu(p,true,()=>openProfile(uid));
    $('#pedit').onclick=()=>editProfile(p,()=>openProfile(uid));
    const cl=$('#pclaim');if(cl)cl.onclick=async()=>{try{await Q(sb.rpc('claim_reward'));openProfile(uid)}catch(e){toast(errMsg(e))}};
-   $('#ppub').onclick=publishSheet;$('#pord').onclick=openOrders;$('#pshp').onclick=()=>shareProfile();
+   $('#pshp').onclick=()=>shareProfile();
    const pv=$('#pver');if(pv)pv.onclick=startVerify;
   }else{
    const pf=$('#pfol');if(pf)pf.onclick=()=>requireAuth(async()=>{try{
@@ -1420,24 +1431,37 @@ async function recorder(done){
 /* ================= خدمات طباخكم: المناسبة، الوجبة، الأقسام ================= */
 const OCC=['engagement','wedding','mourning','other'],TABS=['cooks','butchers','rentals','photo','supplies'];
 const itemVisible=i=>i.active&&(!i.occasions||!i.occasions.length||S.occ==='other'||i.occasions.includes(S.occ));
-const unitPrice=i=>Math.round(i.price*(1-(i.discount||0)/100));
+const urgOn=()=>sv('urgent_on','1')==='1';
+const urgMul=p=>Math.round(p*(100+(Number(ad(sv('urgent_pct','20')))||0))/100+1e-9);
+const basePrice=i=>S.urgent?urgMul(i.price):i.price;
+const unitPrice=i=>{const b=Math.round(i.price*(1-(i.discount||0)/100));return S.urgent?urgMul(b):b};
 function renderFlow(){
  const f=$('#flow');
  if(S.step==='occ'){
   f.innerHTML=`<div class="hd"><button id="fb">${ic('back')}</button><b>${t('occ_q')}</b></div><div class="bd"><div class="grid2">${OCC.map(o=>`<button class="big" data-o="${o}">${t(o)}${o==='other'?`<small>${t('other_s')}</small>`:''}</button>`).join('')}</div></div>`;
   f.querySelector('#fb').onclick=()=>go('feed');
-  f.querySelector('.bd').onclick=e=>{const b=e.target.closest('[data-o]');if(b){S.occ=b.dataset.o;S.step='meal';renderFlow()}};
- }else if(S.step==='meal'){
-  f.innerHTML=`<div class="hd"><button id="fb">${ic('back')}</button><b>${t('meal_q')}</b></div><div class="bd"><div class="grid2"><button class="big" data-m="lunch">${t('lunch')}<small>${t('lunch_note')}</small></button><button class="big" data-m="dinner">${t('dinner')}</button></div></div>`;
+  f.querySelector('.bd').onclick=e=>{const b=e.target.closest('[data-o]');if(b){S.occ=b.dataset.o;S.meal=null;S.urgent=false;S.step=urgOn()?'when':'meal';renderFlow()}};
+ }else if(S.step==='when'){
+  f.innerHTML=`<div class="hd"><button id="fb">${ic('back')}</button><b>متى تريد الخدمة؟</b></div><div class="bd"><div class="grid2"><button class="big" data-w="0">موعد الحجز<small>احجز لموعد قادم من الغد وما بعد</small></button><button class="big" data-w="1">مناسبة طارئة<small>لنفس اليوم</small></button></div></div>`;
   f.querySelector('#fb').onclick=()=>{S.step='occ';renderFlow()};
-  f.querySelector('.bd').onclick=e=>{const b=e.target.closest('[data-m]');if(b){S.meal=b.dataset.m;S.step='svc';renderFlow()}};
+  f.querySelector('.bd').onclick=e=>{const b=e.target.closest('[data-w]');if(b){S.urgent=b.dataset.w==='1';S.step='meal';renderFlow()}};
+ }else if(S.step==='meal'){
+  const pick={lunch:S.meal==='lunch'||S.meal==='both',dinner:S.meal==='dinner'||S.meal==='both'};
+  f.innerHTML=`<div class="hd"><button id="fb">${ic('back')}</button><b>${t('meal_q')}</b></div><div class="bd"><div class="grid2"><button class="big${pick.lunch?' on':''}" data-m="lunch">${t('lunch')}</button><button class="big${pick.dinner?' on':''}" data-m="dinner">${t('dinner')}</button></div><button class="btn" id="mok" style="display:${pick.lunch||pick.dinner?'block':'none'}">تأكيد</button></div>`;
+  f.querySelector('#fb').onclick=()=>{S.step=urgOn()?'when':'occ';renderFlow()};
+  const ok=f.querySelector('#mok');
+  f.querySelector('.bd').onclick=e=>{
+   const b=e.target.closest('[data-m]');
+   if(b){pick[b.dataset.m]=!pick[b.dataset.m];b.classList.toggle('on',pick[b.dataset.m]);ok.style.display=pick.lunch||pick.dinner?'block':'none';return}
+   if(e.target.closest('#mok')&&(pick.lunch||pick.dinner)){S.meal=pick.lunch&&pick.dinner?'both':(pick.lunch?'lunch':'dinner');S.step='svc';renderFlow()}
+  };
  }else renderSvc();
  cartBar();
 }
 function renderSvc(){
  const f=$('#flow');
  if(!TABS.includes(S.tab))S.tab='cooks';
- f.innerHTML=`<div class="hd"><button id="fb">${ic('back')}</button><b>${t(S.occ)} - ${t(S.meal)}</b><button class="btn sm sec" id="fc" style="margin:0">${t('change')}</button></div>
+ f.innerHTML=`<div class="hd"><button id="fb">${ic('back')}</button><b>${t(S.occ)} - ${t(S.meal)}${S.urgent?' - طارئ':''}</b><button class="btn sm sec" id="fc" style="margin:0">${t('change')}</button></div>
   <div class="bd"><div class="tabs">${TABS.map(x=>`<button class="tab${x===S.tab?' on':''}" data-t="${x}">${t('tab_'+x)}</button>`).join('')}</div><div id="svl"></div></div>`;
  f.querySelector('#fb').onclick=()=>{S.step='meal';renderFlow()};
  f.querySelector('#fc').onclick=()=>{S.step='occ';renderFlow()};
@@ -1449,7 +1473,7 @@ function renderSvc(){
 }
 function itemRow(i){
  const q=S.cart[i.id]||0;
- const pr=i.price>0?(i.discount>0?`<s>${money(i.price)}</s>${money(unitPrice(i))}`:money(i.price)):t('onreq');
+ const pr=i.price>0?(i.discount>0?`<s>${money(basePrice(i))}</s>${money(unitPrice(i))}`:money(basePrice(i))):t('onreq');
  return `<div class="it"><div class="ph">${i.image_url?`<img src="${esc(i.image_url)}" alt="" loading="lazy" onerror="this.remove()">`:esc((i.name||'?').slice(0,1))}</div>
   <div class="in"><div class="nm">${esc(i.name)}</div><div class="mu">${esc(i.unit)}</div><div class="pr">${pr}</div></div>
   <div class="qty"><button data-q="-1" data-id="${i.id}">-</button><span>${q}</span><button class="p" data-q="1" data-id="${i.id}">+</button></div></div>`;
@@ -1466,11 +1490,11 @@ function checkout(){
  const mo=minOrder();if(mo&&c.tt<mo)return toast('أقل مبلغ للطلب '+money(mo)+'، أضف عناصر أكثر',4500);
  const lines=Object.entries(S.cart).map(([id,q])=>{const i=S.items.find(x=>x.id===id);return i?`<div class="row" style="font-size:14px;padding:3px 0"><span style="flex:3">${esc(i.name)} × ${q}</span><span style="flex:2;text-align:left">${i.price>0?money(unitPrice(i)*q):t('onreq')}</span></div>`:''}).join('');
  let loc=null;
- const s=sheet(`<h3>${t('checkout')}</h3><div class="card">${lines}<hr style="border:0;border-top:1px solid var(--line);margin:6px 0"><b>${t('total')}: ${money(c.tt)}</b></div>
+ const s=sheet(`<h3>${t('checkout')}</h3><div class="card">${lines}<hr style="border:0;border-top:1px solid var(--line);margin:6px 0"><b id="ctt">${t('total')}: ${money(c.tt)}</b></div>
   <label>${t('name')}</label><input id="cn" value="${esc(S.me?S.me.username:'')}" maxlength="60">
-  <label>${t('phone')}</label><input id="cp" type="tel" inputmode="tel" value="${esc(S.priv&&S.priv.phone?'0'+S.priv.phone.replace(/^964/,''):'')}">
-  <label>${t('phone2')}</label><input id="cp2" type="tel" inputmode="tel">
-  <label>${t('date')}</label><input id="cd" type="date" min="${tomorrow()}" value="${tomorrow()}"><div class="mu" style="font-size:12px;margin-top:4px">أقرب موعد للحجز: غداً</div>
+  <label>${t('phone')}</label><input id="cp" type="tel" inputmode="numeric" maxlength="11" placeholder="07xxxxxxxxx" value="${esc(S.priv&&S.priv.phone?'0'+S.priv.phone.replace(/^964/,''):'')}">
+  <label>${t('phone2')}</label><input id="cp2" type="tel" inputmode="numeric" maxlength="11" placeholder="07xxxxxxxxx">
+  <label>${t('date')}</label><input id="cd" type="date" min="${tomorrow()}" value="${tomorrow()}"><div class="mu" style="font-size:12px;margin-top:4px" id="cdn">أقرب موعد للحجز: غداً</div>
   <label>${t('address')}</label><textarea id="ca" rows="2" maxlength="300"></textarea>
   <button class="btn sec" id="cl">${t('locate')}</button>
   <div id="wlr"></div>
@@ -1485,18 +1509,29 @@ function checkout(){
   navigator.geolocation.getCurrentPosition(p=>{loc=S.loc={lat:p.coords.latitude,lng:p.coords.longitude};clb.textContent=t('located');clb.style.borderColor='var(--ok)';clb.style.color='';res(true)},()=>{clb.style.borderColor='var(--bad)';res(false)},{enableHighAccuracy:false,timeout:15000,maximumAge:600000});
  });
  clb.onclick=async()=>{if(!await getLoc())toast('لازم تسمح بالموقع حتى نكدر نوصلك، فعّله من إعدادات الجهاز ثم اضغط زر الموقع مرة ثانية',5500)};
+ const isU=()=>!!S.urgent;
+ if(isU()){const dI=s.querySelector('#cd');dI.value=bgToday();dI.min=bgToday();dI.disabled=true;s.querySelector('#cdn').textContent='مناسبة طارئة: لنفس اليوم'}
  s.querySelector('#cok').onclick=()=>requireAuth(async()=>{
   const g=id=>s.querySelector('#'+id).value.trim();
-  const date=g('cd');
-  if(!date||date<tomorrow())return toast('الحجز يبدأ من الغد، اختر تاريخ من بكرة وما بعد',4500);
+  const u=isU();
+  const date=u?bgToday():g('cd');
+  if(u){
+   const hr=bgHour(),lc=Number(ad(sv('lunch_close','10')))||10,dc=Number(ad(sv('urgent_dinner_close','17')))||17;
+   if((S.meal==='lunch'||S.meal==='both')&&hr>=lc)return toast('الحجز الطارئ للغداء يغلق الساعة '+lc+':00',5000);
+   if(S.meal==='dinner'&&hr>=dc)return toast('الحجز الطارئ للعشاء يغلق الساعة '+dc+':00',5000);
+  }else if(!date||date<tomorrow())return toast('الحجز يبدأ من الغد، اختر تاريخ من بكرة وما بعد',4500);
   if(!g('cn')||!g('cp')||!g('ca')||!date)return toast(t('address'));
+  if(!okPhone(g('cp')))return toast(PHONE_MSG,4500);
+  if(!g('cp2'))return toast('لازم تكتب رقمين للتواصل، الرقم الأساسي والرقم الإضافي',4500);
+  if(!okPhone(g('cp2')))return toast('الرقم الإضافي: '+PHONE_MSG,4500);
+  if(ad(g('cp2'))===ad(g('cp')))return toast('الرقم الإضافي لازم يختلف عن الرقم الأساسي',4500);
   const btn=s.querySelector('#cok');btn.disabled=true;
   try{
    if(!walDone){await loadWal();if(s.querySelector('#wlc')){toast('عندك رصيد بالمحفظة، تأكد من خيار الاستخدام ثم اضغط تأكيد',4500);return}}
    if(!await getLoc()){toast('تأكيد الحجز يحتاج موقعك. اسمح بالموقع ثم اضغط تأكيد',5500);return}
    const items=Object.entries(S.cart).map(([id,qty])=>({id,qty}));
    const r=await Q(sb.rpc('place_booking',{p_name:g('cn'),p_phone:ad(g('cp')),p_phone2:ad(g('cp2'))||null,p_area:null,p_address:g('ca'),p_lat:loc?loc.lat:null,p_lng:loc?loc.lng:null,p_occasion:S.occ,p_meal:S.meal,p_date:date,p_items:items,p_use_wallet:!!(s.querySelector('#wlc')&&s.querySelector('#wlc').checked)}));
-   const txt=`طلب جديد من تطبيق طباخكم\nالمناسبة: ${t(S.occ)} - ${t(S.meal)}\nالتاريخ: ${date}\nالاسم: ${g('cn')}\nالعنوان: ${g('ca')}\nالمجموع: ${money(r.total)}`;
+   const txt=`طلب جديد من تطبيق طباخكم${r.urgent?' (طارئ)':''}\nالمناسبة: ${t(S.occ)} - ${t(S.meal)}\nالتاريخ: ${date}\nالاسم: ${g('cn')}\nالعنوان: ${g('ca')}\nالمجموع: ${money(r.total)}`;
    S.cart={};saveCart();s.close();
    const d=sheet(`<h3>${t('done')}</h3><p class="mu" style="margin:8px 0">${t('done2')}</p><div class="card"><b>${t('total')}: ${money(r.total)}</b>${r.discount>0?`<div class="mu">-${r.discount}%</div>`:''}${r.wallet_used>0?`<div class="mu">من المحفظة: ${money(r.wallet_used)}</div><b>المتبقي عليك: ${money(r.due)}</b>`:''}</div>
     <button class="btn sec" id="dtr">تتبع الطلب</button>
@@ -1523,7 +1558,7 @@ async function openOrders(mode){
  try{
   const d0=await Q(sb.from('bookings').select('*').eq('user_id',S.user.id).order('created_at',{ascending:false}).limit(60));
   const d=mode==='active'?d0.filter(b=>act.includes(b.status)):mode==='past'?d0.filter(b=>!act.includes(b.status)):d0;
-  s.querySelector('#ol').innerHTML=d.length?d.map(b=>`<div class="card"><div class="row"><b style="flex:2">${t(b.occasion)} - ${t(b.meal)}</b><span class="chip ${b.status}" style="flex:none">${t('st_'+b.status)}</span></div>
+  s.querySelector('#ol').innerHTML=d.length?d.map(b=>`<div class="card"><div class="row"><b style="flex:2">${t(b.occasion)} - ${t(b.meal)}${b.urgent?' - طارئ':''}</b><span class="chip ${b.status}" style="flex:none">${t('st_'+b.status)}</span></div>
    ${stepper(b)}
    <div class="mu">${esc(b.event_date)} | ${money(b.total)}${b.wallet_used>0?' (من المحفظة '+money(b.wallet_used)+')':''}</div>
    <div class="mu">${(b.items||[]).map(l=>esc(l.name)+' × '+l.qty).join('، ')}</div>
@@ -1544,7 +1579,7 @@ async function trackSheet(bid){
   const bad=b.status==='cancelled',k=stIdx(b.status);
   let h=STEPS.map((x,i)=>{const done=!bad?i<=k:i===0;return `<div class="st ${done?'on':'off'}"><span class="dot"></span><b>${x[1]}</b><span class="mu" style="font-size:12px">${at[x[0]]?fmtDT(at[x[0]]):(done?'':'بالانتظار')}</span></div>`}).join('');
   if(bad)h+=`<div class="st bad"><span class="dot"></span><b style="color:var(--bad)">تم إلغاء الطلب</b><span class="mu" style="font-size:12px">${at.cancelled?fmtDT(at.cancelled):''}</span></div>`;
-  s.querySelector('#tk').innerHTML=`<div class="card"><b>${t(b.occasion)} - ${t(b.meal)}</b><div class="mu">${esc(b.event_date)} | ${money(b.total)}</div></div><div class="tl">${h}</div>`;
+  s.querySelector('#tk').innerHTML=`<div class="card"><b>${t(b.occasion)} - ${t(b.meal)}${b.urgent?' - طارئ':''}</b><div class="mu">${esc(b.event_date)} | ${money(b.total)}</div></div><div class="tl">${h}</div>`;
   if(b.status==='delivered'||bad)clearInterval(iv);
  }catch(e){s.querySelector('#tk').innerHTML=`<div class="empty">${esc(errMsg(e))}</div>`}};
  load();iv=setInterval(()=>{if(!document.hidden)load()},15000);
@@ -1608,11 +1643,7 @@ function walletSheet(){requireAuth(async()=>{
  const hd=document.createElement('button');hd.className='lnk';hd.textContent='إغلاق';hd.onclick=()=>s.close();s.querySelector('.sh').prepend(hd);
 })}
 function inviteSheet(){requireAuth(()=>walletSheet())}
-function svcMenu(){
- const s=sheet(`<h3>${t('menu')}</h3><button class="btn sec" data-m="sup">${t('support')}</button><button class="btn sec" data-m="shr">شارك التطبيق</button><button class="btn sec" data-m="inv">الصق كود الدعوة</button><button class="btn sec" data-m="ord">كل طلباتي</button><button class="btn sec" data-m="more">القائمة الكاملة</button>`);
- s.onclick=e=>{const b=e.target.closest('[data-m]');if(!b)return;const m=b.dataset.m;s.close();
-  if(m==='sup')supportSheet();else if(m==='shr')shareApp();else if(m==='inv')inviteSheet();else if(m==='ord')requireAuth(()=>openOrders());else menuSheet()};
-}
+function svcMenu(){menuSheet()}
 (function(){
  const nb=$('#snav'),app=$('#app');
  const lab={home:['home','الرئيسية'],wal:['wallet','المحفظة'],act:['box','الطلبات'],past:['clock','الطلبات السابقة'],menu:['menu','المزيد']};
@@ -1684,16 +1715,21 @@ s.querySelector('#nl').onclick=async e=>{const c=e.target.closest('[data-i]');if
 
 /* ================= القائمة، مقدم خدمات، الشروط ================= */
 function menuSheet(){
- const s=sheet(`<h3>${t('menu')}</h3>
-  ${S.user?`<button class="btn sec" data-m="ord">${t('my_orders')}</button>`:`<button class="btn" data-m="login">${t('login')}</button>`}
-  <button class="btn sec" data-m="set">${t('settings')}</button>
-  <button class="btn sec" data-m="prov">${t('provider')}</button>
-  <button class="btn sec" data-m="sup">${t('support')}</button>
-  <button class="btn sec" data-m="lang">${t('language')}</button>
-  <button class="btn sec" data-m="terms">${t('terms')}</button>
-  ${isStandalone()?'':'<button class="btn sec" data-m="inst">تثبيت التطبيق على الشاشة الرئيسية</button>'}`);
+ const s=sheet(`<div class="dh">${S.user?`<div class="av" style="width:44px;height:44px;font-size:18px">${S.me&&S.me.avatar_url?`<img src="${esc(S.me.avatar_url)}" alt="">`:esc((S.me&&S.me.username||'?').slice(0,1))}</div><b dir="ltr">@${esc(S.me?S.me.username:'')}</b>`:`<b>Tabakhkum</b>`}</div>
+  ${S.user?`<button class="dl" data-m="ord">${t('my_orders')}</button><button class="dl" data-m="wal">المحفظة</button>`:`<button class="dl" data-m="login" style="color:var(--ac,#d97706);font-weight:700">${t('login')}</button>`}
+  <button class="dl" data-m="sup">${t('support')}</button>
+  <button class="dl" data-m="fb">شكوى أو اقتراح</button>
+  <button class="dl" data-m="shr">شارك التطبيق</button>
+  <button class="dl" data-m="inv">الصق كود الدعوة</button>
+  <button class="dl" data-m="set">${t('settings')}</button>
+  <button class="dl" data-m="lang">${t('language')}</button>
+  <button class="dl" data-m="prov">${t('provider')}</button>
+  <button class="dl" data-m="terms">${t('terms')}</button>
+  ${isStandalone()?'':'<button class="dl" data-m="inst">تثبيت التطبيق على الشاشة الرئيسية</button>'}`);
+ s.classList.add('drw');
+ {let x0=null;const pn=s.querySelector('.sh');pn.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});pn.addEventListener('touchend',e=>{if(x0!==null&&e.changedTouches[0].clientX-x0<-60)s.close();x0=null},{passive:true})}
  s.onclick=e=>{const b=e.target.closest('[data-m]');if(!b)return;const m=b.dataset.m;s.close();
-  if(m==='set')openSettings();else if(m==='ord')requireAuth(openOrders);else if(m==='login')authSheet(null,'login');else if(m==='prov')providerForm();else if(m==='sup')supportSheet();else if(m==='lang')langSheet();else if(m==='inst')installApp();else termsSheet()};
+  if(m==='set')openSettings();else if(m==='ord')requireAuth(openOrders);else if(m==='wal')walletSheet();else if(m==='login')authSheet(null,'login');else if(m==='prov')providerForm();else if(m==='sup')supportSheet();else if(m==='fb')feedbackSheet();else if(m==='shr')shareApp();else if(m==='inv')inviteSheet();else if(m==='lang')langSheet();else if(m==='inst')installApp();else termsSheet()};
 }
 function supportSheet(){
  const ph=[sv('support_phone',''),sv('support_phone2','')].filter(Boolean);
@@ -1716,7 +1752,7 @@ function providerForm(){
  const sp=['cook','butcher','rent','photo','sup','other'];
  const s=sheet(`<h3>${t('provider')}</h3>
   <label>${t('name')}</label><input id="vn" maxlength="60" value="${esc(S.me?S.me.username:'')}">
-  <label>${t('phone')}</label><input id="vp" type="tel" inputmode="tel" value="${esc(S.priv&&S.priv.phone?'0'+S.priv.phone.replace(/^964/,''):'')}">
+  <label>${t('phone')}</label><input id="vp" type="tel" inputmode="numeric" maxlength="11" placeholder="07xxxxxxxxx" value="${esc(S.priv&&S.priv.phone?'0'+S.priv.phone.replace(/^964/,''):'')}">
   <label>${t('spec')}</label><select id="vs">${sp.map(x=>`<option value="${x}">${t('sp_'+x)}</option>`).join('')}</select>
   <label>${t('area')}</label><input id="va" maxlength="80">
   <label>${t('notes')}</label><textarea id="vt" rows="3" maxlength="400"></textarea>
@@ -1724,7 +1760,8 @@ function providerForm(){
   <button class="btn" id="vg">${t('send')}</button>`);
  s.querySelector('#vg').onclick=()=>requireAuth(async()=>{
   const g=id=>s.querySelector('#'+id).value.trim();
-  if(!g('vn')||norm(g('vp')).length<10||!s.querySelector('#vc').checked)return toast(t('badphone'));
+  if(!g('vn')||!s.querySelector('#vc').checked)return toast(t('badphone'));
+  if(!okPhone(g('vp')))return toast(PHONE_MSG,4500);
   try{await Q(sb.from('provider_applications').insert({user_id:S.user.id,name:g('vn'),phone:g('vp'),specialty:s.querySelector('#vs').selectedOptions[0].textContent,area:g('va'),note:g('vt')}));s.close();toast(t('sent'),4000);supportSheet()}catch(e){toast(errMsg(e))}
  });
 }
@@ -1793,7 +1830,7 @@ async function admOrders(){
   box.innerHTML=`<div class="tabs"><button class="tab${A.filter===''?' on':''}" data-f="">الكل</button>${ST.map(s=>`<button class="tab${A.filter===s?' on':''}" data-f="${s}">${t('st_'+s)}</button>`).join('')}</div>`+
   (d.length?d.map(b=>`<div class="card oc" data-id="${b.id}">
    <div class="row"><b style="flex:2">${esc(b.name)}</b><span class="chip ${b.status}" style="flex:none">${t('st_'+b.status)}</span></div>
-   <div class="l">${fmtDT(b.created_at)}<br><b>${t(b.occasion)} - ${t(b.meal)}</b> | التاريخ: <b>${esc(b.event_date)}</b><br>
+   <div class="l">${fmtDT(b.created_at)}<br><b>${t(b.occasion)} - ${t(b.meal)}${b.urgent?' - طارئ':''}</b> | التاريخ: <b>${esc(b.event_date)}</b><br>
    الهاتف: <a href="tel:${esc(b.phone)}">${esc(b.phone)}</a>${b.phone2?` / <a href="tel:${esc(b.phone2)}">${esc(b.phone2)}</a>`:''} | <a target="_blank" rel="noopener" href="${waLink(b.phone)}">واتساب</a><br>
    العنوان: ${esc(b.address)}${b.lat?` | <a target="_blank" rel="noopener" href="https://www.google.com/maps?q=${Number(b.lat)},${Number(b.lng)}">الخريطة</a>`:''}<br>
    ${(b.items||[]).map(l=>esc(l.name)+' × '+l.qty).join('، ')}<br>
@@ -2025,8 +2062,8 @@ async function admVerify(){
 async function admSettings(){
  const box=$('#abd');
  await loadSettings();
- const F2=[['wa','رقم واتساب الطلبات (بصيغة 964...)'],['support_phone','رقم دعم 1'],['support_phone2','رقم دعم 2'],['goal','عدد التفاعلات لكل مكافأة'],['pct','نسبة خصم المكافأة %'],['max_staff','أقصى عدد موظفين'],['wa_verify','رقم واتساب التوثيق (إن اختلف)'],['min_order','أقل مبلغ للطلب (دينار)، 0 يعني بلا حد'],['ref_bonus','مبلغ مكافأة الدعوة لكل طرف (دينار)، للمالك فقط'],['ref_min_total','أقل مبلغ نقدي للطلب حتى تنحسب مكافأة الدعوة (دينار)، للمالك فقط']];
- const T2=[['show_book_btn','إظهار زر "احجز" تحت الريلز'],['require_verified','اشتراط الرقم الموثق للنشر والتعليق والطلب']];
+ const F2=[['wa','رقم واتساب الطلبات (بصيغة 964...)'],['urgent_pct','نسبة زيادة الحجز الطارئ بالمئة'],['lunch_close','آخر ساعة لحجز غداء لنفس اليوم (مثلاً 10)'],['urgent_dinner_close','آخر ساعة لحجز عشاء لنفس اليوم (مثلاً 17)'],['support_phone','رقم دعم 1'],['support_phone2','رقم دعم 2'],['goal','عدد التفاعلات لكل مكافأة'],['pct','نسبة خصم المكافأة %'],['max_staff','أقصى عدد موظفين'],['wa_verify','رقم واتساب التوثيق (إن اختلف)'],['min_order','أقل مبلغ للطلب (دينار)، 0 يعني بلا حد'],['ref_bonus','مبلغ مكافأة الدعوة لكل طرف (دينار)، للمالك فقط'],['ref_min_total','أقل مبلغ نقدي للطلب حتى تنحسب مكافأة الدعوة (دينار)، للمالك فقط']];
+ const T2=[['urgent_on','تفعيل الحجز الطارئ لنفس اليوم'],['show_book_btn','إظهار زر "احجز" تحت الريلز'],['require_verified','اشتراط الرقم الموثق للنشر والتعليق والطلب']];
  let rw=[];try{rw=await Q(sb.from('rewards').select('id,pct,created_at,profiles(username)').eq('approved',false).order('created_at'))}catch(e){}
  box.innerHTML=F2.map(f=>`<label>${f[1]}</label><input data-k="${f[0]}" value="${esc(S.set[f[0]]||'')}">`).join('')+T2.map(f=>`<label class="perm"><input type="checkbox" data-k="${f[0]}" ${S.set[f[0]]==='1'?'checked':''}> ${f[1]}</label>`).join('')+
  `<button class="btn" id="ssv">حفظ الإعدادات</button><h3 style="margin-top:20px">إشعار عام لكل المستخدمين</h3><input id="bct" maxlength="80" placeholder="العنوان"><textarea id="bcb" rows="2" maxlength="300" placeholder="النص"></textarea><button class="btn sec" id="bcs">إرسال الإشعار</button><h3 style="margin-top:20px">مكافآت بانتظار الموافقة (${rw.length})</h3>`+
@@ -2616,7 +2653,7 @@ Object.assign(P,{wallet:'<rect x="3" y="6" width="18" height="14" rx="3"/><path 
 /* ===== زر الرجوع بالموبايل: يغلق الطبقة العليا بدل الخروج من التطبيق ===== */
 let HOK=0,HG=0,HD=0,HSKIP=0,HARM=0,HST=0;
 const layers=()=>document.querySelectorAll('#app>.sbg').length+(document.querySelector('#app>.rec')?1:0)
- +(S.screen!=='feed'?1:0)+(F.custom?1:0)+(S.screen==='flow'?(S.step==='svc'?2:S.step==='meal'?1:0):0);
+ +(S.screen!=='feed'?1:0)+(F.custom?1:0)+(S.screen==='flow'?(S.step==='svc'?2+(urgOn()?1:0):S.step==='meal'?1+(urgOn()?1:0):S.step==='when'?1:0):0);
 const hPush=()=>{try{history.pushState({tk:1},'');return 1}catch(e){return 0}};
 ['pointerup','touchend','click','keydown'].forEach(n=>window.addEventListener(n,()=>{HOK=1},true));
 function hSync(){
@@ -2632,7 +2669,8 @@ function hClose(){
  const sh=[...document.querySelectorAll('#app>.sbg')];
  if(sh.length){const top=sh[sh.length-1];if(top.close)top.close();else top.remove();return}
  if(S.screen==='flow'&&S.step==='svc'){S.step='meal';renderFlow();return}
- if(S.screen==='flow'&&S.step==='meal'){S.step='occ';renderFlow();return}
+ if(S.screen==='flow'&&S.step==='meal'){S.step=urgOn()?'when':'occ';renderFlow();return}
+ if(S.screen==='flow'&&S.step==='when'){S.step='occ';renderFlow();return}
  if(S.screen!=='feed'){go('feed');return}
  if(F.custom){const b=$('#vback');if(b)b.click()}
 }
@@ -2653,7 +2691,27 @@ function installApp(){
  const s=sheet(`<h3>تثبيت طباخكم</h3><div style="line-height:2">${ios?'اضغط زر المشاركة بأسفل المتصفح ثم اختر <b>إضافة إلى الشاشة الرئيسية</b>.':'اضغط القائمة (النقاط الثلاث) بالمتصفح ثم اختر <b>تثبيت التطبيق</b> أو <b>إضافة إلى الشاشة الرئيسية</b>.'}</div><button class="btn" id="ik">تمام</button>`);
  s.querySelector('#ik').onclick=()=>s.close();
 }
-try{if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol))window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}catch(e){}
+let _updAsked=false;
+function updatePrompt(w){
+ if(_updAsked||!w)return;_updAsked=true;
+ const u=sheet(`<h3>يوجد تحديث جديد</h3><p class="mu" style="margin:8px 0">نزلت نسخة جديدة من التطبيق فيها ميزات وتحسينات. اضغط تحديث حتى تحصل عليها.</p><button class="btn" id="upok">تحديث</button><button class="btn sec" id="upno">إلغاء</button>`);
+ u.querySelector('#upno').onclick=()=>u.close();
+ u.querySelector('#upok').onclick=()=>{
+  u.querySelector('#upok').disabled=true;u.querySelector('#upok').textContent='جاري التحديث...';
+  let done=false;const rl=()=>{if(done)return;done=true;location.reload()};
+  navigator.serviceWorker.addEventListener('controllerchange',rl);
+  try{w.postMessage('skip')}catch(e){rl()}
+  setTimeout(rl,6000);
+ };
+}
+try{if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol))window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(reg=>{
+ const ask=()=>{if(reg.waiting&&navigator.serviceWorker.controller)updatePrompt(reg.waiting)};
+ ask();
+ reg.addEventListener('updatefound',()=>{const nw=reg.installing;if(nw)nw.addEventListener('statechange',()=>{if(nw.state==='installed')ask()})});
+ const chk=()=>{try{reg.update().catch(()=>{})}catch(e){}};
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()});
+ setInterval(chk,30*60*1000);
+}).catch(()=>{}))}catch(e){}
 
 /* ===== الموقع عند الدخول ===== */
 S.loc=null;

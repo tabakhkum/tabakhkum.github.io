@@ -65,7 +65,7 @@ function em(u){var b=new TextEncoder().encode(u.trim().toLowerCase());var h='';f
 function beep(){try{var C=window.AudioContext||window.webkitAudioContext;if(!C)return;var c=new C(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=880;g.gain.value=.2;o.start();setTimeout(function(){o.stop();c.close()},350)}catch(e){}try{navigator.vibrate&&navigator.vibrate([200,100,200])}catch(e){}}
 function dstr(d){return d?String(d).slice(0,10):''}
 function dname(d){try{var x=new Date(dstr(d)+'T12:00:00');return x.toLocaleDateString('ar-IQ',{weekday:'long',day:'numeric',month:'long'})}catch(e){return dstr(d)}}
-var OCC={wedding:'عرس',birthday:'عيد ميلاد',funeral:'فاتحة',eid:'عيد',party:'حفلة',other:'مناسبة',graduation:'تخرج',engagement:'خطوبة',henna:'حنّة'},MEAL={breakfast:'فطور',lunch:'غداء',dinner:'عشاء',snack:'ضيافة'};
+var OCC={wedding:'عرس',birthday:'عيد ميلاد',funeral:'فاتحة',eid:'عيد',party:'حفلة',other:'مناسبة',graduation:'تخرج',engagement:'خطوبة',henna:'حنّة'},MEAL={breakfast:'فطور',lunch:'غداء',dinner:'عشاء',both:'غداء وعشاء',snack:'ضيافة'};
 function occ(k){return OCC[k]||k||''}function meal(k){return MEAL[k]||k||''}
 
 /* ---------- الدخول ---------- */
