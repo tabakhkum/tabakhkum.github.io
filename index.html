@@ -487,7 +487,7 @@ function sheet(html,onclose){
  bg.innerHTML='<div class="sh"><div class="grab"></div>'+html+'</div>';
  bg.close=()=>{if(!bg.parentNode)return;bg.remove();onclose&&onclose()};
  bg.addEventListener('click',e=>{if(e.target===bg)bg.close()});
- $('#app').appendChild(bg);pushOne();dragClose(bg);return bg;
+ $('#app').appendChild(bg);pushOne();dragClose(bg);try{window.__cwSync&&window.__cwSync()}catch(e){}return bg;
 }
 function dragClose(bg){
  const sh=bg.querySelector('.sh');if(!sh)return;
@@ -2921,7 +2921,20 @@ function hSync(){
  while(HD<n&&hPush())HD++;
  if(HD>n){const k=HD-n;HD=n;HSKIP++;clearTimeout(HST);HST=setTimeout(()=>{HSKIP=0},1500);try{history.go(-k)}catch(e){HSKIP=0}}
 }
-setInterval(hSync,150);
+/* زر الرجوع كطلب إغلاق (CloseWatcher): بدون تنقل بالسجل، فلا تظهر حركة الرجوع من كروم */
+let CW=[],CWLAST=0;
+function cwSync(){
+ if(!('CloseWatcher' in window))return;
+ const n=layers();
+ while(CW.length>n){const w=CW.pop();try{w.destroy()}catch(e){}}
+ while(CW.length<n){
+  let w;try{w=new CloseWatcher()}catch(e){break}
+  w.onclose=()=>{const i=CW.indexOf(w);if(i>=0)CW.splice(i,1);const now=Date.now();if(now-CWLAST>80){CWLAST=now;try{hClose()}catch(e){}}setTimeout(cwSync,0)};
+  CW.push(w);
+ }
+}
+window.__cwSync=cwSync;
+setInterval(()=>{hSync();cwSync()},150);
 function hClose(){
  const rec=document.querySelector('#app>.rec');if(rec){const x=rec.querySelector('#rx');if(x)x.click();return}
  const sh=[...document.querySelectorAll('#app>.sbg')];
