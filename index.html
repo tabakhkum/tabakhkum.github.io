@@ -152,23 +152,28 @@ a{color:var(--gold2)}
 .it .nm{font-weight:700;font-size:15px}
 .it .pr{font-size:13px;color:var(--gold2);margin-top:2px}
 .it .pr s{color:var(--mu);margin-left:6px}
-.igrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.it2{position:relative;background:var(--card);border-radius:14px;padding:8px;display:flex;flex-direction:column;gap:3px;min-width:0}
-.it2 .ph2{aspect-ratio:4/3;border-radius:10px;background:linear-gradient(135deg,#334155,#1e293b);overflow:hidden;display:flex;align-items:center;justify-content:center;color:var(--mu);font-weight:800;font-size:32px}
+.igrid{display:grid;grid-template-columns:1fr;gap:10px}
+.it2{position:relative;background:var(--card);border-radius:14px;padding:10px;display:grid;grid-template-columns:96px minmax(0,1fr);column-gap:12px;align-items:start;min-width:0}
+.it2 .ph2{grid-column:1;grid-row:1/3;width:96px;height:96px;border-radius:12px;background:linear-gradient(135deg,#334155,#1e293b);overflow:hidden;display:flex;align-items:center;justify-content:center;color:var(--mu);font-weight:800;font-size:32px}
 .it2 .ph2 img{width:100%;height:100%;object-fit:cover}
-.it2 .nm{font-weight:700;font-size:15px;line-height:1.35;margin-top:5px}
+.it2 .bx{grid-column:2;grid-row:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.it2 .nm{font-weight:700;font-size:16px;line-height:1.35}
 .it2 .mu{font-size:12px}
 .it2 .rl{font-size:11.5px;color:var(--mu);line-height:1.4}
 .it2 .pr{font-size:14px;color:var(--gold2);font-weight:700}
 .it2 .pr s{color:var(--mu);margin-left:6px;font-weight:400}
-.it2 .ct{margin-top:auto;padding-top:8px}
+.it2 .ct{grid-column:2;grid-row:2;align-self:end;padding-top:8px}
 .it2 .ct .btn{margin:0;padding:9px 8px;font-size:14px}
 .it2 .qty{justify-content:space-between;width:100%}
 .it2 .qty button{width:38px;height:38px}
 .it2 .qty span{font-size:16px;min-width:34px}
+.qty .ic{width:18px;height:18px;margin:auto}
 .it2.off .ph2,.it2.off .nm,.it2.off .pr,.it2.off .mu{opacity:.4}
-.it2 .na{margin-top:auto;padding:9px 6px;text-align:center;font-size:13px;font-weight:700;background:rgba(255,255,255,.07);border-radius:10px;color:var(--gold2)}
-.it2 .cb{position:absolute;top:12px;left:12px;background:var(--gold);color:#fff;border-radius:12px;padding:1px 9px;font-size:12px;font-weight:700}
+.it2 .na{padding:9px 6px;text-align:center;font-size:13px;font-weight:700;background:rgba(255,255,255,.07);border-radius:10px;color:var(--gold2)}
+.it2 .cb{position:absolute;top:8px;left:8px;background:var(--gold);color:#fff;border-radius:12px;padding:1px 9px;font-size:12px;font-weight:700}
+#supBtn,.supp{flex:none;display:flex;align-items:center;gap:5px;margin-inline-end:8px;padding:6px 11px!important;border-radius:20px;background:rgba(15,23,42,.65);border:1px solid rgba(255,255,255,.4);color:#fff;font-size:13px;font-weight:700;text-shadow:none;white-space:nowrap}
+#supBtn .ic,.supp .ic{width:16px;height:16px}
+#cartbar .cbo{flex:1;cursor:pointer;min-width:0}
 .osl{background:var(--card);border-radius:12px;padding:10px;margin-bottom:8px}
 .qty{display:flex;align-items:center;gap:8px;flex:none}
 .qty button{width:32px;height:32px;border-radius:50%;background:var(--card2);font-size:20px;font-weight:700;line-height:1}
@@ -384,7 +389,7 @@ body{display:flex;justify-content:center;align-items:flex-start;background:#0508
  <section id="flow" class="screen"></section>
  <section id="prof" class="screen"></section>
  <section id="adm" class="screen"></section>
- <div id="tagbar"></div><div id="top"><div id="logo">طباخكم</div><button id="svcBtn"></button><button id="srBtn" aria-label="search"></button><button id="bMenu" aria-label="menu"></button></div>
+ <div id="tagbar"></div><div id="top"><button id="supBtn" aria-label="support"></button><div id="logo">طباخكم</div><button id="svcBtn"></button><button id="srBtn" aria-label="search"></button><button id="bMenu" aria-label="menu"></button></div>
  <div id="cartbar"></div>
  <div id="nav"><button class="nb" id="nHome"></button><button class="nb" id="nFr"></button><button class="npl" id="nPlus" aria-label="publish"><span></span></button><button class="nb" id="nNot"></button><button class="nb" id="nProf"></button></div>
  <div id="snav"><button class="on" data-s="home"></button><button data-s="wal"></button><button data-s="act"></button><button data-s="past"></button><button data-s="menu"></button></div>
@@ -443,7 +448,7 @@ const P={
  x:'<path d="M6 6l12 12M18 6L6 18"/>',
  flip:'<path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/>'
 };
-Object.assign(P,{pause:'<rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>',music:'<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',img:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 8"/>'});
+Object.assign(P,{trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',help:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7M12 17h.01"/>',pause:'<rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>',music:'<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',img:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 8"/>'});
 const ic=n=>'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+P[n]+'</svg>';
 function toast(m,ms){const e=$('#toast');e.textContent=m;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',ms||2800)}
 function errMsg(e){const m=(e&&e.message)||String(e);if(/fetch|network|Failed|Load failed/i.test(m))return t('neterr');if(/row-level security|permission denied/i.test(m))return t('denied');if(/duplicate key|already/i.test(m))return /username|profiles/i.test(m)?t('dup'):'تمت العملية مسبقاً';return m}
@@ -554,7 +559,9 @@ async function loadMe(){
  }
  renderTop();
 }
-function renderTop(){$('#bMenu').innerHTML=ic('menu');$('#srBtn').innerHTML=ic('search');$('#vback').innerHTML=ic('back');$('#cbar [data-c=x]').innerHTML=ic('x');$('#svcBtn').textContent=t('services');
+function supLbl(){return lang==='en'?'Support':'الدعم'}
+function supPill(){const b=document.createElement('button');b.className='supp';b.innerHTML=ic('help')+'<span>'+supLbl()+'</span>';b.onclick=()=>supportSheet();return b}
+function renderTop(){$('#supBtn').innerHTML=ic('help')+'<span>'+supLbl()+'</span>';$('#bMenu').innerHTML=ic('menu');$('#srBtn').innerHTML=ic('search');$('#vback').innerHTML=ic('back');$('#cbar [data-c=x]').innerHTML=ic('x');$('#svcBtn').textContent=t('services');
  $('#nHome').innerHTML=ic('home')+'<span>'+t('home')+'</span>';$('#nFr').innerHTML=ic('users')+'<span>'+t('friends')+'</span>';$('#nNot').innerHTML=ic('bell')+'<span>'+t('notifs')+'</span><b class="bdg" id="bdg"></b>';$('#nProf').innerHTML=ic('user')+'<span>'+t('profile')+'</span>';$('#nPlus span').innerHTML=ic('plus')}
 
 /* ================= الدخول والتسجيل ================= */
@@ -620,7 +627,7 @@ function go(n){
  cartBar();
 }
 $('#fab').onclick=()=>{if(S.screen==='feed'){S.step='occ';renderFlow();go('flow')}else{if(F.custom)reloadFeed();go('feed')}};
-$('#bMenu').onclick=menuSheet;
+$('#bMenu').onclick=menuSheet;$('#supBtn').onclick=()=>supportSheet();
 $('#srBtn').onclick=()=>searchSheet();
 $('#vback').onclick=()=>{const b=F.custom&&F.custom.back;F.custom=null;$('#vback').style.display='none';if(b)b();else{reloadFeed();go('feed')}};
 function searchSheet(){
@@ -1549,6 +1556,7 @@ function renderFlow(){
    if(e.target.closest('#mok')&&(pick.lunch||pick.dinner)){S.meal=pick.lunch&&pick.dinner?'both':(pick.lunch?'lunch':'dinner');S.step='svc';renderFlow()}
   };
  }else renderSvc();
+ {const hd=$('#flow .hd');if(hd&&!hd.querySelector('.supp'))hd.insertBefore(supPill(),hd.querySelector('#fc')||null)}
  cartBar();
 }
 function renderSvc(){
@@ -1564,11 +1572,13 @@ function renderSvc(){
  f.querySelector('#svl').innerHTML=h||`<div class="empty">${t('empty')}</div>`;
  f.querySelector('#svl').onclick=e=>{
   const b=e.target.closest('[data-q]'),o=e.target.closest('[data-opt]'),hh=e.target.closest('[data-hrs]');
-  if(b){const key=b.dataset.key,n=stepKey(key,Number(b.dataset.q));const r=b.closest('.it2');if(r)r.querySelector('.qty span').textContent=fmtN(n);cartBar();return}
+  if(b){const key=b.dataset.key,n=stepKey(key,Number(b.dataset.q));qtyUpd(b,key,n);cartBar();return}
   if(o){const i=S.items.find(x=>x.id===o.dataset.opt);if(i&&(i.avail||'on')==='on')optSheet(i);return}
   if(hh){const i=S.items.find(x=>x.id===hh.dataset.hrs);if(i&&(i.avail||'on')==='on')hoursSheet(i);return}
  };
 }
+function minusIc(key,n){const li=cLine(key);return li&&n>0&&n<=li.min+1e-9?ic('trash'):'-'}
+function qtyUpd(b,key,n){const r=b.closest('.qty');if(!r)return;r.querySelector('span').textContent=fmtN(n);const m=r.querySelector('[data-q="-1"]');if(m)m.innerHTML=minusIc(key,n)}
 function cartCount(i){return Object.keys(S.cart).filter(k=>k===i.id||k.indexOf(i.id+'|')===0).length}
 function itemCard(i){
  const off=(i.avail||'on')!=='on',opts=hasOpts(i),hrs=i.kind==='hours';
@@ -1579,19 +1589,19 @@ function itemCard(i){
  if(off)ctl=`<div class="na">${esc(availTxt(i))}</div>`;
  else if(opts)ctl=`<button class="btn sec" data-opt="${esc(i.id)}">${cc?'تعديل الاختيار':'اختر'}</button>`;
  else if(hrs)ctl=`<button class="btn${cc?' sec':''}" data-hrs="${esc(i.id)}">${cc?'تعديل الوقت':'حدد الوقت'}</button>`;
- else ctl=`<div class="qty"><button data-q="-1" data-key="${esc(i.id)}">-</button><span>${fmtN(S.cart[i.id]||0)}</span><button class="p" data-q="1" data-key="${esc(i.id)}">+</button></div>`;
- return `<div class="it2${off?' off':''}">${cc&&(opts||hrs)&&!off?`<span class="cb">${cc}</span>`:''}${ph}<div class="nm">${esc(i.name)}</div>${opts?'':`<div class="mu">${esc(i.unit||'')}</div>`}${rule?`<div class="rl">${esc(rule)}</div>`:''}<div class="pr">${off?'':dispPrice(i)}</div><div class="ct">${ctl}</div></div>`;
+ else ctl=`<div class="qty"><button data-q="-1" data-key="${esc(i.id)}">${minusIc(i.id,S.cart[i.id]||0)}</button><span>${fmtN(S.cart[i.id]||0)}</span><button class="p" data-q="1" data-key="${esc(i.id)}">+</button></div>`;
+ return `<div class="it2${off?' off':''}">${cc&&(opts||hrs)&&!off?`<span class="cb">${cc}</span>`:''}${ph}<div class="bx"><div class="nm">${esc(i.name)}</div>${opts?'':`<div class="mu">${esc(i.unit||'')}</div>`}${rule?`<div class="rl">${esc(rule)}</div>`:''}<div class="pr">${off?'':dispPrice(i)}</div></div><div class="ct">${ctl}</div></div>`;
 }
 function optSheet(i){
  const rows=i.options.map(o=>{
   const k=i.id+'|'+o.k,li=cLine(k);if(!li)return '';
   const u=lineUnit(li,0),r=ruleTxt(li);
-  return `<div class="osl" data-k="${esc(k)}"><div class="row"><b style="flex:2">${esc(o.l)}</b><span style="flex:2;text-align:left;color:var(--gold2)">${li.price>0?money(u.u):t('onreq')}${li.unit?' - '+esc(li.unit):''}</span></div>${r?`<div class="mu" style="font-size:12px;margin-top:2px">${esc(r)}</div>`:''}<div class="qty" style="justify-content:space-between;margin-top:8px"><button data-q="-1" data-key="${esc(k)}">-</button><span>${fmtN(S.cart[k]||0)}</span><button class="p" data-q="1" data-key="${esc(k)}">+</button></div></div>`;
+  return `<div class="osl" data-k="${esc(k)}"><div class="row"><b style="flex:2">${esc(o.l)}</b><span style="flex:2;text-align:left;color:var(--gold2)">${li.price>0?money(u.u):t('onreq')}${li.unit?' - '+esc(li.unit):''}</span></div>${r?`<div class="mu" style="font-size:12px;margin-top:2px">${esc(r)}</div>`:''}<div class="qty" style="justify-content:space-between;margin-top:8px"><button data-q="-1" data-key="${esc(k)}">${minusIc(k,S.cart[k]||0)}</button><span>${fmtN(S.cart[k]||0)}</span><button class="p" data-q="1" data-key="${esc(k)}">+</button></div></div>`;
  }).join('');
  const s=sheet(`<h3>${esc(i.name)}</h3>${rows}<button class="btn" id="oko">تم</button>`,()=>{renderSvc();cartBar()});
  s.addEventListener('click',e=>{
   const b=e.target.closest('[data-q]');
-  if(b){const n=stepKey(b.dataset.key,Number(b.dataset.q));const r=b.closest('.osl');if(r)r.querySelector('.qty span').textContent=fmtN(n);return}
+  if(b){const n=stepKey(b.dataset.key,Number(b.dataset.q));qtyUpd(b,b.dataset.key,n);return}
   if(e.target.closest('#oko'))s.close();
  });
 }
@@ -1623,8 +1633,26 @@ function hoursSheet(i){
 function cartTotal(){const c=cartCalc(1);return{n:c.n,tt:c.tt}}
 function cartBar(){
  const c=cartTotal(),b=$('#cartbar');
- if(S.screen==='flow'&&S.step==='svc'&&c.n>0){b.classList.add('on');b.innerHTML=`<div><b>${t('cart')}: ${c.n}</b><div class="mu">${t('total')}: ${money(c.tt)}${minOrder()&&c.tt<minOrder()?' | أقل مبلغ للطلب '+money(minOrder()):''}</div></div><button class="btn" id="cko">${t('checkout')}</button>`;b.querySelector('#cko').onclick=()=>checkout()}
+ if(S.screen==='flow'&&S.step==='svc'&&c.n>0){b.classList.add('on');b.innerHTML=`<div class="cbo" id="cbo"><b>${t('cart')}: ${c.n} &#9662;</b><div class="mu">${t('total')}: ${money(c.tt)}${minOrder()&&c.tt<minOrder()?' | أقل مبلغ للطلب '+money(minOrder()):''}</div></div><button class="btn" id="cko">${t('checkout')}</button>`;b.querySelector('#cko').onclick=()=>checkout();b.querySelector('#cbo').onclick=cartSheet}
  else b.classList.remove('on');
+}
+function cartSheet(){
+ const s=sheet('<div id="cs"></div>',()=>{renderSvc();cartBar()});
+ const draw=()=>{
+  const c=cartCalc(1);
+  if(!c.n){s.close();return}
+  s.querySelector('#cs').innerHTML='<h3>'+t('cart')+'</h3>'+c.ls.map(r=>{const k=r.li.key;
+   return `<div class="osl"><div class="row"><b style="flex:2">${esc(r.li.name)}</b><span style="flex:2;text-align:left;color:var(--gold2)">${r.li.price>0?money(r.u):t('onreq')}</span></div>${r.li.hours?`<div class="mu" style="font-size:12px">${esc(hLbl(r.from))} - ${esc(hLbl(r.to))}</div>`:''}<div class="row" style="margin-top:8px;gap:8px">${r.li.hours?'<div style="flex:1"></div>':`<div class="qty" style="flex:1;justify-content:space-between"><button data-q="-1" data-key="${esc(k)}">${minusIc(k,S.cart[k]||0)}</button><span>${fmtN(S.cart[k]||0)}</span><button class="p" data-q="1" data-key="${esc(k)}">+</button></div>`}<button class="btn bad sm" data-rm="${esc(k)}" style="margin:0;width:auto">حذف</button></div></div>`}).join('')
+   +`<div class="card"><b>${t('total')}: ${money(c.tt)}</b></div><button class="btn" id="cso">${t('checkout')}</button><button class="btn sec" id="csc">إضافة المزيد</button>`;
+ };
+ s.addEventListener('click',e=>{
+  const q=e.target.closest('[data-q]'),rm=e.target.closest('[data-rm]');
+  if(q){stepKey(q.dataset.key,Number(q.dataset.q));draw();return}
+  if(rm){delete S.cart[rm.dataset.rm];delete S.hrs[rm.dataset.rm];saveCart();draw();return}
+  if(e.target.closest('#csc')){s.close();return}
+  if(e.target.closest('#cso')){s.close();checkout()}
+ });
+ draw();
 }
 function minOrder(){const m=Number(ad(sv('min_order','0')));return isFinite(m)&&m>0?m:0}
 function checkout(){
