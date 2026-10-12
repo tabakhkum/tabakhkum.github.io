@@ -339,8 +339,11 @@ html[data-fz=s]{--zm:.92}html[data-fz=m]{--zm:1}html[data-fz=l]{--zm:1.14}html[d
 .bar,.acts,.cap{transition:bottom .25s}
 #app.hb #nav{transform:translateY(105%)}
 #app.hb .bar{bottom:0}
-#app.hb .acts{bottom:calc(16px + env(safe-area-inset-bottom))}
-#app.hb .cap{bottom:calc(14px + env(safe-area-inset-bottom))}
+#app.hb .acts{bottom:calc(30px + env(safe-area-inset-bottom))}
+#app.hb .cap{bottom:calc(28px + env(safe-area-inset-bottom))}
+#navh{position:absolute;left:50%;bottom:calc(10px + env(safe-area-inset-bottom));transform:translateX(-50%);width:84px;height:22px;border:0;background:transparent;z-index:29;display:none;padding:0}
+#navh::after{content:'';display:block;margin:9px auto 0;width:40px;height:4px;border-radius:2px;background:rgba(255,255,255,.6)}
+#app.hb #navh{display:block}
 #app.hb2 #fab{transform:translateX(-50%) translateY(200%)}
 #app.hb2 #cartbar{transform:translateY(300%)}
 
@@ -467,7 +470,7 @@ body{display:flex;justify-content:center;align-items:flex-start;background:#0508
  <section id="adm" class="screen"></section>
  <div id="tagbar"></div><div id="top"><button id="supBtn" aria-label="support"></button><div id="logo">طباخكم</div><button id="svcBtn"></button><button id="srBtn" aria-label="search"></button><button id="bMenu" aria-label="menu"></button></div>
  <div id="cartbar"></div>
- <div id="nav"><button class="nb" id="nHome"></button><button class="nb" id="nFr"></button><button class="npl" id="nPlus" aria-label="publish"><span></span></button><button class="nb" id="nNot"></button><button class="nb" id="nProf"></button></div>
+ <button id="navh" aria-label="show"></button><div id="nav"><button class="nb" id="nHome"></button><button class="nb" id="nFr"></button><button class="npl" id="nPlus" aria-label="publish"><span></span></button><button class="nb" id="nNot"></button><button class="nb" id="nProf"></button></div>
  <div id="snav"><button class="on" data-s="home"></button><button data-s="wal"></button><button data-s="act"></button><button data-s="past"></button><button data-s="menu"></button></div>
  <button id="fab"></button>
  <button id="vback" aria-label="back"></button>
@@ -3137,8 +3140,9 @@ function reactivateCheck(){
    if(acc<-10)app.classList.add(cls);else if(acc>8)app.classList.remove(cls)},{passive:true});
   el.addEventListener('touchend',()=>{ly=null});el.addEventListener('touchcancel',()=>{ly=null});
  };
- swipe($('#flow'),'sbh');
+ swipe($('#feed'),'hb');swipe($('#flow'),'sbh');
  $('#feed').addEventListener('scroll',()=>{},{passive:true});
+ $('#navh').onclick=()=>app.classList.remove('hb');
  window.resetBars=()=>{app.classList.remove('hb','hb2','sbh')};
 })();
 Object.assign(P,{wallet:'<rect x="3" y="6" width="18" height="14" rx="3"/><path d="M3 10h18M16 15h2"/>',gift:'<rect x="3" y="8" width="18" height="4"/><path d="M12 8v13M5 12v9h14v-9M8 8a2.5 2.5 0 0 1 0-5c2 0 4 5 4 5s2-5 4-5a2.5 2.5 0 0 1 0 5"/>',pin:'<path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>'});

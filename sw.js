@@ -1,5 +1,5 @@
 /* Tabakhkum: التطبيق يفتح بسرعة حتى لو الإنترنت ضعيف، والتحديث ما ينزل إلا بعد موافقة المستخدم. ما يخزّن الفيديوهات ولا بيانات الحسابات. */
-const V='tk-v27';
+const V='tk-v28';
 const SHELL=['index.html','manifest.webmanifest','icon-192.png','icon-512.png'];
 self.addEventListener('install',e=>{
  e.waitUntil(caches.open(V).then(c=>Promise.all(SHELL.map(u=>fetch(new Request(u,{cache:'reload'})).then(r=>{if(r&&r.ok)return c.put(u,r)}).catch(()=>{})))));
