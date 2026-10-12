@@ -69,8 +69,16 @@ var OCC={wedding:'عرس',birthday:'عيد ميلاد',funeral:'فاتحة',eid:
 function occ(k){return OCC[k]||k||''}function meal(k){return MEAL[k]||k||''}
 
 /* ---------- الدخول ---------- */
+var _ip=null;
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();_ip=e;var b=document.getElementById('inst');if(b)b.style.display='block'});
+function isStandalone(){return (window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true}
+function instHtml(){return isStandalone()?'':'<button class="btn sec" id="inst">تثبيت التطبيق على الموبايل</button>'}
+function instBind(){var b=document.getElementById('inst');if(!b)return;b.onclick=function(){
+ if(_ip){_ip.prompt();_ip.userChoice.then(function(){_ip=null;b.remove()},function(){});return}
+ var ios=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+ alert(ios?'اضغط زر المشاركة بأسفل المتصفح ثم اختر: إضافة إلى الشاشة الرئيسية':'اضغط القائمة (النقاط الثلاث) بالمتصفح ثم اختر: تثبيت التطبيق أو إضافة إلى الشاشة الرئيسية')}}
 function viewLogin(){
- app.innerHTML='<div class="w"><h1>مقدم طباخكم</h1><p class="mu">سجّل دخول بنفس حسابك بتطبيق طباخكم.</p><div class="card"><label>اسم المستخدم</label><input id="u" autocomplete="username" autocapitalize="none"><label>كلمة السر</label><input id="p" type="password" autocomplete="current-password"><button class="btn" id="go">دخول</button></div><p class="mu">ما عندك حساب؟ سوّي حساب عادي من تطبيق طباخكم أول، وبعدها ادخل هنا.</p></div>';
+ app.innerHTML='<div class="w"><h1>مقدم طباخكم</h1><p class="mu">سجّل دخول بنفس حسابك بتطبيق طباخكم.</p><div class="card"><label>اسم المستخدم</label><input id="u" autocomplete="username" autocapitalize="none"><label>كلمة السر</label><input id="p" type="password" autocomplete="current-password"><button class="btn" id="go">دخول</button></div><p class="mu">ما عندك حساب؟ سوّي حساب عادي من تطبيق طباخكم أول، وبعدها ادخل هنا.</p>'+instHtml()+'</div>';instBind();
  document.getElementById('go').onclick=async function(ev){
   var u=ad(document.getElementById('u').value.trim()),w=document.getElementById('p').value;
   if(!u||w.length<6)return toast('اكتب الاسم وكلمة السر');
@@ -84,7 +92,7 @@ function viewLogin(){
  };
 }
 function viewCode(){
- app.innerHTML='<div class="w"><h1>أدخل كود المقدم</h1><p class="mu">الكود تاخذه من إدارة طباخكم.</p><div class="card"><input id="c" maxlength="12" autocapitalize="characters" autocomplete="off" style="text-transform:uppercase;letter-spacing:3px;text-align:center;font-size:22px"><button class="btn" id="go">تفعيل</button></div><button class="btn sec" id="out">تسجيل خروج</button></div>';
+ app.innerHTML='<div class="w"><h1>أدخل كود المقدم</h1><p class="mu">الكود تاخذه من إدارة طباخكم.</p><div class="card"><input id="c" maxlength="12" autocapitalize="characters" autocomplete="off" style="text-transform:uppercase;letter-spacing:3px;text-align:center;font-size:22px"><button class="btn" id="go">تفعيل</button></div><button class="btn sec" id="out">تسجيل خروج</button>'+instHtml()+'</div>';instBind();
  document.getElementById('go').onclick=async function(ev){
   var c=ad(document.getElementById('c').value.trim()).toUpperCase();if(c.length<6)return toast('اكتب الكود كامل');
   ev.target.disabled=true;

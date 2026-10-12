@@ -120,7 +120,7 @@ a{color:var(--gold2)}
 #nav .nb.on{color:var(--gold2)}
 .bdg{position:absolute;top:0;left:50%;margin-left:4px;background:var(--bad);color:#fff;font-size:10px;min-width:16px;height:16px;border-radius:8px;display:none;align-items:center;justify-content:center;padding:0 3px}
 #nav .nb .ic{width:24px;height:24px}
-#nav .npl{flex:1;display:flex;justify-content:center}
+#nav .npl{flex:0 0 66px;display:flex;justify-content:center}
 #nav .npl span{width:54px;height:36px;border-radius:11px;background:var(--gold);display:flex;align-items:center;justify-content:center}
 #nav .npl .ic{width:24px;height:24px}
 #fab:active{background:rgba(217,119,6,.75)}
@@ -573,7 +573,7 @@ function imgBlob(file,max){return new Promise((res,rej)=>{const im=new Image(),u
 /* ================= اللغات ================= */
 const L={
 ar:{iqd:'د.ع',neterr:'تعذر الاتصال بالإنترنت',denied:'غير مسموح أو الحساب غير موثق',dup:'هذا الاسم مستخدم من قبل',
-services:'خدمات طباخكم',settings:'الإعدادات والخصوصية',reels:'المقاطع',menu:'القائمة',login:'تسجيل الدخول',register:'إنشاء حساب',logout:'تسجيل الخروج',username:'اسم المستخدم',password:'كلمة السر',phone:'رقم الموبايل',
+services:'خدمات طباخكم',settings:'الإعدادات والخصوصية',reels:'الريلزات',menu:'القائمة',login:'تسجيل الدخول',register:'إنشاء حساب',logout:'تسجيل الخروج',username:'اسم المستخدم',password:'كلمة السر',phone:'رقم الموبايل',
 needlogin:'سجّل الدخول أولاً',noacc:'ليس لديك حساب؟ أنشئ حساباً',hasacc:'لديك حساب؟ سجّل الدخول',badlogin:'اسم المستخدم أو كلمة السر غير صحيحة',shortpw:'كلمة السر 6 أحرف على الأقل',baduser:'اسم المستخدم من 2 إلى 14 حرفاً',badphone:'اكتب رقم موبايل صحيح',confirmoff:'تعذر الدخول التلقائي، يجب تعطيل تأكيد البريد من إعدادات Supabase',
 occ_q:'ما نوع المناسبة؟',engagement:'خطوبة',wedding:'حفل زفاف',mourning:'مجلس عزاء',other:'مناسبات أخرى',other_s:'تشمل كل الخدمات',
 meal_q:'ما هي الوجبة؟',lunch:'غداء',dinner:'عشاء',both:'غداء وعشاء',lunch_note:'',
@@ -588,12 +588,12 @@ provider:'كن معنا مقدم خدمات',spec:'التخصص',area:'المن�
 sp_cook:'طباخ',sp_butcher:'قصاب',sp_rent:'مؤجر مستلزمات',sp_photo:'مصور',sp_sup:'مواد غذائية وخضروات',sp_other:'أخرى',
 language:'اللغة',support:'الدعم والتواصل',terms:'الشروط والخصوصية',callus:'اتصال',whats:'واتساب',
 comments:'التعليقات',no_comments:'لا توجد تعليقات',addcomment:'اكتب تعليقاً...',
-follow:'متابعة',following:'تتابعه',followers:'متابِع',followings:'يتابع',reelsn:'مقطع',foryou:'لك',friends:'الأصدقاء',home:'الرئيسية',notifs:'الإشعارات',nt_all:'الكل',nt_act:'التفاعل',nt_msg:'الرسائل',nt_gen:'عامة',nt_none:'لا توجد إشعارات',nofr:'لا توجد مقاطع من الأصدقاء بعد. تابع حسابات حتى تظهر هنا',profile:'الملف الشخصي',
-publish:'نشر مقطع',record:'تصوير الآن',gallery:'اختيار من المعرض',caption:'وصف المقطع',upload:'نشر',uploading:'جاري الرفع...',bigvid:'الفيديو كبير (الحد 40 ميجا)',longvid:'الفيديو أطول من 90 ثانية',camerr:'تعذر تشغيل الكاميرا',
+follow:'متابعة',following:'تتابعه',followers:'متابِع',followings:'يتابع',reelsn:'ريل',foryou:'لك',friends:'الأصدقاء',home:'الرئيسية',notifs:'الإشعارات',nt_all:'الكل',nt_act:'التفاعل',nt_msg:'الرسائل',nt_gen:'عامة',nt_none:'لا توجد إشعارات',nofr:'لا توجد ريلزات من الأصدقاء بعد. تابع حسابات حتى تظهر هنا',profile:'الملف الشخصي',
+publish:'نشر ريل',record:'تصوير الآن',gallery:'اختيار من المعرض',caption:'وصف الريل',upload:'نشر',uploading:'جاري الرفع...',bigvid:'الفيديو كبير (الحد 40 ميجا)',longvid:'الفيديو أطول من 90 ثانية',camerr:'تعذر تشغيل الكاميرا',
 delete:'حذف',sure:'هل أنت متأكد؟',save:'حفظ',cancel:'إلغاء',back:'رجوع',
-reward:'مكافأة التفاعل',reward_t:'تفاعلات على مقاطعك',claim:'استلام المكافأة',reward_p:'مكافأة بانتظار موافقة الإدارة',reward_ok:'لديك خصم معتمد على طلبك القادم',
+reward:'مكافأة التفاعل',reward_t:'تفاعلات على ريلزاتك',claim:'استلام المكافأة',reward_p:'مكافأة بانتظار موافقة الإدارة',reward_ok:'لديك خصم معتمد على طلبك القادم',
 verify:'توثيق رقمك عبر واتساب',verified:'رقمك موثق',verify_go:'وثّق الآن',verify_wait:'أرسل الرسالة من واتساب. الإدارة تراجع طلبك وتوثق حسابك',
-nofeed:'لا توجد مقاطع بعد',retry:'إعادة المحاولة',tap_sound:'اضغط لتشغيل الصوت',book:'احجز'},
+nofeed:'لا توجد ريلزات بعد',retry:'إعادة المحاولة',tap_sound:'اضغط لتشغيل الصوت',book:'احجز'},
 en:{iqd:'IQD',neterr:'No internet connection',denied:'Not allowed or account not verified',dup:'This name is already used',
 services:'Tabakhkum Services',settings:'Settings and privacy',reels:'Reels',menu:'Menu',login:'Log in',register:'Create account',logout:'Log out',username:'Username',password:'Password',phone:'Mobile number',
 needlogin:'Please log in first',noacc:'No account? Create one',hasacc:'Have an account? Log in',badlogin:'Wrong username or password',shortpw:'Password must be 6+ characters',baduser:'Username must be 2 to 14 characters',badphone:'Enter a valid mobile number',confirmoff:'Auto login failed, disable email confirmation in Supabase',
@@ -725,7 +725,7 @@ $('#bMenu').onclick=menuSheet;$('#supBtn').onclick=()=>supportSheet();
 $('#srBtn').onclick=()=>searchSheet();
 $('#vback').onclick=()=>{const b=F.custom&&F.custom.back;F.custom=null;$('#vback').style.display='none';if(b)b();else{reloadFeed();go('feed')}};
 function searchSheet(){
- const s=sheet(`<h3>بحث بالمقاطع</h3><div class="row"><input id="si" maxlength="40" placeholder="حساب أو كلمة بالوصف أو #هاشتاك" enterkeyhint="search"><button class="btn sm" id="sg" style="flex:none;margin:0">بحث</button></div><div id="sr" style="margin-top:10px;max-height:calc(var(--vh,1vh)*62);overflow-y:auto"><div class="mu">الهاشتاكات الرائجة</div><div class="trs" id="trs"><span class="mu">...</span></div></div>`);
+ const s=sheet(`<h3>بحث بالريلزات</h3><div class="row"><input id="si" maxlength="40" placeholder="حساب أو كلمة بالوصف أو #هاشتاك" enterkeyhint="search"><button class="btn sm" id="sg" style="flex:none;margin:0">بحث</button></div><div id="sr" style="margin-top:10px;max-height:calc(var(--vh,1vh)*62);overflow-y:auto"><div class="mu">الهاشتاكات الرائجة</div><div class="trs" id="trs"><span class="mu">...</span></div></div>`);
  const inp=s.querySelector('#si'),out=s.querySelector('#sr');
  (async()=>{try{const r=await Q(sb.rpc('trending_tags',{p_days:7,p_limit:15}));const x=s.querySelector('#trs');if(!x)return;x.innerHTML=(r&&r.length)?r.map(a=>`<span class="trc" data-tag="${esc(a.tag)}"><b>#${esc(a.tag)}</b> <span class="mu">${a.videos} فيديو - ${a.users} مستخدم</span></span>`).join(''):'<span class="mu">ما كو هاشتاكات بعد. اكتب #هاشتاك بوصف منشورك.</span>'}catch(e){const x=s.querySelector('#trs');if(x)x.innerHTML=''}})();
  const run=async()=>{
@@ -1625,8 +1625,35 @@ function dispPrice(i){
  const li=cLine(i.id);if(!li||!(li.price>0))return t('onreq');
  const u=lineUnit(li,0);
  if(li.hours)return money(u.u)+' لأول '+(Number(i.hours_incl)||0)+' ساعات';
- const bs=S.urgent?urgMul(li.price):li.price;
- return (i.discount>0?'<s>'+money(bs)+'</s>':'')+money(u.u);
+ const bs=S.urgent?urgMul(li.price):li.price,mm=minMul(i);
+ return (i.discount>0?'<s>'+money(bs*mm)+'</s>':'')+money(u.u*mm);
+}
+function minMul(i){if(hasOpts(i))return 1;const li=cLine(i.id);return li&&!li.hours&&li.min>1?li.min:1}
+const MONTHS_AR=['كانون الثاني','شباط','آذار','نيسان','أيار','حزيران','تموز','آب','أيلول','تشرين الأول','تشرين الثاني','كانون الأول'];
+function fmtDate(iso){const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(iso||'');return m?(+m[3])+' '+MONTHS_AR[+m[2]-1]+' '+m[1]:''}
+function parseTyped(dv,mv){
+ const d=parseInt(ad(String(dv)).replace(/\D/g,''),10),m=parseInt(ad(String(mv)).replace(/\D/g,''),10);
+ if(!d||!m||m<1||m>12||d<1||d>31)return null;
+ const tm=tomorrow();let y=+tm.slice(0,4);
+ const mk=yy=>yy+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+ const ok=yy=>{const x=new Date(Date.UTC(yy,m-1,d));return x.getUTCFullYear()===yy&&x.getUTCMonth()===m-1&&x.getUTCDate()===d};
+ if(!ok(y)||mk(y)<tm)y++;
+ if(!ok(y))y++;
+ return ok(y)?mk(y):null;
+}
+function dateEntry(f){
+ f.innerHTML=`<div class="hd"><button id="fb">${ic('back')}</button><b>اكتب تاريخ المناسبة</b></div><div class="bd"><div class="row" style="gap:10px"><div style="flex:1"><label>اليوم</label><input id="dd" type="text" inputmode="numeric" maxlength="2" placeholder="مثال: 15" autocomplete="off" style="text-align:center;font-size:20px"></div><div style="flex:1"><label>الشهر (رقم)</label><input id="dm" type="text" inputmode="numeric" maxlength="2" placeholder="مثال: 11" autocomplete="off" style="text-align:center;font-size:20px"></div></div><div class="mu" id="dsh" style="margin:10px 0;font-size:14px;min-height:22px">السنة تنحسب تلقائياً. الحجز يبدأ من الغد.</div><button class="btn" id="dok">تأكيد</button></div>`;
+ f.querySelector('#fb').onclick=()=>renderFlow();
+ const dd=f.querySelector('#dd'),dm=f.querySelector('#dm'),sh=f.querySelector('#dsh');
+ const upd=()=>{const r=parseTyped(dd.value,dm.value);sh.textContent=r?'التاريخ: '+fmtDate(r):'السنة تنحسب تلقائياً. الحجز يبدأ من الغد.';sh.style.color=r?'var(--ok)':''};
+ dd.oninput=()=>{upd();if(ad(dd.value).replace(/\D/g,'').length>=2)dm.focus()};dm.oninput=upd;
+ f.querySelector('#dok').onclick=()=>{
+  const r=parseTyped(dd.value,dm.value);
+  if(!r)return toast('اكتب اليوم والشهر بشكل صحيح',3500);
+  if(r<tomorrow())return toast('الحجز يبدأ من الغد',3500);
+  S.date=r;S.urgent=false;S.step='meal';renderFlow();
+ };
+ setTimeout(()=>{try{dd.focus()}catch(e){}},100);
 }
 function renderFlow(){
  const f=$('#flow');
@@ -1637,7 +1664,9 @@ function renderFlow(){
  }else if(S.step==='when'){
   f.innerHTML=`<div class="hd"><button id="fb">${ic('back')}</button><b>متى تريد الخدمة؟</b></div><div class="bd"><div class="grid2"><button class="big" data-w="0">موعد الحجز<small>احجز لموعد قادم من الغد وما بعد</small></button><button class="big" data-w="1">مناسبة طارئة<small>لنفس اليوم</small></button></div></div>`;
   f.querySelector('#fb').onclick=()=>{S.step='occ';renderFlow()};
-  f.querySelector('.bd').onclick=e=>{const b=e.target.closest('[data-w]');if(b){S.urgent=b.dataset.w==='1';S.step='meal';renderFlow()}};
+  f.querySelector('.bd').onclick=e=>{const b=e.target.closest('[data-w]');if(!b)return;
+   if(b.dataset.w==='1'){S.urgent=true;S.step='meal';renderFlow();return}
+   dateEntry(f)};
  }else if(S.step==='meal'){
   const pick={lunch:S.meal==='lunch'||S.meal==='both',dinner:S.meal==='dinner'||S.meal==='both'};
   f.innerHTML=`<div class="hd"><button id="fb">${ic('back')}</button><b>${t('meal_q')}</b></div><div class="bd"><div class="grid2"><button class="big${pick.lunch?' on':''}" data-m="lunch">${t('lunch')}</button><button class="big${pick.dinner?' on':''}" data-m="dinner">${t('dinner')}</button></div><button class="btn" id="mok" style="display:${pick.lunch||pick.dinner?'block':'none'}">تأكيد</button></div>`;
@@ -1683,7 +1712,7 @@ function itemCard(i){
  else if(opts)ctl=`<button class="btn sec" data-opt="${esc(i.id)}">${cc?'تعديل الاختيار':'اختر'}</button>`;
  else if(hrs)ctl=`<button class="btn${cc?' sec':''}" data-hrs="${esc(i.id)}">${cc?'تعديل الوقت':'حدد الوقت'}</button>`;
  else ctl=`<div class="qty"><button data-q="-1" data-key="${esc(i.id)}">${minusIc(i.id,S.cart[i.id]||0)}</button><span>${fmtN(S.cart[i.id]||0)}</span><button class="p" data-q="1" data-key="${esc(i.id)}">+</button></div>`;
- return `<div class="it2${off?' off':''}">${cc&&(opts||hrs)&&!off?`<span class="cb">${cc}</span>`:''}${ph}<div class="bx"><div class="nm">${esc(i.name)}</div>${rule?`<div class="rl">${esc(rule)}</div>`:''}<div class="pr">${off?'':dispPrice(i)}${(!off&&!opts&&i.unit)?`<small>${esc(i.unit)}</small>`:''}</div></div><div class="ct">${ctl}</div></div>`;
+ return `<div class="it2${off?' off':''}">${cc&&(opts||hrs)&&!off?`<span class="cb">${cc}</span>`:''}${ph}<div class="bx"><div class="nm">${esc(i.name)}</div>${rule?`<div class="rl">${esc(rule)}</div>`:''}<div class="pr">${off?'':dispPrice(i)}${(!off&&!opts&&minMul(i)>1)?`<small>لـ ${fmtN(minMul(i))} ${esc(String(i.unit||'').replace(/^لل/,'').replace(/^ل(?=\S{3})/,'')||'وحدة')}</small>`:(!off&&!opts&&i.unit)?`<small>${esc(i.unit)}</small>`:''}</div></div><div class="ct">${ctl}</div></div>`;
 }
 function optSheet(i){
  const rows=i.options.map(o=>{
@@ -1758,7 +1787,7 @@ function checkout(){
   <label>${t('name')}</label><input id="cn" value="${esc(S.me?S.me.username:'')}" maxlength="60">
   <label>${t('phone')}</label><input id="cp" type="tel" inputmode="numeric" maxlength="11" placeholder="07xxxxxxxxx" value="${esc(S.priv&&S.priv.phone?'0'+S.priv.phone.replace(/^964/,''):'')}">
   <label>${t('phone2')}</label><input id="cp2" type="tel" inputmode="numeric" maxlength="11" placeholder="07xxxxxxxxx">
-  <label>${t('date')}</label><input id="cd" type="date" min="${tomorrow()}" value="${tomorrow()}"><div class="mu" style="font-size:12px;margin-top:4px" id="cdn">أقرب موعد للحجز: غداً</div>
+  <label>${t('date')}</label><input id="cd" type="hidden" value="${S.date&&S.date>=tomorrow()?S.date:tomorrow()}"><div class="card" id="cdv" style="font-weight:700;margin:6px 0"></div><div class="mu" style="font-size:12px;margin-top:4px" id="cdn"></div>
   ${(MAXD[S.occ]>1&&!S.urgent)?`<label>عدد أيام الحجز</label><select id="cdy">${Array.from({length:MAXD[S.occ]},(_,k)=>`<option value="${k+1}">${k===0?'يوم واحد':k===1?'يومان':(k+1)+' أيام'}</option>`).join('')}</select>`:''}
   <label>${t('address')}</label><textarea id="ca" rows="2" maxlength="300"></textarea>
   <button class="btn sec" id="cl">${t('locate')}</button>
@@ -1783,7 +1812,8 @@ function checkout(){
  });
  clb.onclick=async()=>{if(!await getLoc())toast('لازم تسمح بالموقع حتى نكدر نوصلك، فعّله من إعدادات الجهاز ثم اضغط زر الموقع مرة ثانية',5500)};
  const isU=()=>!!S.urgent;
- if(isU()){const dI=s.querySelector('#cd');dI.value=bgToday();dI.min=bgToday();dI.disabled=true;s.querySelector('#cdn').textContent='مناسبة طارئة: لنفس اليوم'}
+ s.querySelector('#cdv').textContent=fmtDate(s.querySelector('#cd').value);
+ if(isU()){const dI=s.querySelector('#cd');dI.value=bgToday();dI.disabled=true;s.querySelector('#cdv').textContent=fmtDate(bgToday());s.querySelector('#cdn').textContent='مناسبة طارئة: لنفس اليوم'}
  s.querySelector('#cok').onclick=()=>requireAuth(async()=>{
   const g=id=>s.querySelector('#'+id).value.trim();
   const u=isU();
@@ -1896,7 +1926,7 @@ setInterval(checkRating,45000);
 
 
 /* ================= المحفظة وكود الدعوة ================= */
-const shareApp=async(extra)=>{const url=location.origin+location.pathname,txt='طباخكم: مقاطع وخدمات المناسبات بميسان'+(extra?'\n'+extra:'');try{if(navigator.share){await navigator.share({title:'طباخكم',text:txt,url});return}}catch(e){if(e&&e.name==='AbortError')return}try{await navigator.clipboard.writeText(txt+'\n'+url);toast('تم نسخ الرابط')}catch(e){toast(url,5000)}};
+const shareApp=async(extra)=>{const url=location.origin+location.pathname,txt='طباخكم: ريلزات وخدمات المناسبات بميسان'+(extra?'\n'+extra:'');try{if(navigator.share){await navigator.share({title:'طباخكم',text:txt,url});return}}catch(e){if(e&&e.name==='AbortError')return}try{await navigator.clipboard.writeText(txt+'\n'+url);toast('تم نسخ الرابط')}catch(e){toast(url,5000)}};
 function walletSheet(){requireAuth(async()=>{
  const s=sheet(`<h3>المحفظة</h3><div id="wb"><div class="empty">...</div></div>`);s.classList.add('full');
  try{
@@ -1952,12 +1982,12 @@ async function notifSheet(){
  const G={act:['comment','like','follow','repost','follow_req','follow_ok','reply','clike'],msg:['msg','order','order_new','wallet'],gen:['general']};
  const seen=gseen();let rows=[],tab='all';
  const txt=r=>{const u='@'+esc(r.actor&&r.actor.username||'');
-  if(r.kind==='comment')return `<b>${u}</b> علّق على مقطعك: ${esc(r.body)}`;
+  if(r.kind==='comment')return `<b>${u}</b> علّق على ريلك: ${esc(r.body)}`;
   if(r.kind==='reply')return `<b>${u}</b> ردّ على تعليقك: ${esc(r.body)}`;
   if(r.kind==='clike')return `<b>${u}</b> أعجبه تعليقك: ${esc(r.body)}`;
-  if(r.kind==='like')return `<b>${u}</b> أعجبه مقطعك`;
+  if(r.kind==='like')return `<b>${u}</b> أعجبه ريلك`;
   if(r.kind==='follow')return `<b>${u}</b> بدأ بمتابعتك`;
-  if(r.kind==='repost')return `<b>${u}</b> أعاد نشر مقطعك`;
+  if(r.kind==='repost')return `<b>${u}</b> أعاد نشر ريلك`;
   if(r.kind==='follow_req')return `<b>${u}</b> يريد متابعتك<div style="margin-top:6px"><button class="btn sm" data-ac="1">قبول</button><button class="btn sm sec" data-ac="0">رفض</button></div>`;
   if(r.kind==='follow_ok')return `<b>${u}</b> قبل طلب متابعتك`;
   if(r.kind==='msg')return `<b>رسالة من خدمة الزبائن</b><br>${esc(r.body)}`;
@@ -2020,8 +2050,12 @@ function termsSheet(){
  sheet(`<h3>${t('terms')}</h3><div style="font-size:14px;line-height:1.9;color:var(--mu)">
   <p>1. المحتوى المنشور مسؤولية ناشره، ويحق للإدارة إخفاءه أو حذفه دون إشعار.</p>
   <p>2. يمنع نشر المحتوى الإباحي أو كتابة وصف أو تعليق مخلّ بالحياء والشرف، وتُحذف المخالفة بدون تحذير وقد يُغلق الحساب.</p>
-  <p>3. يمنع نشر مقاطع أشخاص دون إذنهم، خصوصاً في مجالس العزاء.</p>
+  <p>3. يمنع نشر ريلزات أشخاص دون إذنهم، خصوصاً في مجالس العزاء.</p>
   <p>4. نحفظ اسم المستخدم ورقم الموبايل وعناوين الطلبات لأجل تنفيذ الخدمة فقط، ولا نبيعها.</p></div>`);
+}
+function provSent(){
+ const p=sheet(`<h3>تم إرسال طلبك</h3><p class="mu" style="line-height:1.9;margin:8px 0">راح نتواصل ويّاك ونعطيك كود التفعيل. هسه نزّل تطبيق مقدم الخدمة من الزر هذا، وبعدها سجّل دخول بنفس اسمك وكلمة سرك وأدخل الكود.</p><a class="btn" id="pvd" style="text-decoration:none" target="_blank" rel="noopener" href="provider/">تنزيل تطبيق مقدم الخدمة</a><button class="btn sec" id="pvs">تواصل مع الدعم</button>`);
+ p.querySelector('#pvs').onclick=()=>{p.close();supportSheet()};
 }
 function providerForm(){
  const sp=['cook','butcher','rent','photo','sup','other'];
@@ -2037,13 +2071,13 @@ function providerForm(){
   const g=id=>s.querySelector('#'+id).value.trim();
   if(!g('vn')||!s.querySelector('#vc').checked)return toast(t('badphone'));
   if(!okPhone(g('vp')))return toast(PHONE_MSG,4500);
-  try{await Q(sb.from('provider_applications').insert({user_id:S.user.id,name:g('vn'),phone:g('vp'),specialty:s.querySelector('#vs').selectedOptions[0].textContent,area:g('va'),note:g('vt')}));s.close();toast(t('sent'),4000);supportSheet()}catch(e){toast(errMsg(e))}
+  try{await Q(sb.from('provider_applications').insert({user_id:S.user.id,name:g('vn'),phone:g('vp'),specialty:s.querySelector('#vs').selectedOptions[0].textContent,area:g('va'),note:g('vt')}));s.close();provSent()}catch(e){toast(errMsg(e))}
  });
 }
 
 /* ================= لوحة التحكم ================= */
 const ST=['new','confirmed','provider_found','delivered','cancelled'];
-const PERMS=[['orders','الطلبات'],['status','تغيير حالة الطلب'],['chat','الدردشة مع الزبائن'],['ratings','طلب تقييم المكالمة'],['items','الأيتمات والأسعار'],['reels','التحكم بالمقاطع'],['providers','مقدمو الخدمات'],['profit','الأرباح والتقارير'],['settings','الإعدادات والمكافآت']];
+const PERMS=[['orders','الطلبات'],['status','تغيير حالة الطلب'],['chat','الدردشة مع الزبائن'],['ratings','طلب تقييم المكالمة'],['items','الأيتمات والأسعار'],['reels','التحكم بالريلزات'],['providers','مقدمو الخدمات'],['profit','الأرباح والتقارير'],['settings','الإعدادات والمكافآت']];
 const A={tab:null,filter:''};
 function openAdmin(){
  pauseAll();S.screen='adm';
@@ -2051,7 +2085,7 @@ function openAdmin(){
  const tabs=[];
  if(can('orders'))tabs.push(['ord','الطلبات']);
  if(can('items'))tabs.push(['itm','الأيتمات']);
- if(can('reels'))tabs.push(['rl','المقاطع']);
+ if(can('reels'))tabs.push(['rl','الريلزات']);
  if(can('reels'))tabs.push(['rpt','البلاغات']);
  if(can('orders'))tabs.push(['fb','الشكاوى والاقتراحات']);
  if(can('providers'))tabs.push(['prv','مقدمو الخدمات']);
@@ -2385,7 +2419,7 @@ async function admSettings(){
  const box=$('#abd');
  await loadSettings();
  const F2=[['wa','رقم واتساب الطلبات (بصيغة 964...)'],['urgent_pct','نسبة زيادة الحجز الطارئ بالمئة'],['lunch_close','آخر ساعة لحجز غداء لنفس اليوم (مثلاً 10)'],['urgent_dinner_close','آخر ساعة لحجز عشاء لنفس اليوم (مثلاً 17)'],['support_phone','رقم دعم 1'],['support_phone2','رقم دعم 2'],['goal','عدد التفاعلات لكل مكافأة'],['pct','نسبة خصم المكافأة %'],['max_staff','أقصى عدد موظفين'],['wa_verify','رقم واتساب التوثيق (إن اختلف)'],['min_order','أقل مبلغ للطلب (دينار)، 0 يعني بلا حد'],['day_discount','خصم كل يوم إضافي من الحجز متعدد الأيام (دينار)'],['big_min','حد الطلب الكبير بالدينار (0 = بلا خصم)'],['big_discount','خصم الطلب الكبير بالدينار'],['ref_bonus','مبلغ مكافأة الدعوة لكل طرف (دينار)، للمالك فقط'],['ref_min_total','أقل مبلغ نقدي للطلب حتى تنحسب مكافأة الدعوة (دينار)، للمالك فقط']];
- const T2=[['urgent_on','تفعيل الحجز الطارئ لنفس اليوم'],['show_book_btn','إظهار زر "احجز" تحت المقاطع'],['require_verified','اشتراط الرقم الموثق للنشر والتعليق والطلب']];
+ const T2=[['urgent_on','تفعيل الحجز الطارئ لنفس اليوم'],['show_book_btn','إظهار زر "احجز" تحت الريلزات'],['require_verified','اشتراط الرقم الموثق للنشر والتعليق والطلب']];
  let rw=[];try{rw=await Q(sb.from('rewards').select('id,pct,created_at,profiles(username)').eq('approved',false).order('created_at'))}catch(e){}
  box.innerHTML=F2.map(f=>`<label>${f[1]}</label><input data-k="${f[0]}" value="${esc(S.set[f[0]]||'')}">`).join('')+T2.map(f=>`<label class="perm"><input type="checkbox" data-k="${f[0]}" ${S.set[f[0]]==='1'?'checked':''}> ${f[1]}</label>`).join('')+
  `<button class="btn" id="ssv">حفظ الإعدادات</button><h3 style="margin-top:20px">إشعار عام لكل المستخدمين</h3><input id="bct" maxlength="80" placeholder="العنوان"><textarea id="bcb" rows="2" maxlength="300" placeholder="النص"></textarea><button class="btn sec" id="bcs">إرسال الإشعار</button><h3 style="margin-top:20px">مكافآت بانتظار الموافقة (${rw.length})</h3>`+
@@ -2862,7 +2896,7 @@ PG.security={t:'الأمان والأذونات',r:async(a,post)=>{
   +rw({ic:'user',t:'تاريخ إنشاء الحساب',val:fd(S.user.created_at)})
   +hd('أذونات الجهاز')
   +rw({ic:'play',t:'الكاميرا',val:cam})+rw({ic:'son',t:'المايكروفون',val:mic})+rw({ic:'globe',t:'الموقع',val:geo})
-  +nt('تغيير الأذونات يتم من إعدادات المتصفح أو الجهاز للموقع tabakhkum.github.io. نستخدم الكاميرا والمايكروفون لتصوير المقاطع فقط، والموقع لتحديد عنوان الطلب فقط.');
+  +nt('تغيير الأذونات يتم من إعدادات المتصفح أو الجهاز للموقع tabakhkum.github.io. نستخدم الكاميرا والمايكروفون لتصوير الريلزات فقط، والموقع لتحديد عنوان الطلب فقط.');
 }};
 
 /* ----- تبديل الحساب ----- */
@@ -2881,7 +2915,7 @@ PG.accounts={t:'تبديل الحساب',r:async(a,post)=>{
 /* ----- المساعدة والشروط ----- */
 const FAQ=[
  ['كيف أحجز خدمة لمناسبتي؟','من الصفحة الرئيسية اضغط «خدمات طباخكم» واختر نوع المناسبة والوجبة، ثم اختر الطباخ أو الخدمات المطلوبة وأكمل الطلب. تتصل بك خدمة الزبائن لتأكيد التفاصيل.'],
- ['كيف أنشر مقطع؟','اضغط زر + بالأسفل، ثم صوّر الآن أو اختر فيديو من المعرض (حد أقصى 40 ميجا و90 ثانية)، واكتب وصفاً واختر من يشاهده.'],
+ ['كيف أنشر ريل؟','اضغط زر + بالأسفل، ثم صوّر الآن أو اختر فيديو من المعرض (حد أقصى 40 ميجا و90 ثانية)، واكتب وصفاً واختر من يشاهده.'],
  ['كيف أحفظ فيديو بالعلامة المائية؟','اضغط ضغطة مطولة على أي مكان بالفيديو واختر «حفظ الفيديو بالعلامة المائية». لازم تبقى بالتطبيق لين يخلص التجهيز.'],
  ['نسيت كلمة السر','ما نكدر نرسل رابط استرجاع لأن الحساب مربوط باسم المستخدم. تواصل مع الدعم من زر واتساب أدناه وأعطنا اسم المستخدم ورقم موبايلك المسجل.'],
  ['كيف أخلي حسابي خاص؟','الإعدادات والخصوصية ثم الخصوصية ثم «حساب خاص». عندها كل متابعة جديدة تحتاج موافقتك.'],
@@ -2906,7 +2940,7 @@ PG.terms={t:'الخصوصية والشروط',r:async()=>`<div style="font-size:
  <b style="color:var(--tx)">الشروط</b>
  <p>1. المحتوى المنشور مسؤولية ناشره، ويحق للإدارة إخفاءه أو حذفه دون إشعار.</p>
  <p>2. يمنع منعاً باتاً نشر المحتوى الإباحي أو الإيحاءات الجنسية، أو كتابة وصف أو تعليق مخلّ بالحياء والشرف. تُحذف المخالفة بدون تحذير، وقد يُغلق الحساب نهائياً.</p>
- <p>3. يمنع نشر مقاطع أشخاص دون إذنهم، خصوصاً في مجالس العزاء.</p>
+ <p>3. يمنع نشر ريلزات أشخاص دون إذنهم، خصوصاً في مجالس العزاء.</p>
  <p>4. يمنع كتابة أرقام الهواتف في الوصف أو النبذة أو التعليقات.</p>
  <p>5. يطلب التطبيق موقعك عند تأكيد الطلب فقط لتحديد منطقتك وتوصيل الخدمة، ولا نشاركه مع أحد.</p></div>`};
 
@@ -2965,7 +2999,7 @@ function reactivateCheck(){
    if(acc<-10)app.classList.add(cls);else if(acc>8)app.classList.remove(cls)},{passive:true});
   el.addEventListener('touchend',()=>{ly=null});el.addEventListener('touchcancel',()=>{ly=null});
  };
- swipe($('#feed'),'hb');swipe($('#flow'),'sbh');
+ swipe($('#flow'),'sbh');
  $('#feed').addEventListener('scroll',()=>{},{passive:true});
  window.resetBars=()=>{app.classList.remove('hb','hb2','sbh')};
 })();
