@@ -152,25 +152,25 @@ a{color:var(--gold2)}
 .it .nm{font-weight:700;font-size:15px}
 .it .pr{font-size:13px;color:var(--gold2);margin-top:2px}
 .it .pr s{color:var(--mu);margin-left:6px}
-.igrid{display:grid;grid-template-columns:1fr;gap:10px}
-.it2{position:relative;background:var(--card);border-radius:14px;padding:10px;display:grid;grid-template-columns:96px minmax(0,1fr);column-gap:12px;align-items:start;min-width:0}
-.it2 .ph2{grid-column:1;grid-row:1/3;width:96px;height:96px;border-radius:12px;background:linear-gradient(135deg,#334155,#1e293b);overflow:hidden;display:flex;align-items:center;justify-content:center;color:var(--mu);font-weight:800;font-size:32px}
+.igrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.it2{position:relative;background:var(--card);border-radius:14px;padding:8px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.it2 .ph2{aspect-ratio:2.3/1;border-radius:10px;background:linear-gradient(135deg,#334155,#1e293b);overflow:hidden;display:flex;align-items:center;justify-content:center;color:var(--mu);font-weight:800;font-size:26px}
 .it2 .ph2 img{width:100%;height:100%;object-fit:cover}
-.it2 .bx{grid-column:2;grid-row:1;min-width:0;display:flex;flex-direction:column;gap:2px}
-.it2 .nm{font-weight:700;font-size:16px;line-height:1.35}
-.it2 .mu{font-size:12px}
-.it2 .rl{font-size:11.5px;color:var(--mu);line-height:1.4}
-.it2 .pr{font-size:14px;color:var(--gold2);font-weight:700}
+.it2 .bx{display:flex;flex-direction:column;gap:1px;min-width:0}
+.it2 .nm{font-weight:700;font-size:14.5px;line-height:1.3;margin-top:2px}
+.it2 .mu{font-size:11.5px}
+.it2 .rl{font-size:11px;color:var(--mu);line-height:1.35}
+.it2 .pr{font-size:13.5px;color:var(--gold2);font-weight:700}
 .it2 .pr s{color:var(--mu);margin-left:6px;font-weight:400}
-.it2 .ct{grid-column:2;grid-row:2;align-self:end;padding-top:8px}
-.it2 .ct .btn{margin:0;padding:9px 8px;font-size:14px}
+.it2 .ct{margin-top:auto;padding-top:5px}
+.it2 .ct .btn{margin:0;padding:8px 6px;font-size:13.5px}
 .it2 .qty{justify-content:space-between;width:100%}
-.it2 .qty button{width:38px;height:38px}
-.it2 .qty span{font-size:16px;min-width:34px}
+.it2 .qty button{width:34px;height:34px}
+.it2 .qty span{font-size:15px;min-width:28px}
 .qty .ic{width:18px;height:18px;margin:auto}
 .it2.off .ph2,.it2.off .nm,.it2.off .pr,.it2.off .mu{opacity:.4}
-.it2 .na{padding:9px 6px;text-align:center;font-size:13px;font-weight:700;background:rgba(255,255,255,.07);border-radius:10px;color:var(--gold2)}
-.it2 .cb{position:absolute;top:8px;left:8px;background:var(--gold);color:#fff;border-radius:12px;padding:1px 9px;font-size:12px;font-weight:700}
+.it2 .na{padding:8px 4px;text-align:center;font-size:13px;font-weight:700;background:rgba(255,255,255,.07);border-radius:10px;color:var(--gold2)}
+.it2 .cb{position:absolute;top:12px;left:12px;background:var(--gold);color:#fff;border-radius:12px;padding:1px 9px;font-size:12px;font-weight:700}
 #supBtn,.supp{flex:none;display:flex;align-items:center;gap:5px;margin-inline-end:8px;padding:6px 11px!important;border-radius:20px;background:rgba(15,23,42,.65);border:1px solid rgba(255,255,255,.4);color:#fff;font-size:13px;font-weight:700;text-shadow:none;white-space:nowrap}
 #supBtn .ic,.supp .ic{width:16px;height:16px}
 #cartbar .cbo{flex:1;cursor:pointer;min-width:0}
@@ -362,7 +362,7 @@ body{display:flex;justify-content:center;align-items:flex-start;background:#0508
 #app.insvc.sbh #fab{bottom:calc(16px + env(safe-area-inset-bottom))}
 #app.insvc #cartbar{bottom:calc(132px + env(safe-area-inset-bottom));transition:bottom .22s}
 #app.insvc.sbh #cartbar{bottom:calc(76px + env(safe-area-inset-bottom))}
-#app.insvc #flow .bd{padding-bottom:calc(150px + env(safe-area-inset-bottom))}
+#app.insvc #flow .bd{padding-bottom:calc(230px + env(safe-area-inset-bottom))}
 .stp{display:flex;align-items:center;margin:8px 0 4px;direction:rtl}
 .stp i{width:12px;height:12px;border-radius:50%;background:var(--line);flex:none}
 .stp i.on{background:var(--gold2)}.stp i.bad{background:var(--bad)}
@@ -1193,7 +1193,6 @@ async function openProfile(uid,tab0){
   if(!own&&S.user)$('#prof .hd').insertAdjacentHTML('beforeend',`<button id="pmore">${ic('dots')}</button>`),$('#pmore').onclick=()=>profMenu(uid,p,rl,()=>openProfile(uid));
   const x=st[0]||{followers:0,following:0,reels:0,hearts:0};
   let score=0,goal=Number(ad(sv('goal',200)))||200,pct=Number(ad(sv('pct',10)))||10,rws=[];
-  if(own){try{score=await Q(sb.rpc('my_score'));rws=await Q(sb.from('rewards').select('*').eq('user_id',uid).order('created_at'))}catch(e){}}
   const ini=esc((p.username||'?').slice(0,1));
   let h=`<div style="text-align:center"><div class="av" id="pav" style="width:84px;height:84px;font-size:34px;margin:0 auto">${p.avatar_url?`<img src="${esc(p.avatar_url)}" alt="">`:ini}</div>
    <h3 dir="ltr" style="margin-top:8px">@${esc(p.username)}${p.is_private?` <span class="mu" style="display:inline-block;vertical-align:middle">${ic('lock')}</span>`:''}</h3>${p.bio&&!p.deactivated?`<div class="pbio">${esc(p.bio)}</div>`:''}</div>
@@ -1201,11 +1200,6 @@ async function openProfile(uid,tab0){
   if(!own&&!rl.block)h+=`<button class="btn${fstate==='none'?'':' sec'}" id="pfol" data-st="${fstate}">${fstate==='following'?t('following'):(fstate==='requested'?'تم إرسال الطلب':t('follow'))}</button>`;
   if(!own&&rl.block)h+=`<div class="mu" style="text-align:center;margin-top:10px">هذا الحساب محظور</div><button class="btn sec" id="punb">إلغاء الحظر</button>`;
   if(own){
-   const earned=Math.floor(score/Math.max(goal,1)),pend=rws.filter(y=>!y.approved).length,ok=rws.filter(y=>y.approved&&!y.used).length;
-   h+=`<div class="card" style="margin-top:14px"><b>${t('reward')}</b><div class="pbar"><i style="width:${Math.min(100,(score%Math.max(goal,1))/Math.max(goal,1)*100)}%"></i></div>
-    <div class="mu">عدد التفاعلات على ريلزاتك: ${score} من أصل ${goal}</div><div class="mu" style="margin-top:4px">عند كل ${goal} تفاعل تحصل على خصم ${pct} بالمئة على طلبك</div>
-    ${earned>rws.length?`<button class="btn sm" id="pclaim">${t('claim')}</button>`:''}
-    ${pend?`<div class="mu" style="margin-top:6px">${t('reward_p')}</div>`:''}${ok?`<div style="color:var(--ok);margin-top:6px">${t('reward_ok')}</div>`:''}</div>`;
    if(true){
     h+=`<div class="card"><b>${S.priv&&S.priv.phone_verified?t('verified'):t('verify')}</b>${S.priv&&S.priv.phone_verified?'':`<button class="btn sm" id="pver">${t('verify_go')}</button>`}</div>`;
    }
