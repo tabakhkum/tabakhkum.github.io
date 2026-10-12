@@ -410,6 +410,23 @@ body{display:flex;justify-content:center;align-items:flex-start;background:#0508
 .cm{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .phb{position:absolute;bottom:3px;left:3px;background:rgba(0,0,0,.65);border-radius:6px;padding:2px;display:flex;color:#fff}
 .phb .ic{width:12px;height:12px}
+.hd b{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#nav .nb{white-space:nowrap;min-width:0}
+@media (max-width:360px){
+ #nav .nb{font-size:10px}
+ .igrid{gap:8px}
+ .it2{padding:6px;border-radius:14px}
+ .it2 .nm{font-size:14px}
+ .it2 .pr{font-size:13.5px}
+ .it2 .qty button{width:30px;height:30px}
+ .it2 .ct .btn{font-size:12.5px}
+ #supBtn,.supp{padding:5px 8px!important;font-size:12px;margin-inline-end:4px}
+ .hd b{font-size:15px}
+ #logo{font-size:18px}
+}
+@media (min-width:480px){
+ .igrid{grid-template-columns:repeat(3,1fr)}
+}
 /* مقاييس موحدة للحسابات والصور */
 .frow .cav,.srrow .cav{width:36px;height:36px;font-size:15px}
 .frow b,.srrow b{font-size:14px;font-weight:600}
