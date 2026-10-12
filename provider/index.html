@@ -126,7 +126,8 @@ function render(){
  if(TAB==='orders')b.innerHTML=vOrders();else if(TAB==='cal')b.innerHTML=vCal();else b.innerHTML=vEarn();
  bind(b);
 }
-function items(l){return (l||[]).map(function(x){return esc(x.name)+' × '+esc(x.qty)}).join('، ')}
+function hl(h){h=Number(h);var hh=h%24;var x=hh===0?'12 منتصف الليل':hh<12?hh+' صباحاً':hh===12?'12 ظهراً':(hh-12)+' مساءً';return h>24?x+' بعد منتصف الليل':x}
+function items(l){l=l||[];var d=0;var t=l.map(function(x){if(x.days>d)d=x.days;return esc(x.name)+(x.from!=null&&x.to!=null?' ('+hl(x.from)+' - '+hl(x.to)+')':' × '+esc(x.qty))}).join('، ');return t+(d>1?' - لمدة '+d+' أيام':'')}
 function vOrders(){
  var h='';
  if(!ME.online)h+='<div class="off-note">أنت مطفأ. الطلبات الجديدة ما تظهر لك. شغّل المفتاح فوق لما تكون جاهز.</div>';

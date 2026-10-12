@@ -152,6 +152,24 @@ a{color:var(--gold2)}
 .it .nm{font-weight:700;font-size:15px}
 .it .pr{font-size:13px;color:var(--gold2);margin-top:2px}
 .it .pr s{color:var(--mu);margin-left:6px}
+.igrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.it2{position:relative;background:var(--card);border-radius:14px;padding:8px;display:flex;flex-direction:column;gap:3px;min-width:0}
+.it2 .ph2{aspect-ratio:4/3;border-radius:10px;background:linear-gradient(135deg,#334155,#1e293b);overflow:hidden;display:flex;align-items:center;justify-content:center;color:var(--mu);font-weight:800;font-size:32px}
+.it2 .ph2 img{width:100%;height:100%;object-fit:cover}
+.it2 .nm{font-weight:700;font-size:15px;line-height:1.35;margin-top:5px}
+.it2 .mu{font-size:12px}
+.it2 .rl{font-size:11.5px;color:var(--mu);line-height:1.4}
+.it2 .pr{font-size:14px;color:var(--gold2);font-weight:700}
+.it2 .pr s{color:var(--mu);margin-left:6px;font-weight:400}
+.it2 .ct{margin-top:auto;padding-top:8px}
+.it2 .ct .btn{margin:0;padding:9px 8px;font-size:14px}
+.it2 .qty{justify-content:space-between;width:100%}
+.it2 .qty button{width:38px;height:38px}
+.it2 .qty span{font-size:16px;min-width:34px}
+.it2.off .ph2,.it2.off .nm,.it2.off .pr,.it2.off .mu{opacity:.4}
+.it2 .na{margin-top:auto;padding:9px 6px;text-align:center;font-size:13px;font-weight:700;background:rgba(255,255,255,.07);border-radius:10px;color:var(--gold2)}
+.it2 .cb{position:absolute;top:12px;left:12px;background:var(--gold);color:#fff;border-radius:12px;padding:1px 9px;font-size:12px;font-weight:700}
+.osl{background:var(--card);border-radius:12px;padding:10px;margin-bottom:8px}
 .qty{display:flex;align-items:center;gap:8px;flex:none}
 .qty button{width:32px;height:32px;border-radius:50%;background:var(--card2);font-size:20px;font-weight:700;line-height:1}
 .qty button.p{background:var(--gold)}
@@ -510,13 +528,13 @@ const S={urgent:false,user:null,me:null,priv:null,adm:null,set:{},cats:[],items:
 const can=p=>!!(S.adm&&(S.adm.role==='owner'||(S.adm.perms&&S.adm.perms[p]===true)));
 const sv=(k,d)=>(S.set[k]!==undefined&&S.set[k]!==''?S.set[k]:d);
 try{S.cart=JSON.parse(store.get('cart')||'{}')||{}}catch(e){S.cart={}}
-const saveCart=()=>store.set('cart',JSON.stringify(S.cart));
+try{S.hrs=JSON.parse(store.get('hrs')||'{}')||{}}catch(e){S.hrs={}}
+const saveCart=()=>{store.set('cart',JSON.stringify(S.cart));store.set('hrs',JSON.stringify(S.hrs))};
 
 async function loadSettings(){try{const r=await Q(sb.from('settings').select('*'));S.set={};r.forEach(x=>S.set[x.key]=x.value)}catch(e){}}
 async function loadCatalog(){try{
- const [c,i]=await Promise.all([Q(sb.from('categories').select('*').order('sort')),Q(sb.from('items').select('id,category_id,name,unit,price,discount,image_url,occasions,active,sort').order('sort'))]);
- S.cats=c;S.items=i;
- Object.keys(S.cart).forEach(id=>{if(!S.items.find(x=>x.id===id&&x.active))delete S.cart[id]});saveCart();
+ const [c,i]=await Promise.all([Q(sb.from('categories').select('*').order('sort')),Q(sb.from('items').select('id,category_id,name,unit,price,discount,image_url,occasions,active,sort,min_qty,step,options,avail,avail_note,kind,hours_incl,hour_price').order('sort'))]);
+ S.cats=c;S.items=i;cleanCart();
 }catch(e){}}
 async function loadMe(){
  S.me=S.priv=S.adm=null;
@@ -1433,14 +1451,89 @@ const OCC=['engagement','wedding','mourning','other'],TABS=['cooks','butchers','
 const itemVisible=i=>i.active&&(!i.occasions||!i.occasions.length||S.occ==='other'||i.occasions.includes(S.occ));
 const urgOn=()=>sv('urgent_on','1')==='1';
 const urgMul=p=>Math.round(p*(100+(Number(ad(sv('urgent_pct','20')))||0))/100+1e-9);
-const basePrice=i=>S.urgent?urgMul(i.price):i.price;
-const unitPrice=i=>{const b=Math.round(i.price*(1-(i.discount||0)/100));return S.urgent?urgMul(b):b};
+const MAXD={engagement:1,wedding:2,mourning:2,other:10};
+const fmtN=x=>String(Math.round(Number(x)*10)/10);
+const fmtLine=l=>esc(l.name)+(l.from!=null&&l.to!=null?' ('+hLbl(l.from)+' - '+hLbl(l.to)+')':' × '+fmtN(l.qty));
+const fmtItems=b=>(b.items||[]).map(fmtLine).join('، ')+(b.days>1?' - لمدة '+b.days+' أيام':'');
+const AV_TXT={booked:'تم تأجير كامل العدد',off:'غير متاح حالياً'};
+const availTxt=i=>i.avail==='on'||!i.avail?'':((i.avail_note&&String(i.avail_note).trim())||AV_TXT[i.avail]||AV_TXT.off);
+const hasOpts=i=>Array.isArray(i.options)&&i.options.length>0;
+const hLbl=h=>{h=Number(h);const hh=h%24;let x=hh===0?'12 منتصف الليل':hh<12?hh+' صباحاً':hh===12?'12 ظهراً':(hh-12)+' مساءً';return h>24?x+' بعد منتصف الليل':x};
+function cLine(key){
+ const p=String(key).split('|'),i=S.items.find(x=>x.id===p[0]);if(!i)return null;
+ let o=null;
+ if(hasOpts(i)){o=i.options.find(x=>x.k===p[1]);if(!o)return null}else if(p[1])return null;
+ const num=(v,d)=>{const n=Number(v);return v!==undefined&&v!==null&&v!==''&&isFinite(n)&&n>0?n:d};
+ const pr=(o&&o.price!==undefined&&o.price!==null&&o.price!=='')?Number(o.price):Number(i.price);
+ return{key:key,i:i,o:o,name:i.name+(o?' - '+o.l:''),unit:(o&&o.unit)||i.unit,price:isFinite(pr)?pr:0,min:num(o&&o.min,Number(i.min_qty)||1),step:num(o&&o.step,Number(i.step)||1),hours:i.kind==='hours'};
+}
+function lineUnit(li,hrs){
+ let pl=li.price;
+ if(li.hours)pl+=Math.max(0,hrs-(Number(li.i.hours_incl)||0))*(Number(li.i.hour_price)||0);
+ const b=Math.round(pl*(1-(li.i.discount||0)/100));
+ return{b:b,u:S.urgent?urgMul(b):b,pl:pl};
+}
+function lineTotals(key){
+ const li=cLine(key);if(!li)return null;
+ const q=S.cart[key]||0;if(!q)return null;
+ let hr=0;
+ if(li.hours){const h=S.hrs[key];if(!h)return null;hr=h.t-h.f}
+ const u=lineUnit(li,hr),qq=li.hours?1:q;
+ return{li:li,q:qq,hr:hr,b:Math.round(u.b*qq),u:Math.round(u.u*qq),unit:u.u,from:li.hours?S.hrs[key].f:null,to:li.hours?S.hrs[key].t:null};
+}
+function cartCalc(days){
+ let n=0,sb_=0,su=0;const ls=[];
+ Object.keys(S.cart).forEach(k=>{const r=lineTotals(k);if(!r)return;n++;sb_+=r.b;su+=r.u;ls.push(r)});
+ const dys=days>1&&!S.urgent?days:1;
+ const nn=k=>Math.max(0,Number(ad(sv(k,'0')))||0);
+ const dd=nn('day_discount'),bm=nn('big_min'),bd=nn('big_discount');
+ let t=su,tb=sb_,dda=0,bda=0;
+ if(dys>1){dda=Math.min(dd*(dys-1),tb*dys);t=t*dys-dda;tb=tb*dys-dda}
+ if(bd>0&&bm>0&&tb>=bm){bda=Math.min(bd,tb);t-=bda;tb-=bda}
+ return{n:n,ls:ls,sub:su,days:dys,dda:dda,bda:bda,tt:t};
+}
+function cleanCart(){
+ Object.keys(S.cart).forEach(k=>{
+  const li=cLine(k),q=S.cart[k];
+  let ok=!!(li&&li.i.active&&(li.i.avail||'on')==='on'&&typeof q==='number'&&isFinite(q)&&q>0);
+  if(ok&&S.occ&&!itemVisible(li.i))ok=false;
+  if(ok&&li.hours){const h=S.hrs[k];ok=!!(h&&Number.isInteger(h.f)&&Number.isInteger(h.t)&&h.f>=0&&h.f<=23&&h.t>h.f&&h.t<=h.f+16&&h.t<=36)}
+  else if(ok){const r=(q-li.min)/li.step;ok=q>=li.min-1e-9&&q<=5000&&Math.abs(r-Math.round(r))<1e-9}
+  if(!ok){delete S.cart[k];delete S.hrs[k]}
+ });
+ Object.keys(S.hrs).forEach(k=>{if(!(k in S.cart))delete S.hrs[k]});
+ saveCart();
+}
+function stepKey(key,dir){
+ const li=cLine(key);if(!li||(li.i.avail||'on')!=='on'||li.hours)return 0;
+ const cur=S.cart[key]||0;let n;
+ if(dir>0)n=cur?cur+li.step:li.min;else{n=cur-li.step;if(n<li.min-1e-9)n=0}
+ n=Math.round(n*10)/10;
+ if(n>5000)n=cur;
+ if(n)S.cart[key]=n;else delete S.cart[key];
+ saveCart();return n;
+}
+function ruleTxt(li){
+ if(li.hours){const x=li.i;return 'يشمل '+(Number(x.hours_incl)||0)+' ساعات'+(Number(x.hour_price)>0?'، وكل ساعة اضافية '+money(Number(x.hour_price)):'')}
+ return li.min>1||li.step!==1?'أقل كمية '+fmtN(li.min)+'، وتزيد '+fmtN(li.step):'';
+}
+function dispPrice(i){
+ if(hasOpts(i)){
+  const ps=i.options.map(o=>{const li=cLine(i.id+'|'+o.k);return li&&li.price>0?lineUnit(li,0).u:null}).filter(x=>x!==null);
+  return ps.length?'ابتداءً من '+money(Math.min.apply(null,ps)):t('onreq');
+ }
+ const li=cLine(i.id);if(!li||!(li.price>0))return t('onreq');
+ const u=lineUnit(li,0);
+ if(li.hours)return money(u.u)+' لأول '+(Number(i.hours_incl)||0)+' ساعات';
+ const bs=S.urgent?urgMul(li.price):li.price;
+ return (i.discount>0?'<s>'+money(bs)+'</s>':'')+money(u.u);
+}
 function renderFlow(){
  const f=$('#flow');
  if(S.step==='occ'){
   f.innerHTML=`<div class="hd"><button id="fb">${ic('back')}</button><b>${t('occ_q')}</b></div><div class="bd"><div class="grid2">${OCC.map(o=>`<button class="big" data-o="${o}">${t(o)}${o==='other'?`<small>${t('other_s')}</small>`:''}</button>`).join('')}</div></div>`;
   f.querySelector('#fb').onclick=()=>go('feed');
-  f.querySelector('.bd').onclick=e=>{const b=e.target.closest('[data-o]');if(b){S.occ=b.dataset.o;S.meal=null;S.urgent=false;S.step=urgOn()?'when':'meal';renderFlow()}};
+  f.querySelector('.bd').onclick=e=>{const b=e.target.closest('[data-o]');if(b){S.occ=b.dataset.o;S.meal=null;S.urgent=false;cleanCart();S.step=urgOn()?'when':'meal';renderFlow()}};
  }else if(S.step==='when'){
   f.innerHTML=`<div class="hd"><button id="fb">${ic('back')}</button><b>متى تريد الخدمة؟</b></div><div class="bd"><div class="grid2"><button class="big" data-w="0">موعد الحجز<small>احجز لموعد قادم من الغد وما بعد</small></button><button class="big" data-w="1">مناسبة طارئة<small>لنفس اليوم</small></button></div></div>`;
   f.querySelector('#fb').onclick=()=>{S.step='occ';renderFlow()};
@@ -1467,18 +1560,67 @@ function renderSvc(){
  f.querySelector('#fc').onclick=()=>{S.step='occ';renderFlow()};
  f.querySelector('.tabs').onclick=e=>{const b=e.target.closest('[data-t]');if(b){S.tab=b.dataset.t;renderSvc()}};
  const cats=S.cats.filter(c=>c.tab===S.tab);let h='';
- cats.forEach(c=>{const its=S.items.filter(i=>i.category_id===c.id&&itemVisible(i));if(!its.length)return;h+=`<div class="cat">${esc(c.title)}</div>`+its.map(itemRow).join('')});
+ cats.forEach(c=>{const its=S.items.filter(i=>i.category_id===c.id&&itemVisible(i));if(!its.length)return;h+=`<div class="cat">${esc(c.title)}</div><div class="igrid">`+its.map(itemCard).join('')+`</div>`});
  f.querySelector('#svl').innerHTML=h||`<div class="empty">${t('empty')}</div>`;
- f.querySelector('#svl').onclick=e=>{const b=e.target.closest('[data-q]');if(!b)return;const id=b.dataset.id,d=Number(b.dataset.q);const n=Math.max(0,Math.min(999,(S.cart[id]||0)+d));if(n)S.cart[id]=n;else delete S.cart[id];saveCart();const r=b.closest('.it');if(r)r.querySelector('.qty span').textContent=n;cartBar()};
+ f.querySelector('#svl').onclick=e=>{
+  const b=e.target.closest('[data-q]'),o=e.target.closest('[data-opt]'),hh=e.target.closest('[data-hrs]');
+  if(b){const key=b.dataset.key,n=stepKey(key,Number(b.dataset.q));const r=b.closest('.it2');if(r)r.querySelector('.qty span').textContent=fmtN(n);cartBar();return}
+  if(o){const i=S.items.find(x=>x.id===o.dataset.opt);if(i&&(i.avail||'on')==='on')optSheet(i);return}
+  if(hh){const i=S.items.find(x=>x.id===hh.dataset.hrs);if(i&&(i.avail||'on')==='on')hoursSheet(i);return}
+ };
 }
-function itemRow(i){
- const q=S.cart[i.id]||0;
- const pr=i.price>0?(i.discount>0?`<s>${money(basePrice(i))}</s>${money(unitPrice(i))}`:money(basePrice(i))):t('onreq');
- return `<div class="it"><div class="ph">${i.image_url?`<img src="${esc(i.image_url)}" alt="" loading="lazy" onerror="this.remove()">`:esc((i.name||'?').slice(0,1))}</div>
-  <div class="in"><div class="nm">${esc(i.name)}</div><div class="mu">${esc(i.unit)}</div><div class="pr">${pr}</div></div>
-  <div class="qty"><button data-q="-1" data-id="${i.id}">-</button><span>${q}</span><button class="p" data-q="1" data-id="${i.id}">+</button></div></div>`;
+function cartCount(i){return Object.keys(S.cart).filter(k=>k===i.id||k.indexOf(i.id+'|')===0).length}
+function itemCard(i){
+ const off=(i.avail||'on')!=='on',opts=hasOpts(i),hrs=i.kind==='hours';
+ const ph=`<div class="ph2">${i.image_url?`<img src="${esc(i.image_url)}" alt="" loading="lazy" onerror="this.remove()">`:esc((i.name||'?').slice(0,1))}</div>`;
+ let rule='',ctl='';
+ if(!opts&&!off){const li=cLine(i.id);if(li)rule=ruleTxt(li)}
+ const cc=cartCount(i);
+ if(off)ctl=`<div class="na">${esc(availTxt(i))}</div>`;
+ else if(opts)ctl=`<button class="btn sec" data-opt="${esc(i.id)}">${cc?'تعديل الاختيار':'اختر'}</button>`;
+ else if(hrs)ctl=`<button class="btn${cc?' sec':''}" data-hrs="${esc(i.id)}">${cc?'تعديل الوقت':'حدد الوقت'}</button>`;
+ else ctl=`<div class="qty"><button data-q="-1" data-key="${esc(i.id)}">-</button><span>${fmtN(S.cart[i.id]||0)}</span><button class="p" data-q="1" data-key="${esc(i.id)}">+</button></div>`;
+ return `<div class="it2${off?' off':''}">${cc&&(opts||hrs)&&!off?`<span class="cb">${cc}</span>`:''}${ph}<div class="nm">${esc(i.name)}</div>${opts?'':`<div class="mu">${esc(i.unit||'')}</div>`}${rule?`<div class="rl">${esc(rule)}</div>`:''}<div class="pr">${off?'':dispPrice(i)}</div><div class="ct">${ctl}</div></div>`;
 }
-function cartTotal(){let n=0,tt=0;Object.entries(S.cart).forEach(([id,q])=>{const i=S.items.find(x=>x.id===id);if(i){n+=q;tt+=unitPrice(i)*q}});return{n,tt}}
+function optSheet(i){
+ const rows=i.options.map(o=>{
+  const k=i.id+'|'+o.k,li=cLine(k);if(!li)return '';
+  const u=lineUnit(li,0),r=ruleTxt(li);
+  return `<div class="osl" data-k="${esc(k)}"><div class="row"><b style="flex:2">${esc(o.l)}</b><span style="flex:2;text-align:left;color:var(--gold2)">${li.price>0?money(u.u):t('onreq')}${li.unit?' - '+esc(li.unit):''}</span></div>${r?`<div class="mu" style="font-size:12px;margin-top:2px">${esc(r)}</div>`:''}<div class="qty" style="justify-content:space-between;margin-top:8px"><button data-q="-1" data-key="${esc(k)}">-</button><span>${fmtN(S.cart[k]||0)}</span><button class="p" data-q="1" data-key="${esc(k)}">+</button></div></div>`;
+ }).join('');
+ const s=sheet(`<h3>${esc(i.name)}</h3>${rows}<button class="btn" id="oko">تم</button>`,()=>{renderSvc();cartBar()});
+ s.addEventListener('click',e=>{
+  const b=e.target.closest('[data-q]');
+  if(b){const n=stepKey(b.dataset.key,Number(b.dataset.q));const r=b.closest('.osl');if(r)r.querySelector('.qty span').textContent=fmtN(n);return}
+  if(e.target.closest('#oko'))s.close();
+ });
+}
+function hoursSheet(i){
+ const key=i.id,cur=S.hrs[key]||{f:10,t:14};
+ const opt=(a,b,sel)=>{let h='';for(let x=a;x<=b;x++)h+=`<option value="${x}"${x===sel?' selected':''}>${hLbl(x)}</option>`;return h};
+ const s=sheet(`<h3>${esc(i.name)}</h3><div class="mu">${esc(ruleTxt(cLine(key)))}</div>
+  <label>من الساعة</label><select id="hf">${opt(0,23,cur.f)}</select>
+  <label>إلى الساعة</label><select id="ht">${opt(1,36,cur.t)}</select>
+  <div class="card" style="margin-top:10px"><b id="hp"></b><div class="mu" id="hn" style="font-size:12px"></div></div>
+  <button class="btn" id="hok">${S.cart[key]?'تحديث':'إضافة للسلة'}</button>${S.cart[key]?'<button class="btn bad" id="hrm">إزالة من السلة</button>':''}`,()=>{renderSvc();cartBar()});
+ const f=s.querySelector('#hf'),t_=s.querySelector('#ht'),pp=s.querySelector('#hp'),nn=s.querySelector('#hn');
+ const li=cLine(key);
+ const valid=()=>{const a=Number(f.value),b=Number(t_.value);return b>a&&b<=a+16&&b<=36};
+ const upd=()=>{
+  const a=Number(f.value),b=Number(t_.value);
+  if(!valid()){pp.textContent='';nn.textContent=b<=a?'وقت النهاية لازم يكون بعد وقت البداية':'أقصى مدة 16 ساعة';return}
+  const u=lineUnit(li,b-a);
+  pp.textContent=(li.price>0?money(u.u):t('onreq'));nn.textContent='المدة: '+(b-a)+' ساعة';
+ };
+ f.onchange=()=>{if(Number(t_.value)<=Number(f.value))t_.value=String(Math.min(36,Number(f.value)+Math.max(1,Number(li.i.hours_incl)||1)));upd()};
+ t_.onchange=upd;upd();
+ s.querySelector('#hok').onclick=()=>{
+  if(!valid())return toast('اختر وقتاً صحيحاً');
+  S.cart[key]=1;S.hrs[key]={f:Number(f.value),t:Number(t_.value)};saveCart();s.close();
+ };
+ const rm=s.querySelector('#hrm');if(rm)rm.onclick=()=>{delete S.cart[key];delete S.hrs[key];saveCart();s.close()};
+}
+function cartTotal(){const c=cartCalc(1);return{n:c.n,tt:c.tt}}
 function cartBar(){
  const c=cartTotal(),b=$('#cartbar');
  if(S.screen==='flow'&&S.step==='svc'&&c.n>0){b.classList.add('on');b.innerHTML=`<div><b>${t('cart')}: ${c.n}</b><div class="mu">${t('total')}: ${money(c.tt)}${minOrder()&&c.tt<minOrder()?' | أقل مبلغ للطلب '+money(minOrder()):''}</div></div><button class="btn" id="cko">${t('checkout')}</button>`;b.querySelector('#cko').onclick=()=>checkout()}
@@ -1488,17 +1630,27 @@ function minOrder(){const m=Number(ad(sv('min_order','0')));return isFinite(m)&&
 function checkout(){
  const c=cartTotal();if(!c.n)return;
  const mo=minOrder();if(mo&&c.tt<mo)return toast('أقل مبلغ للطلب '+money(mo)+'، أضف عناصر أكثر',4500);
- const lines=Object.entries(S.cart).map(([id,q])=>{const i=S.items.find(x=>x.id===id);return i?`<div class="row" style="font-size:14px;padding:3px 0"><span style="flex:3">${esc(i.name)} × ${q}</span><span style="flex:2;text-align:left">${i.price>0?money(unitPrice(i)*q):t('onreq')}</span></div>`:''}).join('');
+ const calc0=cartCalc(1);
+ const lines=calc0.ls.map(r=>`<div class="row" style="font-size:14px;padding:3px 0"><span style="flex:3">${esc(r.li.name)}${r.li.hours?' ('+esc(hLbl(r.from))+' - '+esc(hLbl(r.to))+')':' × '+fmtN(r.q)}</span><span style="flex:2;text-align:left">${r.li.price>0?money(r.u):t('onreq')}</span></div>`).join('');
  let loc=null;
- const s=sheet(`<h3>${t('checkout')}</h3><div class="card">${lines}<hr style="border:0;border-top:1px solid var(--line);margin:6px 0"><b id="ctt">${t('total')}: ${money(c.tt)}</b></div>
+ const s=sheet(`<h3>${t('checkout')}</h3><div class="card">${lines}<hr style="border:0;border-top:1px solid var(--line);margin:6px 0"><div id="cbrk"></div><b id="ctt">${t('total')}: ${money(c.tt)}</b></div>
   <label>${t('name')}</label><input id="cn" value="${esc(S.me?S.me.username:'')}" maxlength="60">
   <label>${t('phone')}</label><input id="cp" type="tel" inputmode="numeric" maxlength="11" placeholder="07xxxxxxxxx" value="${esc(S.priv&&S.priv.phone?'0'+S.priv.phone.replace(/^964/,''):'')}">
   <label>${t('phone2')}</label><input id="cp2" type="tel" inputmode="numeric" maxlength="11" placeholder="07xxxxxxxxx">
   <label>${t('date')}</label><input id="cd" type="date" min="${tomorrow()}" value="${tomorrow()}"><div class="mu" style="font-size:12px;margin-top:4px" id="cdn">أقرب موعد للحجز: غداً</div>
+  ${(MAXD[S.occ]>1&&!S.urgent)?`<label>عدد أيام الحجز</label><select id="cdy">${Array.from({length:MAXD[S.occ]},(_,k)=>`<option value="${k+1}">${k===0?'يوم واحد':k===1?'يومان':(k+1)+' أيام'}</option>`).join('')}</select>`:''}
   <label>${t('address')}</label><textarea id="ca" rows="2" maxlength="300"></textarea>
   <button class="btn sec" id="cl">${t('locate')}</button>
   <div id="wlr"></div>
   <button class="btn" id="cok">${t('confirm')}</button>`);
+ const recalc=()=>{
+  const dsel=s.querySelector('#cdy'),dys=dsel?Number(dsel.value):1,cc=cartCalc(dys);let bk='';
+  if(cc.days>1)bk+=`<div class="mu" style="font-size:13px">مجموع اليوم الواحد ${money(cc.sub)} × ${cc.days} أيام</div>`;
+  if(cc.dda>0)bk+=`<div class="row" style="font-size:13px;color:var(--ok)"><span>خصم الأيام الإضافية</span><span style="text-align:left">- ${money(cc.dda)}</span></div>`;
+  if(cc.bda>0)bk+=`<div class="row" style="font-size:13px;color:var(--ok)"><span>خصم الطلب الكبير</span><span style="text-align:left">- ${money(cc.bda)}</span></div>`;
+  s.querySelector('#cbrk').innerHTML=bk;s.querySelector('#ctt').textContent=t('total')+': '+money(cc.tt);
+ };
+ const dsl=s.querySelector('#cdy');if(dsl)dsl.onchange=recalc;recalc();
  let walDone=false;const loadWal=async()=>{if(walDone||!S.user)return;walDone=true;try{const r=await sb.rpc('my_wallet');const bal=r&&r.data&&Number(r.data.balance)||0;if(bal>0){const w=s.querySelector('#wlr');if(w&&!s.querySelector('#wlc'))w.innerHTML=`<label style="display:flex;gap:8px;align-items:center;color:var(--tx);font-size:14px"><input type="checkbox" id="wlc" checked> استخدم رصيد المحفظة (${money(bal)})</label>`}}catch(e){}};
  loadWal();
  const clb=s.querySelector('#cl');
@@ -1529,11 +1681,13 @@ function checkout(){
   try{
    if(!walDone){await loadWal();if(s.querySelector('#wlc')){toast('عندك رصيد بالمحفظة، تأكد من خيار الاستخدام ثم اضغط تأكيد',4500);return}}
    if(!await getLoc()){toast('تأكيد الحجز يحتاج موقعك. اسمح بالموقع ثم اضغط تأكيد',5500);return}
-   const items=Object.entries(S.cart).map(([id,qty])=>({id,qty}));
-   const r=await Q(sb.rpc('place_booking',{p_name:g('cn'),p_phone:ad(g('cp')),p_phone2:ad(g('cp2'))||null,p_area:null,p_address:g('ca'),p_lat:loc?loc.lat:null,p_lng:loc?loc.lng:null,p_occasion:S.occ,p_meal:S.meal,p_date:date,p_items:items,p_use_wallet:!!(s.querySelector('#wlc')&&s.querySelector('#wlc').checked)}));
-   const txt=`طلب جديد من تطبيق طباخكم${r.urgent?' (طارئ)':''}\nالمناسبة: ${t(S.occ)} - ${t(S.meal)}\nالتاريخ: ${date}\nالاسم: ${g('cn')}\nالعنوان: ${g('ca')}\nالمجموع: ${money(r.total)}`;
-   S.cart={};saveCart();s.close();
-   const d=sheet(`<h3>${t('done')}</h3><p class="mu" style="margin:8px 0">${t('done2')}</p><div class="card"><b>${t('total')}: ${money(r.total)}</b>${r.discount>0?`<div class="mu">-${r.discount}%</div>`:''}${r.wallet_used>0?`<div class="mu">من المحفظة: ${money(r.wallet_used)}</div><b>المتبقي عليك: ${money(r.due)}</b>`:''}</div>
+   const dsel=s.querySelector('#cdy'),dys=(dsel&&!u)?Number(dsel.value):1;
+   const items=Object.keys(S.cart).map(k=>{const li=cLine(k);if(!li)return null;const o={id:li.i.id};if(li.o)o.opt=li.o.k;if(li.hours){const h=S.hrs[k];if(!h)return null;o.from=h.f;o.to=h.t}else o.qty=Math.round(S.cart[k]*10)/10;return o}).filter(Boolean);
+   if(!items.length){toast('السلة فارغة');return}
+   const r=await Q(sb.rpc('place_booking',{p_name:g('cn'),p_phone:ad(g('cp')),p_phone2:ad(g('cp2'))||null,p_area:null,p_address:g('ca'),p_lat:loc?loc.lat:null,p_lng:loc?loc.lng:null,p_occasion:S.occ,p_meal:S.meal,p_date:date,p_items:{days:dys,items:items},p_use_wallet:!!(s.querySelector('#wlc')&&s.querySelector('#wlc').checked)}));
+   const txt=`طلب جديد من تطبيق طباخكم${r.urgent?' (طارئ)':''}\nالمناسبة: ${t(S.occ)} - ${t(S.meal)}\nالتاريخ: ${date}\n${r.days>1?'مدة الحجز: '+r.days+' أيام\n':''}الاسم: ${g('cn')}\nالعنوان: ${g('ca')}\nالمجموع: ${money(r.total)}`;
+   S.cart={};S.hrs={};saveCart();s.close();
+   const d=sheet(`<h3>${t('done')}</h3><p class="mu" style="margin:8px 0">${t('done2')}</p><div class="card"><b>${t('total')}: ${money(r.total)}</b>${r.days>1?`<div class="mu">مدة الحجز: ${r.days} أيام</div>`:''}${r.day_discount>0?`<div class="mu">خصم الأيام الإضافية: -${money(r.day_discount)}</div>`:''}${r.big_discount>0?`<div class="mu">خصم الطلب الكبير: -${money(r.big_discount)}</div>`:''}${r.discount>0?`<div class="mu">-${r.discount}%</div>`:''}${r.wallet_used>0?`<div class="mu">من المحفظة: ${money(r.wallet_used)}</div><b>المتبقي عليك: ${money(r.due)}</b>`:''}</div>
     <button class="btn sec" id="dtr">تتبع الطلب</button>
     <a class="btn sec" style="text-decoration:none" target="_blank" rel="noopener" href="https://wa.me/${esc(sv('wa','9647817964134'))}?text=${encodeURIComponent(txt)}">${t('sendwa')}</a>
     <button class="btn" id="dok">${t('close')}</button>`);
@@ -1561,7 +1715,7 @@ async function openOrders(mode){
   s.querySelector('#ol').innerHTML=d.length?d.map(b=>`<div class="card"><div class="row"><b style="flex:2">${t(b.occasion)} - ${t(b.meal)}${b.urgent?' - طارئ':''}</b><span class="chip ${b.status}" style="flex:none">${t('st_'+b.status)}</span></div>
    ${stepper(b)}
    <div class="mu">${esc(b.event_date)} | ${money(b.total)}${b.wallet_used>0?' (من المحفظة '+money(b.wallet_used)+')':''}</div>
-   <div class="mu">${(b.items||[]).map(l=>esc(l.name)+' × '+l.qty).join('، ')}</div>
+   <div class="mu">${fmtItems(b)}</div>
    <button class="btn sm" data-t="${b.id}">تتبع الطلب</button> <button class="btn sm sec" data-c="${b.id}">${t('chat')}</button>
    ${b.rate_requested&&!b.call_stars?`<button class="btn sm" data-r="${b.id}">${t('rate_q')}</button>`:''}${b.call_stars?`<span class="mu"> مكالمة ${'★'.repeat(b.call_stars)}</span>`:''}
    ${b.status==='delivered'&&!b.service_stars?`<button class="btn sm" data-sv="${b.id}">قيّم الخدمة</button>`:''}${b.service_stars?`<span class="mu"> الخدمة ${'★'.repeat(b.service_stars)}</span>`:''}${b.chat_stars?`<span class="mu"> المحادثة ${'★'.repeat(b.chat_stars)}</span>`:''}</div>`).join(''):`<div class="empty">${mode==='active'?'ما عندك طلبات حالية':t('no_orders')}</div>`;
@@ -1833,7 +1987,7 @@ async function admOrders(){
    <div class="l">${fmtDT(b.created_at)}<br><b>${t(b.occasion)} - ${t(b.meal)}${b.urgent?' - طارئ':''}</b> | التاريخ: <b>${esc(b.event_date)}</b><br>
    الهاتف: <a href="tel:${esc(b.phone)}">${esc(b.phone)}</a>${b.phone2?` / <a href="tel:${esc(b.phone2)}">${esc(b.phone2)}</a>`:''} | <a target="_blank" rel="noopener" href="${waLink(b.phone)}">واتساب</a><br>
    العنوان: ${esc(b.address)}${b.lat?` | <a target="_blank" rel="noopener" href="https://www.google.com/maps?q=${Number(b.lat)},${Number(b.lng)}">الخريطة</a>`:''}<br>
-   ${(b.items||[]).map(l=>esc(l.name)+' × '+l.qty).join('، ')}<br>
+   ${fmtItems(b)}<br>
    المجموع: <b>${money(b.total)}</b>${b.discount>0?` (خصم ${b.discount}%)`:''}${pf[b.id]?` | الربح: <b style="color:var(--ok)">${money(pf[b.id].profit)}</b>`:''}
    ${(bpm[b.id]||[]).map(r=>`<br>${t('tab_'+r.tab)||''} - المقدم: <b>${esc((pvm[r.provider_id]||{}).name||'')}</b> | الأجرة: <b>${money(r.pay)}</b> | <b style="color:${r.state==='accepted'?'var(--ok)':r.state==='declined'?'var(--bad)':'inherit'}">${r.state==='accepted'?'قبل الطلب':r.state==='declined'?'رفض الطلب':'بانتظار رده'}</b>`).join('')}${(bom[b.id]||[]).filter(o=>!(bpm[b.id]||[]).some(r=>r.tab===o.tab&&r.state==='accepted')).map(o=>`<br>${t('tab_'+o.tab)} - معروض على الكل بأجرة <b>${money(o.pay)}</b>`).join('')}
    ${b.call_stars?`<br>تقييم المكالمة: <b>${'★'.repeat(b.call_stars)}</b> ${esc(b.call_note||'')}`:b.rate_requested?'<br>بانتظار تقييم الزبون':''}${b.service_stars?`<br>تقييم الخدمة: <b>${'★'.repeat(b.service_stars)}</b> ${esc(b.service_note||'')}`:''}${b.chat_stars?`<br>تقييم المحادثة: <b>${'★'.repeat(b.chat_stars)}</b> ${esc(b.chat_note||'')}`:''}</div>
@@ -1866,12 +2020,17 @@ async function admItems(){
   cs.forEach(c=>{
    h+=`<div class="row" style="margin-top:10px"><b style="flex:3;color:var(--gold2)">${esc(c.title)}</b><span style="flex:none"><button class="btn sm" data-a="additem" data-id="${c.id}">+ أيتم</button><button class="btn sm bad" data-a="delcat" data-id="${c.id}">حذف القسم</button></span></div>`;
    S.items.filter(i=>i.category_id===c.id).forEach(i=>{
-    h+=`<div class="it" style="${i.active?'':'opacity:.5'}"><div class="ph">${i.image_url?`<img src="${esc(i.image_url)}" alt="" onerror="this.remove()">`:esc(i.name.slice(0,1))}</div><div class="in"><div class="nm">${esc(i.name)}</div><div class="pr">${money(i.price)}${i.discount>0?` | خصم ${i.discount}%`:''} | ربح ${i.profit_pct}%</div></div>
+    h+=`<div class="it" style="${i.active?'':'opacity:.5'}"><div class="ph">${i.image_url?`<img src="${esc(i.image_url)}" alt="" onerror="this.remove()">`:esc(i.name.slice(0,1))}</div><div class="in"><div class="nm">${esc(i.name)}</div><div class="pr">${money(i.price)}${i.discount>0?` | خصم ${i.discount}%`:''}${i.kind==='hours'?' | بالساعات':''}${hasOpts(i)?` | ${i.options.length} خيارات`:''}${(Number(i.min_qty)>1||Number(i.step)!==1)?` | أقل ${fmtN(i.min_qty)} +${fmtN(i.step)}`:''}</div>
+    <label class="perm" style="margin:4px 0 0"><input type="checkbox" data-av="${i.id}" ${(i.avail||'on')==='on'?'checked':''}> متوفر</label></div>
     <div><button class="btn sm sec" data-a="edit" data-id="${i.id}">تعديل</button><button class="btn sm bad" data-a="del" data-id="${i.id}">حذف</button></div></div>`;
    });
   });
  });
  box.innerHTML=h;
+ box.onchange=async e=>{
+  const c=e.target.closest('[data-av]');if(!c)return;
+  try{await Q(sb.from('items').update({avail:c.checked?'on':'booked'}).eq('id',c.dataset.av));const it=S.items.find(x=>x.id===c.dataset.av);if(it)it.avail=c.checked?'on':'booked';toast(c.checked?'صار متوفر':'ظهر للزبون: '+(it&&it.avail_note&&it.avail_note.trim()||AV_TXT.booked),2500)}catch(x){c.checked=!c.checked;toast(errMsg(x))}
+ };
  box.onclick=async e=>{
   const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a,id=b.dataset.id;
   try{
@@ -1889,12 +2048,19 @@ function catForm(){
 }
 async function itemForm(it,catId){
  if(it){try{const m=await Q(sb.rpc('admin_items'));const f=(m||[]).find(x=>x.id===it.id);if(f)it=Object.assign({},it,{profit_pct:f.profit_pct})}catch(e){}}
- const n=!it;it=it||{name:'',unit:'',price:0,discount:0,profit_pct:0,image_url:'',occasions:null,active:true,category_id:catId};
+ const n=!it;it=it||{name:'',unit:'',price:0,discount:0,profit_pct:0,image_url:'',occasions:null,active:true,category_id:catId,min_qty:1,step:1,kind:'qty',hours_incl:3,hour_price:0,avail:'on',avail_note:'',options:null};
+ const optTxt=(Array.isArray(it.options)?it.options:[]).map(o=>[o.l,o.price==null?'':o.price,o.min==null?'':o.min,o.step==null?'':o.step,o.unit||''].join('|')).join('\n');
  const oc=it.occasions||[];
  const s=sheet(`<h3>${n?'أيتم جديد':'تعديل الأيتم'}</h3>
   <label>الاسم</label><input id="in" maxlength="80" value="${esc(it.name)}">
   <label>الوحدة (مثل: للكيلو، للقزان)</label><input id="iu" maxlength="40" value="${esc(it.unit)}">
   <div class="grid2"><div><label>السعر (0 = حسب الطلب)</label><input id="ip" type="number" inputmode="numeric" min="0" value="${it.price}"></div><div><label>الخصم %</label><input id="id" type="number" inputmode="numeric" min="0" max="100" value="${it.discount}"></div></div>
+  <div class="grid2"><div><label>أقل كمية</label><input id="imq" type="number" inputmode="decimal" step="any" min="0.1" value="${it.min_qty==null?1:it.min_qty}"></div><div><label>الزيادة (الخطوة)</label><input id="ist" type="number" inputmode="decimal" step="any" min="0.1" value="${it.step==null?1:it.step}"></div></div>
+  <label>نوع الحجز</label><select id="ik"><option value="qty"${it.kind!=='hours'?' selected':''}>بالكمية</option><option value="hours"${it.kind==='hours'?' selected':''}>بالساعات (من وقت إلى وقت)</option></select>
+  <div class="grid2"><div><label>الساعات المشمولة بالسعر (للساعات)</label><input id="ihi" type="number" inputmode="numeric" min="0" max="24" value="${it.hours_incl==null?3:it.hours_incl}"></div><div><label>سعر الساعة الإضافية (للساعات)</label><input id="ihp" type="number" inputmode="numeric" min="0" value="${it.hour_price==null?0:it.hour_price}"></div></div>
+  <label>الخيارات داخل الأيتم (اختياري). كل خيار بسطر: الاسم|السعر|أقل كمية|الزيادة|الوحدة</label><textarea id="iop" rows="4" placeholder="قلي|2000|1.5|0.5|للكيلو">${esc(optTxt)}</textarea>
+  <label>التوفر</label><select id="iav"><option value="on"${(it.avail||'on')==='on'?' selected':''}>متوفر</option><option value="booked"${it.avail==='booked'?' selected':''}>تم تأجير كامل العدد</option><option value="off"${it.avail==='off'?' selected':''}>غير متاح حالياً</option></select>
+  <label>عبارة تظهر للزبون عند عدم التوفر (اختياري)</label><input id="ian" maxlength="60" value="${esc(it.avail_note||'')}">
   <label>نسبة ربحك من الأيتم %</label><input id="ir" type="number" inputmode="numeric" min="0" max="100" value="${it.profit_pct}">
   <label>الصورة (رفع صورة أو رابط)</label><input id="if" type="file" accept="image/*"><input id="iurl" placeholder="https://..." value="${esc(it.image_url||'')}" style="margin-top:6px">
   <label>يظهر في المناسبات (بدون اختيار = كل المناسبات)</label>
@@ -1909,7 +2075,23 @@ async function itemForm(it,catId){
    let url=g('iurl')||null;const f=s.querySelector('#if').files[0];
    if(f){const b=await imgBlob(f,800),path='i_'+Date.now()+'.jpg';await Q(sb.storage.from('items').upload(path,b,{contentType:'image/jpeg'}));url=sb.storage.from('items').getPublicUrl(path).data.publicUrl}
    const occ=[...s.querySelectorAll('[data-o]:checked')].map(x=>x.dataset.o);
-   const row={name:g('in'),unit:g('iu'),price:Math.max(0,Number(g('ip'))||0),discount:Math.min(100,Math.max(0,Number(g('id'))||0)),profit_pct:Math.min(100,Math.max(0,Number(g('ir'))||0)),image_url:url,occasions:occ.length?occ:null,active:s.querySelector('#ia').checked};
+   const num=(x,d)=>{const v=Number(ad(String(x||'')));return isFinite(v)&&v>0?v:d};
+   const oldO=Array.isArray(it.options)?it.options:[];let mk=oldO.reduce((m,o)=>Math.max(m,Number(String(o.k||'').replace(/\D/g,''))||0),0);
+   const lines=g('iop').split('\n').map(x=>x.trim()).filter(Boolean);
+   const opts=[];
+   for(const ln of lines){
+    const p=ln.split('|').map(x=>x.trim());if(!p[0])throw new Error('اسم الخيار ناقص في سطر: '+ln);
+    const pr=p[1]===undefined||p[1]===''?null:Number(ad(p[1]));if(pr!==null&&(!isFinite(pr)||pr<0))throw new Error('سعر غير صحيح في سطر: '+ln);
+    const ex=oldO.find(o=>o.l===p[0]);const o={k:ex?ex.k:'o'+(++mk),l:p[0]};
+    if(pr!==null)o.price=pr;
+    const mn=p[2]?num(p[2],0):0,st=p[3]?num(p[3],0):0;if(p[2]&&!mn)throw new Error('أقل كمية غير صحيحة في سطر: '+ln);if(p[3]&&!st)throw new Error('الزيادة غير صحيحة في سطر: '+ln);
+    if(mn)o.min=mn;if(st)o.step=st;if(p[4])o.unit=p[4];
+    opts.push(o);
+   }
+   if(opts.length>12)throw new Error('الحد الأعلى 12 خياراً');
+   const row={name:g('in'),unit:g('iu'),price:Math.max(0,Number(ad(g('ip')))||0),discount:Math.min(100,Math.max(0,Number(ad(g('id')))||0)),profit_pct:Math.min(100,Math.max(0,Number(ad(g('ir')))||0)),image_url:url,occasions:occ.length?occ:null,active:s.querySelector('#ia').checked,
+    min_qty:Math.min(5000,num(g('imq'),1)),step:Math.min(5000,num(g('ist'),1)),kind:s.querySelector('#ik').value==='hours'?'hours':'qty',hours_incl:Math.min(24,Math.max(0,Math.round(Number(ad(g('ihi')))||0))),hour_price:Math.max(0,Number(ad(g('ihp')))||0),
+    avail:['on','booked','off'].includes(s.querySelector('#iav').value)?s.querySelector('#iav').value:'on',avail_note:g('ian')||null,options:opts.length?opts:null};
    if(n)await Q(sb.from('items').insert({...row,category_id:it.category_id,sort:S.items.length+1}));else await Q(sb.from('items').update(row).eq('id',it.id));
    s.close();admItems();
   }catch(e){toast(errMsg(e))}finally{ev.target.disabled=false}
@@ -1999,7 +2181,7 @@ async function admReport(){
    const d=await Q(sb.from('bookings').select('*').eq('status','delivered').order('created_at',{ascending:false}).limit(1000));
    const pf={};(await Q(sb.from('booking_profit').select('*').in('booking_id',d.map(x=>x.id).slice(0,1000)))).forEach(x=>pf[x.booking_id]=x);
    const rows=[['رقم الطلب','تاريخ الطلب','الاسم','الهاتف','المناسبة','الوجبة','تاريخ المناسبة','العنوان','الأيتمات','الخصم %','المجموع','الربح','تاريخ الإنجاز']];
-   d.forEach(b=>rows.push([b.id.slice(0,8),b.created_at.slice(0,10),b.name,b.phone,t(b.occasion),t(b.meal),b.event_date,b.address,(b.items||[]).map(l=>l.name+' x'+l.qty).join(' | '),b.discount,b.total,pf[b.id]?pf[b.id].profit:'',pf[b.id]?pf[b.id].completed_at.slice(0,10):'']));
+   d.forEach(b=>rows.push([b.id.slice(0,8),b.created_at.slice(0,10),b.name,b.phone,t(b.occasion),t(b.meal),b.event_date,b.address,(b.items||[]).map(l=>l.name+(l.from!=null?' ('+l.from+'-'+l.to+')':' x'+l.qty)).join(' | ')+(b.days>1?' | '+b.days+' days':''),b.discount,b.total,pf[b.id]?pf[b.id].profit:'',pf[b.id]?pf[b.id].completed_at.slice(0,10):'']));
    const csv='﻿'+rows.map(r=>r.map(csvEsc).join(',')).join('\r\n');
    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='tabakhkum-orders-'+today()+'.csv';document.body.appendChild(a);a.click();a.remove();
   }catch(e){toast(errMsg(e))}
@@ -2062,7 +2244,7 @@ async function admVerify(){
 async function admSettings(){
  const box=$('#abd');
  await loadSettings();
- const F2=[['wa','رقم واتساب الطلبات (بصيغة 964...)'],['urgent_pct','نسبة زيادة الحجز الطارئ بالمئة'],['lunch_close','آخر ساعة لحجز غداء لنفس اليوم (مثلاً 10)'],['urgent_dinner_close','آخر ساعة لحجز عشاء لنفس اليوم (مثلاً 17)'],['support_phone','رقم دعم 1'],['support_phone2','رقم دعم 2'],['goal','عدد التفاعلات لكل مكافأة'],['pct','نسبة خصم المكافأة %'],['max_staff','أقصى عدد موظفين'],['wa_verify','رقم واتساب التوثيق (إن اختلف)'],['min_order','أقل مبلغ للطلب (دينار)، 0 يعني بلا حد'],['ref_bonus','مبلغ مكافأة الدعوة لكل طرف (دينار)، للمالك فقط'],['ref_min_total','أقل مبلغ نقدي للطلب حتى تنحسب مكافأة الدعوة (دينار)، للمالك فقط']];
+ const F2=[['wa','رقم واتساب الطلبات (بصيغة 964...)'],['urgent_pct','نسبة زيادة الحجز الطارئ بالمئة'],['lunch_close','آخر ساعة لحجز غداء لنفس اليوم (مثلاً 10)'],['urgent_dinner_close','آخر ساعة لحجز عشاء لنفس اليوم (مثلاً 17)'],['support_phone','رقم دعم 1'],['support_phone2','رقم دعم 2'],['goal','عدد التفاعلات لكل مكافأة'],['pct','نسبة خصم المكافأة %'],['max_staff','أقصى عدد موظفين'],['wa_verify','رقم واتساب التوثيق (إن اختلف)'],['min_order','أقل مبلغ للطلب (دينار)، 0 يعني بلا حد'],['day_discount','خصم كل يوم إضافي من الحجز متعدد الأيام (دينار)'],['big_min','حد الطلب الكبير بالدينار (0 = بلا خصم)'],['big_discount','خصم الطلب الكبير بالدينار'],['ref_bonus','مبلغ مكافأة الدعوة لكل طرف (دينار)، للمالك فقط'],['ref_min_total','أقل مبلغ نقدي للطلب حتى تنحسب مكافأة الدعوة (دينار)، للمالك فقط']];
  const T2=[['urgent_on','تفعيل الحجز الطارئ لنفس اليوم'],['show_book_btn','إظهار زر "احجز" تحت الريلز'],['require_verified','اشتراط الرقم الموثق للنشر والتعليق والطلب']];
  let rw=[];try{rw=await Q(sb.from('rewards').select('id,pct,created_at,profiles(username)').eq('approved',false).order('created_at'))}catch(e){}
  box.innerHTML=F2.map(f=>`<label>${f[1]}</label><input data-k="${f[0]}" value="${esc(S.set[f[0]]||'')}">`).join('')+T2.map(f=>`<label class="perm"><input type="checkbox" data-k="${f[0]}" ${S.set[f[0]]==='1'?'checked':''}> ${f[1]}</label>`).join('')+
