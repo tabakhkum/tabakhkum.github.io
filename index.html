@@ -150,7 +150,8 @@ a{color:var(--gold2)}
 .tabs::-webkit-scrollbar{display:none}
 .tab{padding:8px 14px;border-radius:20px;background:var(--card);white-space:nowrap;font-size:14px}
 .tab.on{background:var(--gold);color:#fff;font-weight:700}
-.cat{margin:14px 0 8px;font-weight:700;color:var(--gold2);font-size:15px}
+.cat{margin:20px 0 10px;font-weight:800;color:#f1f5f9;font-size:17px;display:flex;align-items:center;gap:8px}
+.cat::before{content:'';width:4px;height:18px;border-radius:3px;background:var(--gold);flex:none}
 .it{display:flex;gap:10px;background:var(--card);border-radius:14px;padding:8px;margin-bottom:8px;align-items:center}
 .it .ph{width:68px;height:68px;border-radius:10px;background:linear-gradient(135deg,#334155,#1e293b);flex:none;overflow:hidden;display:flex;align-items:center;justify-content:center;color:var(--mu);font-weight:800;font-size:22px}
 .it .ph img{width:100%;height:100%;object-fit:cover}
@@ -158,28 +159,35 @@ a{color:var(--gold2)}
 .it .nm{font-weight:700;font-size:15px}
 .it .pr{font-size:13px;color:var(--gold2);margin-top:2px}
 .it .pr s{color:var(--mu);margin-left:6px}
-.igrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.it2{position:relative;background:var(--card);border-radius:14px;padding:8px;display:flex;flex-direction:column;gap:4px;min-width:0}
-.it2 .ph2{aspect-ratio:2.3/1;border-radius:10px;background:linear-gradient(135deg,#334155,#1e293b);overflow:hidden;display:flex;align-items:center;justify-content:center;color:var(--mu);font-weight:800;font-size:26px}
+.igrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.it2{position:relative;background:linear-gradient(180deg,#1a2338,#151d30);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:8px;display:flex;flex-direction:column;gap:6px;min-width:0;box-shadow:0 6px 18px rgba(0,0,0,.28)}
+.it2 .ph2{aspect-ratio:16/10;border-radius:12px;background:radial-gradient(120% 120% at 20% 10%,#3a2a14 0%,#1f2a44 60%,#18223a 100%);overflow:hidden;display:flex;align-items:center;justify-content:center;color:rgba(251,191,36,.55);position:relative}
+.it2 .ph2 .ic{width:34px;height:34px;stroke-width:1.5}
 .it2 .ph2 img{width:100%;height:100%;object-fit:cover}
-.it2 .bx{display:flex;flex-direction:column;gap:1px;min-width:0}
-.it2 .nm{font-weight:700;font-size:14.5px;line-height:1.3;margin-top:2px}
-.it2 .mu{font-size:11.5px}
-.it2 .rl{font-size:11px;color:var(--mu);line-height:1.35}
-.it2 .pr{font-size:13.5px;color:var(--gold2);font-weight:700}
-.it2 .pr s{color:var(--mu);margin-left:6px;font-weight:400}
-.it2 .ct{margin-top:auto;padding-top:5px}
-.it2 .ct .btn{margin:0;padding:8px 6px;font-size:13.5px}
-.it2 .qty{justify-content:space-between;width:100%}
+.it2 .bx{display:flex;flex-direction:column;gap:2px;min-width:0;padding:2px 4px 0}
+.it2 .nm{font-weight:700;font-size:15px;line-height:1.35;color:#f1f5f9}
+.it2 .mu{font-size:11.5px;color:#8b97ad}
+.it2 .rl{font-size:11px;color:#8b97ad;line-height:1.4}
+.it2 .pr{font-size:14.5px;color:#fbbf24;font-weight:800;margin-top:2px}
+.it2 .pr small{font-size:11.5px;font-weight:500;color:#8b97ad;margin-inline-start:6px}
+.it2 .pr s{color:#8b97ad;margin-left:6px;font-weight:400;font-size:12px}
+.it2 .ct{margin-top:auto;padding:4px 2px 2px}
+.it2 .ct .btn{margin:0;padding:9px 6px;font-size:13.5px;border-radius:999px}
+.it2 .ct .btn.sec{background:transparent;border:1px solid rgba(251,191,36,.45);color:#fbbf24}
+.it2 .qty{justify-content:space-between;width:100%;background:rgba(255,255,255,.06);border-radius:999px;padding:3px}
 .it2 .qty button{width:34px;height:34px}
-.it2 .qty span{font-size:15px;min-width:28px}
+.it2 .qty span{font-size:15px;min-width:28px;font-weight:700}
 .qty .ic{width:18px;height:18px;margin:auto}
 .it2.off .ph2,.it2.off .nm,.it2.off .pr,.it2.off .mu{opacity:.4}
 .it2 .na{padding:8px 4px;text-align:center;font-size:13px;font-weight:700;background:rgba(255,255,255,.07);border-radius:10px;color:var(--gold2)}
 .it2 .cb{position:absolute;top:12px;left:12px;background:var(--gold);color:#fff;border-radius:12px;padding:1px 9px;font-size:12px;font-weight:700}
 #supBtn,.supp{flex:none;display:flex;align-items:center;gap:5px;margin-inline-end:8px;padding:6px 11px!important;border-radius:20px;background:rgba(15,23,42,.65);border:1px solid rgba(255,255,255,.4);color:#fff;font-size:13px;font-weight:700;text-shadow:none;white-space:nowrap}
 #supBtn .ic,.supp .ic{width:16px;height:16px}
+#app.hcart #fab{display:none!important}
 #cartbar .cbo{flex:1;cursor:pointer;min-width:0}
+#cartbar .cbo b{font-size:15px}
+#cartbar .cbo b::after{content:'';display:inline-block;margin-inline-start:8px;border:5px solid transparent;border-top:0;border-bottom-color:#fbbf24;vertical-align:middle}
+#cartbar .mu{color:#fbbf24;font-size:13px}
 .sbg.cmx{background:transparent!important}
 .cmx .sh{height:calc(var(--vh,1vh)*68);max-height:none;display:flex;flex-direction:column;padding:0;background:#15181f;border-radius:16px 16px 0 0;box-shadow:0 -6px 24px rgba(0,0,0,.55)}
 .cmx .grab{display:none}
@@ -199,7 +207,7 @@ a{color:var(--gold2)}
 .qty button{width:32px;height:32px;border-radius:50%;background:var(--card2);font-size:20px;font-weight:700;line-height:1}
 .qty button.p{background:var(--gold)}
 .qty span{min-width:20px;text-align:center;font-weight:700}
-#cartbar{position:absolute;left:10px;right:10px;bottom:calc(74px + env(safe-area-inset-bottom));z-index:25;background:var(--card2);border:1px solid var(--gold);border-radius:14px;padding:10px 12px;display:none;align-items:center;justify-content:space-between;gap:10px}
+#cartbar{position:absolute;left:10px;right:10px;bottom:calc(74px + env(safe-area-inset-bottom));z-index:25;background:linear-gradient(180deg,#223052,#1a2540);border:1px solid rgba(251,191,36,.55);box-shadow:0 8px 24px rgba(0,0,0,.45);border-radius:18px;padding:10px 12px;display:none;align-items:center;justify-content:space-between;gap:10px}
 #cartbar.on{display:flex}
 #cartbar .btn{margin:0;width:auto;padding:10px 18px}
 .sbg{position:absolute;top:0;right:0;bottom:0;left:0;z-index:60;background:rgba(0,0,0,.6);display:flex;align-items:flex-end}
@@ -479,7 +487,7 @@ const P={
  x:'<path d="M6 6l12 12M18 6L6 18"/>',
  flip:'<path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/>'
 };
-Object.assign(P,{trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',help:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7M12 17h.01"/>',pause:'<rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>',music:'<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',img:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 8"/>'});
+Object.assign(P,{chef:'<path d="M7 3v6a2 2 0 0 0 4 0V3M9 3v18M17 3c-2 1.5-3 4-3 7 0 2 1 3 3 3v8"/>',trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',help:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7M12 17h.01"/>',pause:'<rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>',music:'<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',img:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 8"/>'});
 const ic=n=>'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+P[n]+'</svg>';
 function toast(m,ms){const e=$('#toast');e.textContent=m;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',ms||2800)}
 function errMsg(e){const m=(e&&e.message)||String(e);if(/fetch|network|Failed|Load failed/i.test(m))return t('neterr');if(/row-level security|permission denied/i.test(m))return t('denied');if(/duplicate key|already/i.test(m))return /username|profiles/i.test(m)?t('dup'):'تمت العملية مسبقاً';return m}
@@ -1650,7 +1658,7 @@ function qtyUpd(b,key,n){const r=b.closest('.qty');if(!r)return;r.querySelector(
 function cartCount(i){return Object.keys(S.cart).filter(k=>k===i.id||k.indexOf(i.id+'|')===0).length}
 function itemCard(i){
  const off=(i.avail||'on')!=='on',opts=hasOpts(i),hrs=i.kind==='hours';
- const ph=`<div class="ph2">${i.image_url?`<img src="${esc(i.image_url)}" alt="" loading="lazy" onerror="this.remove()">`:esc((i.name||'?').slice(0,1))}</div>`;
+ const ph=`<div class="ph2">${i.image_url?`<img src="${esc(i.image_url)}" alt="" loading="lazy" onerror="this.remove()">`:ic('chef')}</div>`;
  let rule='',ctl='';
  if(!opts&&!off){const li=cLine(i.id);if(li)rule=ruleTxt(li)}
  const cc=cartCount(i);
@@ -1658,7 +1666,7 @@ function itemCard(i){
  else if(opts)ctl=`<button class="btn sec" data-opt="${esc(i.id)}">${cc?'تعديل الاختيار':'اختر'}</button>`;
  else if(hrs)ctl=`<button class="btn${cc?' sec':''}" data-hrs="${esc(i.id)}">${cc?'تعديل الوقت':'حدد الوقت'}</button>`;
  else ctl=`<div class="qty"><button data-q="-1" data-key="${esc(i.id)}">${minusIc(i.id,S.cart[i.id]||0)}</button><span>${fmtN(S.cart[i.id]||0)}</span><button class="p" data-q="1" data-key="${esc(i.id)}">+</button></div>`;
- return `<div class="it2${off?' off':''}">${cc&&(opts||hrs)&&!off?`<span class="cb">${cc}</span>`:''}${ph}<div class="bx"><div class="nm">${esc(i.name)}</div>${opts?'':`<div class="mu">${esc(i.unit||'')}</div>`}${rule?`<div class="rl">${esc(rule)}</div>`:''}<div class="pr">${off?'':dispPrice(i)}</div></div><div class="ct">${ctl}</div></div>`;
+ return `<div class="it2${off?' off':''}">${cc&&(opts||hrs)&&!off?`<span class="cb">${cc}</span>`:''}${ph}<div class="bx"><div class="nm">${esc(i.name)}</div>${rule?`<div class="rl">${esc(rule)}</div>`:''}<div class="pr">${off?'':dispPrice(i)}${(!off&&!opts&&i.unit)?`<small>${esc(i.unit)}</small>`:''}</div></div><div class="ct">${ctl}</div></div>`;
 }
 function optSheet(i){
  const rows=i.options.map(o=>{
@@ -1701,8 +1709,8 @@ function hoursSheet(i){
 function cartTotal(){const c=cartCalc(1);return{n:c.n,tt:c.tt}}
 function cartBar(){
  const c=cartTotal(),b=$('#cartbar');
- if(S.screen==='flow'&&S.step==='svc'&&c.n>0){b.classList.add('on');b.innerHTML=`<div class="cbo" id="cbo"><b>${t('cart')}: ${c.n} &#9662;</b><div class="mu">${t('total')}: ${money(c.tt)}${minOrder()&&c.tt<minOrder()?' | أقل مبلغ للطلب '+money(minOrder()):''}</div></div><button class="btn" id="cko">${t('checkout')}</button>`;b.querySelector('#cko').onclick=()=>checkout();b.querySelector('#cbo').onclick=cartSheet}
- else b.classList.remove('on');
+ if(S.screen==='flow'&&S.step==='svc'&&c.n>0){b.classList.add('on');$('#app').classList.add('hcart');b.innerHTML=`<div class="cbo" id="cbo"><b>${t('cart')}: ${c.n}</b><div class="mu">${t('total')}: ${money(c.tt)}${minOrder()&&c.tt<minOrder()?' | أقل مبلغ للطلب '+money(minOrder()):''}</div></div><button class="btn" id="cko">${t('checkout')}</button>`;b.querySelector('#cko').onclick=()=>checkout();b.querySelector('#cbo').onclick=cartSheet}
+ else{b.classList.remove('on');$('#app').classList.remove('hcart')}
 }
 function cartSheet(){
  const s=sheet('<div id="cs"></div>',()=>{renderSvc();cartBar()});
