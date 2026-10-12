@@ -20,7 +20,8 @@
 <style>
 :root{--bg:#0f172a;--card:#1e293b;--card2:#273449;--gold:#d97706;--gold2:#f59e0b;--tx:#f1f5f9;--mu:#94a3b8;--ok:#16a34a;--bad:#dc2626;--line:#334155}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;background:#000;color:var(--tx);font-family:system-ui,'Segoe UI',Tahoma,Arial,sans-serif;overflow:hidden}
+html,body{height:100%;background:#000;color:var(--tx);font-family:system-ui,'Segoe UI',Tahoma,Arial,sans-serif;overflow:hidden;overscroll-behavior:none}
+#app,.sbg,.sh{overscroll-behavior-x:none}
 button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer}
 input,select,textarea{font-family:inherit;font-size:16px;color:var(--tx);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 12px;width:100%;outline:none}
 input:focus,select:focus,textarea:focus{border-color:var(--gold)}
@@ -174,6 +175,20 @@ a{color:var(--gold2)}
 #supBtn,.supp{flex:none;display:flex;align-items:center;gap:5px;margin-inline-end:8px;padding:6px 11px!important;border-radius:20px;background:rgba(15,23,42,.65);border:1px solid rgba(255,255,255,.4);color:#fff;font-size:13px;font-weight:700;text-shadow:none;white-space:nowrap}
 #supBtn .ic,.supp .ic{width:16px;height:16px}
 #cartbar .cbo{flex:1;cursor:pointer;min-width:0}
+.sbg.cmx{background:transparent!important}
+.cmx .sh{height:calc(var(--vh,1vh)*68);max-height:none;display:flex;flex-direction:column;padding:0;background:#15181f;border-radius:16px 16px 0 0;box-shadow:0 -6px 24px rgba(0,0,0,.55)}
+.cmx .grab{display:none}
+.cmh{display:flex;align-items:center;justify-content:space-between;padding:14px 14px 10px;flex:none}
+.cmh b{font-size:16px;order:1}
+.cmh span{order:0}
+.cmh button{order:2}
+.cmh button{width:34px;height:34px;padding:0;color:var(--tx)}
+.cmh span{width:34px}
+.cmx .cdesc{margin:0 14px 6px;flex:none}
+.cmin{flex:none;padding:8px 12px calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:#15181f}
+.cmrow{display:flex;gap:8px;align-items:center}
+.cmrow input{flex:1;margin:0;border-radius:24px;background:#252a35;padding:11px 16px}
+.cmrow .btn{flex:none;margin:0;border-radius:22px;padding:10px 18px}
 .osl{background:var(--card);border-radius:12px;padding:10px;margin-bottom:8px}
 .qty{display:flex;align-items:center;gap:8px;flex:none}
 .qty button{width:32px;height:32px;border-radius:50%;background:var(--card2);font-size:20px;font-weight:700;line-height:1}
@@ -472,7 +487,45 @@ function sheet(html,onclose){
  bg.innerHTML='<div class="sh"><div class="grab"></div>'+html+'</div>';
  bg.close=()=>{if(!bg.parentNode)return;bg.remove();onclose&&onclose()};
  bg.addEventListener('click',e=>{if(e.target===bg)bg.close()});
- $('#app').appendChild(bg);pushOne();return bg;
+ $('#app').appendChild(bg);pushOne();dragClose(bg);return bg;
+}
+function dragClose(bg){
+ const sh=bg.querySelector('.sh');if(!sh)return;
+ let y0=null,x0=0,dy=0,on=false,t0=0,off=false;
+ const noDrag=()=>bg.classList.contains('drw')||bg.classList.contains('full');
+ sh.addEventListener('touchstart',e=>{
+  y0=null;on=false;dy=0;off=false;
+  if(noDrag()||e.touches.length!==1)return;
+  for(let el=e.target;el&&el!==bg;el=el.parentNode){if(el.scrollTop>0){off=true;break}}
+  if(off)return;
+  y0=e.touches[0].clientY;x0=e.touches[0].clientX;t0=Date.now();
+ },{passive:true});
+ sh.addEventListener('touchmove',e=>{
+  if(y0===null||e.touches.length!==1)return;
+  const d=e.touches[0].clientY-y0,dx=Math.abs(e.touches[0].clientX-x0);
+  if(!on){
+   if(d>10&&d>dx*1.2){on=true;sh.style.transition='none'}
+   else if(d<-6||dx>d+10){y0=null;return}
+   else return;
+  }
+  dy=Math.max(0,d);
+  if(e.cancelable)e.preventDefault();
+  sh.style.transform='translateY('+dy+'px)';
+  if(!bg.classList.contains('cmx'))bg.style.background='rgba(0,0,0,'+(0.6*Math.max(0,1-dy/500))+')';
+ },{passive:false});
+ const end=()=>{
+  if(!on){y0=null;return}
+  const fast=dy/Math.max(1,Date.now()-t0)>0.6,far=dy>sh.offsetHeight*0.28||dy>130;
+  on=false;y0=null;
+  if(far||(fast&&dy>40)){
+   sh.style.transition='transform .18s ease-in';sh.style.transform='translateY(110%)';bg.style.transition='background .18s';bg.style.background='rgba(0,0,0,0)';
+   setTimeout(()=>bg.close(),170);
+  }else{
+   sh.style.transition='transform .2s ease-out';sh.style.transform='';bg.style.background='';
+   setTimeout(()=>{sh.style.transition=''},220);
+  }
+ };
+ sh.addEventListener('touchend',end);sh.addEventListener('touchcancel',end);
 }
 function imgBlob(file,max){return new Promise((res,rej)=>{const im=new Image(),u=URL.createObjectURL(file);im.onload=()=>{const k=Math.min(1,max/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(b=>b?res(b):rej(new Error('img')),'image/jpeg',.85)};im.onerror=()=>{URL.revokeObjectURL(u);rej(new Error('img'))};im.src=u})}
 
@@ -1075,8 +1128,9 @@ async function commentsSheet(sl){
  const r=sl._r;
  const isRO=!!(S.user&&r.user_id===S.user.id);
  let rows=[],replyTo=null;const open=new Set();let sending=false;
- const s=sheet(`<h3>${t('comments')}</h3>${r.caption?`<div class="cdesc"><b>@${esc(r.username)}</b><span class="ctm">${fmtAgo(r.created_at)}</span><div>${fmtCap(r.caption)}</div></div>`:''}<div id="cl" style="height:calc(var(--vh,1vh)*${r.caption?'38':'50'});overflow-y:auto"></div>
-  ${r.can_comment===false?'<div class="mu" style="margin-top:12px;text-align:center">التعليقات مقفلة على هذا المنشور</div>':`<div id="rpl" class="mu" style="display:none;margin-top:8px;font-size:13px"></div><div class="row" style="margin-top:10px"><input id="ci" maxlength="300" placeholder="${t('addcomment')}"><button class="btn sm" id="cs" style="flex:none;margin:0">${t('send')}</button></div>`}`);
+ const s=sheet(`<div class="cmh"><button id="cmx" aria-label="x">${ic('x')}</button><b id="cmn">${t('comments')}${r.comments?' '+r.comments:''}</b><span></span></div>${r.caption?`<div class="cdesc"><b>@${esc(r.username)}</b><span class="ctm">${fmtAgo(r.created_at)}</span><div>${fmtCap(r.caption)}</div></div>`:''}<div id="cl" style="flex:1;min-height:0;overflow-y:auto;padding:0 14px"></div>
+  ${r.can_comment===false?'<div class="mu cmin" style="text-align:center">التعليقات مقفلة على هذا المنشور</div>':`<div class="cmin"><div id="rpl" class="mu" style="display:none;margin-bottom:6px;font-size:13px"></div><div class="cmrow"><input id="ci" maxlength="300" placeholder="${t('addcomment')}"><button class="btn sm" id="cs">${t('send')}</button></div></div>`}`);
+ s.classList.add('cmx');s.querySelector('#cmx').onclick=()=>s.close();
  const heartIc=on=>`<svg class="ic" viewBox="0 0 24 24" style="width:18px;height:18px;${on?'fill:#ef4444;stroke:#ef4444':'fill:none;stroke:currentColor'};stroke-width:2"><path d="M12 21s-8-5.5-8-11a5 5 0 0 1 8-3.5A5 5 0 0 1 20 10c0 5.5-8 11-8 11z"/></svg>`;
  const cavH=c=>`<div class="cav" data-u="${c.user_id}">${c.avatar_url?`<img src="${esc(c.avatar_url)}" alt="" style="width:100%;height:100%;object-fit:cover">`:esc((c.username||'?').slice(0,1))}</div>`;
  const one=(c,isReply)=>`<div class="cm" data-id="${c.id}" ${isReply?'style="margin-inline-start:46px"':''}>${cavH(c)}<div style="flex:1;min-width:0"><b data-u="${c.user_id}">${esc(c.username)}</b>${c.user_id===r.user_id?'<span class="chip" style="font-size:10px;margin-inline-start:4px">الكاتب</span>':''}<span class="ctm">${fmtAgo(c.created_at)}</span>${c.pinned?'<span class="chip" style="font-size:10px;margin-inline-start:4px">مثبّت</span>':''}
@@ -1090,7 +1144,7 @@ async function commentsSheet(sl){
   const box=s.querySelector('#cl'),st=box.scrollTop;
   box.innerHTML=tops.length?tops.map(c=>{const rs=rep[c.id]||[];return one(c,false)+(rs.length?(open.has(c.id)?rs.map(x=>one(x,true)).join('')+`<button class="lnk" data-hd="${c.id}" style="margin-inline-start:46px;font-size:12px">إخفاء الردود</button>`:`<button class="lnk" data-sh="${c.id}" style="margin-inline-start:46px;font-size:12px">عرض ${rs.length} ${rs.length===1?'رد':'ردود'}</button>`):'')}).join(''):'<div class="empty">كن أول من يعلّق</div>';
   box.scrollTop=st;
-  r.comments=rows.length;const n=sl.querySelector('[data-act=cm] .n');if(n)n.textContent=rows.length;
+  r.comments=rows.length;{const cn=s.querySelector('#cmn');if(cn)cn.textContent=t('comments')+' '+rows.length}const n=sl.querySelector('[data-act=cm] .n');if(n)n.textContent=rows.length;
  };
  const list=async()=>{try{rows=(await Q(sb.rpc('comments_list',{p_reel:r.id,p_limit:300}))).map(c=>({...c,likes:Number(c.likes)||0}));draw()}catch(e){toast(errMsg(e))}};
  const cd=s.querySelector('.cdesc');if(cd)cd.onclick=e=>{const tg=e.target.closest('[data-tag]');if(tg){s.close();openTag(tg.dataset.tag.slice(1))}};
