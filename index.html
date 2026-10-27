@@ -764,6 +764,47 @@ function forgotSheet(){
  box=s.querySelector('#fgbox');
  forgotFlow(box,sv('wa','9647817964134'),async function(){s.close();try{await loadMe()}catch(e){}toast(S.me?S.me.username:'');try{checkRating()}catch(e){}},function(){s.close()});
 }
+
+let _cpIv=0;
+function changePhoneSheet(){
+ let iv=0,dead=false,busy=false,want='';
+ const stop=()=>{dead=true;clearInterval(iv);_cpIv=0};
+ const s=sheet('<div id="cpbox"></div>',stop);
+ const box=s.querySelector('#cpbox'),q=i=>box.querySelector('#'+i);
+ const say=x=>{if(!dead)box.innerHTML=x};
+ function s1(){
+  clearInterval(iv);
+  say('<h3>تغيير رقم الموبايل</h3><div class="mu" style="line-height:1.9;margin:8px 0">اكتب الرقم الجديد. نعطيك رمز ترسله بواتساب <b>من الرقم الجديد</b>، وبعدها يتغير رقم حسابك ويتوثق. كل معلومات حسابك تبقى مثل ما هي.</div><input id="cpn" type="tel" inputmode="numeric" maxlength="11" placeholder="07xxxxxxxxx" autocomplete="tel"><button class="btn" id="cpg">متابعة</button><button class="btn sec" id="cpx">إلغاء</button>');
+  q('cpx').onclick=()=>s.close();
+  q('cpg').onclick=async ev=>{
+   const v=ad(q('cpn').value).replace(/[\s\-]/g,'');
+   if(!okPhone(v))return toast(PHONE_MSG,4500);
+   if(busy)return;busy=true;ev.target.disabled=true;
+   try{
+    const c=await Q(sb.rpc('start_phone_change',{p_new:v}));
+    want='964'+v.slice(1);s2(c,v)
+   }catch(e){toast(errMsg(e),4500);if(!dead)ev.target.disabled=false}
+   finally{busy=false}
+  };
+ }
+ function s2(code,v){
+  const num=sv('wa_verify',sv('wa','9647817964134'));
+  const href='https://wa.me/'+num+'?text='+encodeURIComponent('رمز تغيير الرقم: '+code);
+  const t0=Date.now();
+  say('<h3>أرسل الرمز من الرقم الجديد</h3><div class="mu" style="line-height:1.9">اضغط الزر وأرسل الرسالة كما هي <b>من واتساب الرقم الجديد ('+esc(v)+')</b>. بعد ما تنرسل يتغير الرقم تلقائياً.</div><div class="wcode">'+esc(code)+'</div><a class="btn" style="text-decoration:none;display:block;text-align:center" target="_blank" rel="noopener" href="'+esc(href)+'">فتح واتساب وإرسال الرمز</a><div class="mu" style="line-height:1.8;margin-top:10px;color:#c0392b">لا ترسل هذا الرمز لأي شخص.</div><div id="cph" class="mu" style="line-height:1.8;margin-top:8px"></div><button class="btn sec" id="cpb">رجوع</button>');
+  q('cpb').onclick=s1;
+  clearInterval(iv);
+  iv=setInterval(async()=>{
+   if(dead||busy)return;
+   const el=Date.now()-t0;
+   if(el>600000){clearInterval(iv);say('<h3>انتهى الوقت</h3><div class="mu" style="margin:8px 0">انتهت مدة الرمز. ابدأ من جديد.</div><button class="btn" id="cpr">ابدأ من جديد</button>');q('cpr').onclick=s1;return}
+   if(el>120000&&q('cph'))q('cph').textContent='إذا ما تغير: تأكد أنك أرسلت من نفس الرقم الجديد بالضبط، وأن الرسالة انرسلت كما هي.';
+   try{await loadMe()}catch(e){}
+   if(S.priv&&S.priv.phone===want&&S.priv.phone_verified){clearInterval(iv);s.close();toast('تم تغيير رقمك وتوثيقه',3500)}
+  },3000);
+ }
+ s1();
+}
 function authSheet(cb,mode){
  const reg=mode==='reg';
  const s=sheet(`<h3>${t(reg?'register':'login')}</h3>
@@ -2852,7 +2893,7 @@ PG.account={t:'الحساب',r:async()=>{
  const ph=S.priv&&S.priv.phone?'••••'+String(S.priv.phone).slice(-3):'';
  let h=hd('المعلومات');
  h+=rw({ic:'user',t:'اسم المستخدم',val:'@'+S.me.username,act:()=>{SX.bg.close();editProfile(S.me,()=>{if(S.screen==='prof')openProfile(S.user.id)})},chev:1});
- h+=rw({ic:'phone',t:'رقم الموبايل',val:ph,s:S.priv&&S.priv.phone_verified?'موثّق':'غير موثّق'});
+ h+=rw({ic:'phone',t:'رقم الموبايل',val:ph,s:(S.priv&&S.priv.phone_verified?'موثّق':'غير موثّق')+' · اضغط للتغيير',act:()=>{SX.bg.close();changePhoneSheet()},chev:1});
  if(!(S.priv&&S.priv.phone_verified))h+=rw({ic:'check',t:t('verify'),act:startVerify,chev:1});
  h+=hd('الأمان');
  h+=rw({ic:'key',t:'تغيير كلمة السر',go:'pw'});
