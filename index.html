@@ -1809,7 +1809,8 @@ const urgOn=()=>sv('urgent_on','1')==='1';
 const urgMul=p=>Math.round(p*(100+(Number(ad(sv('urgent_pct','20')))||0))/100+1e-9);
 const MAXD={engagement:1,wedding:2,mourning:2,other:10};
 const fmtN=x=>String(Math.round(Number(x)*10)/10);
-const fmtLine=l=>esc(l.name)+(l.from!=null&&l.to!=null?' ('+hLbl(l.from)+' - '+hLbl(l.to)+')':' × '+fmtN(l.qty));
+const qtyTxt=(q,u)=>/^\s*للكيلو\s*$/.test(u||'')?fmtN(q)+' كيلو':'× '+fmtN(q);
+const fmtLine=l=>esc(l.name)+(l.from!=null&&l.to!=null?' ('+hLbl(l.from)+' - '+hLbl(l.to)+')':' - '+qtyTxt(l.qty,l.unit));
 const fmtItems=b=>(b.items||[]).map(fmtLine).join('، ')+(b.days>1?' - لمدة '+b.days+' أيام':'');
 const AV_TXT={booked:'تم تأجير كامل العدد',off:'غير متاح حالياً'};
 const availTxt=i=>i.avail==='on'||!i.avail?'':((i.avail_note&&String(i.avail_note).trim())||AV_TXT[i.avail]||AV_TXT.off);
@@ -2039,7 +2040,7 @@ function checkout(){
  const c=cartTotal();if(!c.n)return;
  const mo=minOrder();if(mo&&c.tt<mo)return toast('أقل مبلغ للطلب '+money(mo)+'، أضف عناصر أكثر',4500);
  const calc0=cartCalc(1);
- const lines=calc0.ls.map(r=>`<div class="row" style="font-size:14px;padding:3px 0"><span style="flex:3">${esc(r.li.name)}${r.li.hours?' ('+esc(hLbl(r.from))+' - '+esc(hLbl(r.to))+')':' × '+fmtN(r.q)}</span><span style="flex:2;text-align:left">${r.li.price>0?money(r.u):t('onreq')}</span></div>`).join('');
+ const lines=calc0.ls.map(r=>`<div class="row" style="font-size:14px;padding:3px 0"><span style="flex:3">${esc(r.li.name)}${r.li.hours?' ('+esc(hLbl(r.from))+' - '+esc(hLbl(r.to))+')':' - '+qtyTxt(r.q,r.li.unit)}</span><span style="flex:2;text-align:left">${r.li.price>0?money(r.u):t('onreq')}</span></div>`).join('');
  let loc=null;
  const s=sheet(`<h3>${t('checkout')}</h3><div class="card">${lines}<hr style="border:0;border-top:1px solid var(--line);margin:6px 0"><div id="cbrk"></div><b id="ctt">${t('total')}: ${money(c.tt)}</b></div>
   <label>${t('name')}</label><input id="cn" value="${esc(S.me?S.me.username:'')}" maxlength="60">
@@ -2094,7 +2095,7 @@ function checkout(){
    const items=Object.keys(S.cart).map(k=>{const li=cLine(k);if(!li)return null;const o={id:li.i.id};if(li.o)o.opt=li.o.k;if(li.hours){const h=S.hrs[k];if(!h)return null;o.from=h.f;o.to=h.t}else o.qty=Math.round(S.cart[k]*10)/10;return o}).filter(Boolean);
    if(!items.length){toast('السلة فارغة');return}
    const r=await Q(sb.rpc('place_booking',{p_name:g('cn'),p_phone:ad(g('cp')),p_phone2:ad(g('cp2'))||null,p_area:null,p_address:g('ca'),p_lat:loc?loc.lat:null,p_lng:loc?loc.lng:null,p_occasion:S.occ,p_meal:S.meal,p_date:date,p_items:{days:dys,items:items},p_use_wallet:!!(s.querySelector('#wlc')&&s.querySelector('#wlc').checked)}));
-   const txt=`طلب جديد من تطبيق طباخكم${r.urgent?' (طارئ)':''}\nالمناسبة: ${t(S.occ)} - ${t(S.meal)}\nالتاريخ: ${date}\n${r.days>1?'مدة الحجز: '+r.days+' أيام\n':''}الاسم: ${g('cn')}\nالعنوان: ${g('ca')}\nالمجموع: ${money(r.total)}`;
+   const txt=`طلب جديد من تطبيق طباخكم${r.urgent?' (طارئ)':''}\nكود الطلب: ${String(r.id||'').slice(0,8)}\nالمناسبة: ${t(S.occ)} - ${t(S.meal)}\nالتاريخ: ${date}\n${r.days>1?'مدة الحجز: '+r.days+' أيام\n':''}الاسم: ${g('cn')}\nالعنوان: ${g('ca')}\nالمجموع: ${money(r.total)}`;
    S.cart={};S.hrs={};saveCart();s.close();
    const d=sheet(`<h3>${t('done')}</h3><p class="mu" style="margin:8px 0">${t('done2')}</p><div class="card"><b>${t('total')}: ${money(r.total)}</b>${r.days>1?`<div class="mu">مدة الحجز: ${r.days} أيام</div>`:''}${r.day_discount>0?`<div class="mu">خصم الأيام الإضافية: -${money(r.day_discount)}</div>`:''}${r.big_discount>0?`<div class="mu">خصم الطلب الكبير: -${money(r.big_discount)}</div>`:''}${r.discount>0?`<div class="mu">-${r.discount}%</div>`:''}${r.wallet_used>0?`<div class="mu">من المحفظة: ${money(r.wallet_used)}</div><b>المتبقي عليك: ${money(r.due)}</b>`:''}</div>
     <button class="btn sec" id="dtr">تتبع الطلب</button>
@@ -2337,7 +2338,7 @@ function providerForm(){
 /* ================= لوحة التحكم ================= */
 const ST=['new','confirmed','provider_found','delivered','cancelled'];
 const PERMS=[['orders','الطلبات'],['status','تغيير حالة الطلب'],['chat','الدردشة مع الزبائن'],['ratings','طلب تقييم المكالمة'],['items','الأيتمات والأسعار'],['reels','التحكم بالريلزات'],['providers','مقدمو الخدمات'],['profit','الأرباح والتقارير'],['settings','الإعدادات والمكافآت']];
-const A={tab:null,filter:''};
+const A={tab:null,filter:'',code:''};
 function openAdmin(){
  pauseAll();S.screen='adm';
  ['feed','flow','prof'].forEach(x=>$('#'+x).classList.remove('on'));$('#adm').classList.add('on');$('#top').style.display='none';$('#fab').style.display='none';$('#cartbar').classList.remove('on');
@@ -2391,14 +2392,16 @@ async function admOrders(){
  try{
   let q=sb.from('bookings').select('*').order('created_at',{ascending:false}).limit(60);
   if(A.filter)q=q.eq('status',A.filter);
+  const cd=String(A.code||'').toLowerCase().replace(/[^0-9a-f]/g,'').slice(0,12);
+  if(cd.length>=4){const pad=(c,x)=>{const h=(c+x.repeat(32)).slice(0,32);return h.slice(0,8)+'-'+h.slice(8,12)+'-'+h.slice(12,16)+'-'+h.slice(16,20)+'-'+h.slice(20)};q=q.gte('id',pad(cd,'0')).lte('id',pad(cd,'f'))}
   const d=await Q(q);
   try{if(d.length){const nn=await Q(sb.from('booking_notes').select('*').in('booking_id',d.map(x=>x.id)));const mp={};nn.forEach(x=>mp[x.booking_id]=x.note);d.forEach(x=>x.staff_note=mp[x.id]||'')}}catch(e){}
   let bpm={},pvm={},bom={};try{if(d.length){const ids=d.map(x=>x.id);const [bq,pq,oq]=await Promise.all([Q(sb.from('booking_provider').select('*').in('booking_id',ids)),Q(sb.from('providers').select('id,name,tab,online,active,user_id')),Q(sb.from('booking_offer').select('*').in('booking_id',ids))]);bq.forEach(x=>(bpm[x.booking_id]=bpm[x.booking_id]||[]).push(x));oq.forEach(x=>(bom[x.booking_id]=bom[x.booking_id]||[]).push(x));pq.forEach(x=>pvm[x.id]=x);A.pvs=pq}}catch(e){}
   let pf={};if(can('profit')&&d.length){const r=await Q(sb.from('booking_profit').select('*').in('booking_id',d.map(x=>x.id)));r.forEach(x=>pf[x.booking_id]=x)}
-  box.innerHTML=`<div class="tabs"><button class="tab${A.filter===''?' on':''}" data-f="">الكل</button>${ST.map(s=>`<button class="tab${A.filter===s?' on':''}" data-f="${s}">${t('st_'+s)}</button>`).join('')}</div>`+
+  box.innerHTML=`<div class="row" style="margin-bottom:8px"><input id="bcode" maxlength="12" placeholder="كود الطلب (مثل 63e6589e)" value="${esc(A.code||'')}" style="margin:0;direction:ltr;text-align:left"><button class="btn sm" id="bcgo" style="flex:none;margin:0">بحث</button></div><div class="tabs"><button class="tab${A.filter===''?' on':''}" data-f="">الكل</button>${ST.map(s=>`<button class="tab${A.filter===s?' on':''}" data-f="${s}">${t('st_'+s)}</button>`).join('')}</div>`+
   (d.length?d.map(b=>`<div class="card oc" data-id="${b.id}">
    <div class="row"><b style="flex:2">${esc(b.name)}</b><span class="chip ${b.status}" style="flex:none">${t('st_'+b.status)}</span></div>
-   <div class="l">${fmtDT(b.created_at)}<br><b>${t(b.occasion)} - ${t(b.meal)}${b.urgent?' - طارئ':''}</b> | التاريخ: <b>${esc(b.event_date)}</b><br>
+   <div class="l">${fmtDT(b.created_at)} | الكود: <b style="direction:ltr;unicode-bidi:embed">${String(b.id).slice(0,8)}</b><br><b>${t(b.occasion)} - ${t(b.meal)}${b.urgent?' - طارئ':''}</b> | التاريخ: <b>${esc(b.event_date)}</b><br>
    الهاتف: <a href="tel:${esc(b.phone)}">${esc(b.phone)}</a>${b.phone2?` / <a href="tel:${esc(b.phone2)}">${esc(b.phone2)}</a>`:''} | <a target="_blank" rel="noopener" href="${waLink(b.phone)}">واتساب</a><br>
    العنوان: ${esc(b.address)}${b.lat?` | <a target="_blank" rel="noopener" href="https://www.google.com/maps?q=${Number(b.lat)},${Number(b.lng)}">الخريطة</a>`:''}<br>
    ${fmtItems(b)}<br>
@@ -2411,6 +2414,7 @@ async function admOrders(){
    ${can('chat')?`<button class="btn sm sec" data-ch="1">محادثة</button>`:''}
    <textarea rows="2" maxlength="500" placeholder="ملاحظة داخلية / بيانات مقدم الخدمة" data-note="1" style="margin-top:6px">${esc(b.staff_note||'')}</textarea><button class="btn sm" data-sn="1">حفظ الملاحظة</button></div>`).join(''):'<div class="empty">لا توجد طلبات</div>');
   box.onclick=async e=>{
+   if(e.target.id==='bcgo'){A.code=($('#bcode').value||'').trim();return admOrders()}
    const f=e.target.closest('[data-f]');if(f){A.filter=f.dataset.f;return admOrders()}
    const c=e.target.closest('.oc');if(!c)return;const id=c.dataset.id;
    try{
