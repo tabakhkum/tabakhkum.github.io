@@ -241,7 +241,7 @@ a{color:var(--gold2)}
 .dl:active{background:rgba(255,255,255,.06)}
 .grab{width:42px;height:4px;background:var(--line);border-radius:3px;margin:0 auto 12px}
 .chip{display:inline-block;padding:3px 10px;border-radius:12px;font-size:12px;background:var(--card2)}
-.chip.new{background:#1d4ed8}.chip.confirmed{background:#7c3aed}.chip.provider_found{background:#0e7490}.chip.delivered{background:var(--ok)}.chip.cancelled{background:var(--bad)}
+.chip.pending{background:#b45309}.chip.new{background:#1d4ed8}.chip.confirmed{background:#7c3aed}.chip.provider_found{background:#0e7490}.chip.delivered{background:var(--ok)}.chip.cancelled{background:var(--bad)}
 .row{display:flex;gap:8px;align-items:center}
 .row>*{flex:1}
 .msgs{max-height:calc(var(--vh,1vh)*48);overflow-y:auto;display:flex;flex-direction:column;gap:6px;padding:4px 0}
@@ -605,7 +605,7 @@ change:'تغيير',cart:'السلة',total:'المجموع',checkout:'إتما�
 name:'الاسم',phone2:'رقم إضافي',date:'تاريخ المناسبة',address:'العنوان (المنطقة وأقرب نقطة دالة)',locate:'تحديد موقعي على الخريطة',located:'تم تحديد الموقع',locerr:'تعذر تحديد الموقع، فعّل GPS',
 confirm:'تأكيد الطلب',done:'تم استلام طلبك',done2:'سيتصل بك فريق خدمة الزبائن قريباً لتأكيد التفاصيل',sendwa:'أرسل التفاصيل على واتساب',close:'إغلاق',
 my_orders:'طلباتي',no_orders:'لا توجد طلبات بعد',chat:'محادثة',write:'اكتب رسالة',send:'إرسال',
-st_new:'جديد',st_confirmed:'تم التأكيد',st_provider_found:'تم العثور على مقدم خدمات',st_delivered:'تم تقديم الخدمات',st_cancelled:'ملغي',
+st_pending:'معلق - بانتظار الإتمام',st_new:'جديد',st_confirmed:'تم التأكيد',st_provider_found:'تم العثور على مقدم خدمات',st_delivered:'تم تقديم الخدمات',st_cancelled:'ملغي',
 rate_q:'كيف كانت مكالمة خدمة الزبائن؟',rate_send:'إرسال التقييم',rate_note:'ملاحظة (اختياري)',thanks:'شكراً لك',
 provider:'كن معنا مقدم خدمات',spec:'التخصص',area:'المنطقة',notes:'ملاحظات وخبرتك',agree:'أوافق على التواصل معي',sent:'تم الإرسال، سنتواصل معك',
 sp_cook:'طباخ',sp_butcher:'قصاب',sp_rent:'مؤجر مستلزمات',sp_photo:'مصور',sp_sup:'مواد غذائية وخضروات',sp_other:'أخرى',
@@ -627,7 +627,7 @@ change:'Change',cart:'Cart',total:'Total',checkout:'Checkout',onreq:'On request'
 name:'Name',phone2:'Extra number',date:'Event date',address:'Address (area and nearest landmark)',locate:'Pin my location',located:'Location saved',locerr:'Could not get location, enable GPS',
 confirm:'Confirm order',done:'Order received',done2:'Customer service will call you soon to confirm details',sendwa:'Send details on WhatsApp',close:'Close',
 my_orders:'My orders',no_orders:'No orders yet',chat:'Chat',write:'Write a message',send:'Send',
-st_new:'New',st_confirmed:'Confirmed',st_provider_found:'Provider found',st_delivered:'Service delivered',st_cancelled:'Cancelled',
+st_pending:'Pending',st_new:'New',st_confirmed:'Confirmed',st_provider_found:'Provider found',st_delivered:'Service delivered',st_cancelled:'Cancelled',
 rate_q:'How was the customer service call?',rate_send:'Send rating',rate_note:'Note (optional)',thanks:'Thank you',
 provider:'Become a service provider',spec:'Specialty',area:'Area',notes:'Notes and experience',agree:'I agree to be contacted',sent:'Sent, we will contact you',
 sp_cook:'Cook',sp_butcher:'Butcher',sp_rent:'Rentals',sp_photo:'Photographer',sp_sup:'Groceries',sp_other:'Other',
@@ -2097,10 +2097,12 @@ function checkout(){
    const r=await Q(sb.rpc('place_booking',{p_name:g('cn'),p_phone:ad(g('cp')),p_phone2:ad(g('cp2'))||null,p_area:null,p_address:g('ca'),p_lat:loc?loc.lat:null,p_lng:loc?loc.lng:null,p_occasion:S.occ,p_meal:S.meal,p_date:date,p_items:{days:dys,items:items},p_use_wallet:!!(s.querySelector('#wlc')&&s.querySelector('#wlc').checked)}));
    const txt=`طلب جديد من تطبيق طباخكم${r.urgent?' (طارئ)':''}\nكود الطلب: ${String(r.id||'').slice(0,8)}\nالمناسبة: ${t(S.occ)} - ${t(S.meal)}\nالتاريخ: ${date}\n${r.days>1?'مدة الحجز: '+r.days+' أيام\n':''}الاسم: ${g('cn')}\nالعنوان: ${g('ca')}\nالمجموع: ${money(r.total)}`;
    S.cart={};S.hrs={};saveCart();s.close();
-   const d=sheet(`<h3>${t('done')}</h3><p class="mu" style="margin:8px 0">${t('done2')}</p><div class="card"><b>${t('total')}: ${money(r.total)}</b>${r.days>1?`<div class="mu">مدة الحجز: ${r.days} أيام</div>`:''}${r.day_discount>0?`<div class="mu">خصم الأيام الإضافية: -${money(r.day_discount)}</div>`:''}${r.big_discount>0?`<div class="mu">خصم الطلب الكبير: -${money(r.big_discount)}</div>`:''}${r.discount>0?`<div class="mu">-${r.discount}%</div>`:''}${r.wallet_used>0?`<div class="mu">من المحفظة: ${money(r.wallet_used)}</div><b>المتبقي عليك: ${money(r.due)}</b>`:''}</div>
+   const d=sheet(`<h3>طلبك محفوظ</h3><p class="mu" style="margin:8px 0">باقي خطوة وحدة: اضغط "إتمام الطلب" وأرسل الرسالة كما هي من رقمك بالواتساب حتى يوصل طلبك للفريق. كود طلبك: <b style="direction:ltr;unicode-bidi:embed">${String(r.id).slice(0,8)}</b></p><div class="card"><b>${t('total')}: ${money(r.total)}</b>${r.days>1?`<div class="mu">مدة الحجز: ${r.days} أيام</div>`:''}${r.day_discount>0?`<div class="mu">خصم الأيام الإضافية: -${money(r.day_discount)}</div>`:''}${r.big_discount>0?`<div class="mu">خصم الطلب الكبير: -${money(r.big_discount)}</div>`:''}${r.discount>0?`<div class="mu">-${r.discount}%</div>`:''}${r.wallet_used>0?`<div class="mu">من المحفظة: ${money(r.wallet_used)}</div><b>المتبقي عليك: ${money(r.due)}</b>`:''}</div>
     <button class="btn sec" id="dtr">تتبع الطلب</button>
-    <a class="btn sec" style="text-decoration:none" target="_blank" rel="noopener" href="https://wa.me/${esc(sv('wa','9647817964134'))}?text=${encodeURIComponent(txt)}">${t('sendwa')}</a>
-    <button class="btn" id="dok">${t('close')}</button>`);
+    <a class="btn" style="text-decoration:none;text-align:center" target="_blank" rel="noopener" href="https://wa.me/${esc(sv('wa','9647817964134'))}?text=${encodeURIComponent(txt)}">إتمام الطلب</a>
+    <button class="btn sec" id="dcx">إلغاء الطلب</button>
+    <button class="btn sec" id="dok">${t('close')}</button>`);
+   d.querySelector('#dcx').onclick=()=>cancelPend(r.id,()=>{d.close();go('feed')});
    d.querySelector('#dok').onclick=()=>{d.close();go('feed')};
    d.querySelector('#dtr').onclick=()=>{d.close();trackSheet(r.id)};
    renderFlow();
@@ -2109,14 +2111,22 @@ function checkout(){
 }
 
 /* ================= الطلبات والدردشة والتقييم ================= */
+const ordWaTxt=b=>`طلب جديد من تطبيق طباخكم${b.urgent?' (طارئ)':''}\nكود الطلب: ${String(b.id||'').slice(0,8)}\nالمناسبة: ${t(b.occasion)} - ${t(b.meal)}\nالتاريخ: ${b.event_date}\nالاسم: ${b.name||''}\nالعنوان: ${b.address||''}\nالمجموع: ${money(b.total)}`;
+const ordWaHref=b=>'https://wa.me/'+esc(sv('wa','9647817964134'))+'?text='+encodeURIComponent(ordWaTxt(b));
+const pendBox=b=>`<div class="card" style="border-color:#b45309"><b>طلبك محفوظ ومعلق</b><div class="mu" style="margin:6px 0">حتى يوصل للفريق لازم ترسل رسالة الواتساب كما هي من رقمك. تتأكد تلقائياً بعد ما ترسلها. كود طلبك: <b style="direction:ltr;unicode-bidi:embed">${String(b.id).slice(0,8)}</b></div><a class="btn" style="text-decoration:none;text-align:center" target="_blank" rel="noopener" href="${ordWaHref(b)}">إتمام الطلب</a><button class="btn sec" data-pc="${b.id}">إلغاء الطلب</button></div>`;
+async function cancelPend(id,after){
+ if(!confirm('تريد تلغي هذا الطلب؟'))return;
+ try{await Q(sb.rpc('cancel_my_pending',{p_id:id}));toast('تم إلغاء الطلب');if(after)after()}catch(e){toast(errMsg(e),3500)}
+}
 const STEPS=[['placed','استلمنا طلبك'],['confirmed','تم تأكيد طلبك'],['provider_found','تم إيجاد مقدم الخدمة'],['delivered','تم التسليم']];
-const stIdx=st=>st==='new'?0:Math.max(0,STEPS.findIndex(x=>x[0]===st));
+const stIdx=st=>(st==='new'||st==='pending')?0:Math.max(0,STEPS.findIndex(x=>x[0]===st));
 function stepper(b){
  const k=stIdx(b.status),bad=b.status==='cancelled';
+ if(b.status==='pending')return '<div class="mu" style="font-size:13px;color:#fbbf24">بانتظار إتمام الطلب بالواتساب</div>';
  return `<div class="stp">${STEPS.map((x,i)=>`<i class="${bad?(i===0?'on':''):(i<=k?'on':'')}"></i>${i<3?`<b class="${!bad&&i<k?'on':''}"></b>`:''}`).join('')}</div><div class="mu" style="font-size:12px">${bad?'تم إلغاء الطلب':STEPS[k][1]}</div>`;
 }
 async function openOrders(mode){
- const act=['new','confirmed','provider_found'];
+ const act=['pending','new','confirmed','provider_found'];
  const title=mode==='active'?'الطلبات الحالية':mode==='past'?'الطلبات السابقة':t('my_orders');
  const s=sheet(`<h3>${title}</h3><div id="ol"><div class="empty">...</div></div>`);
  try{
@@ -2126,10 +2136,10 @@ async function openOrders(mode){
    ${stepper(b)}
    <div class="mu">${esc(b.event_date)} | ${money(b.total)}${b.wallet_used>0?' (من المحفظة '+money(b.wallet_used)+')':''}</div>
    <div class="mu">${fmtItems(b)}</div>
-   <button class="btn sm" data-t="${b.id}">تتبع الطلب</button> <button class="btn sm sec" data-c="${b.id}">${t('chat')}</button>
+   ${b.status==='pending'?pendBox(b):`<button class="btn sm" data-t="${b.id}">تتبع الطلب</button> <button class="btn sm sec" data-c="${b.id}">${t('chat')}</button>`}
    ${b.rate_requested&&!b.call_stars?`<button class="btn sm" data-r="${b.id}">${t('rate_q')}</button>`:''}${b.call_stars?`<span class="mu"> مكالمة ${'★'.repeat(b.call_stars)}</span>`:''}
    ${b.status==='delivered'&&!b.service_stars?`<button class="btn sm" data-sv="${b.id}">قيّم الخدمة</button>`:''}${b.service_stars?`<span class="mu"> الخدمة ${'★'.repeat(b.service_stars)}</span>`:''}${b.chat_stars?`<span class="mu"> المحادثة ${'★'.repeat(b.chat_stars)}</span>`:''}</div>`).join(''):`<div class="empty">${mode==='active'?'ما عندك طلبات حالية':t('no_orders')}</div>`;
-  s.querySelector('#ol').onclick=e=>{const tt=e.target.closest('[data-t]');if(tt)return trackSheet(tt.dataset.t);const c=e.target.closest('[data-c]');if(c)return openChat(c.dataset.c,false);const r=e.target.closest('[data-r]');if(r)return rateSheet(r.dataset.r,()=>{s.close();openOrders(mode)});const sv=e.target.closest('[data-sv]');if(sv)rateSheet(sv.dataset.sv,()=>{s.close();openOrders(mode)},'service')};
+  s.querySelector('#ol').onclick=e=>{const pc=e.target.closest('[data-pc]');if(pc)return cancelPend(pc.dataset.pc,()=>{s.close();openOrders(mode)});const tt=e.target.closest('[data-t]');if(tt)return trackSheet(tt.dataset.t);const c=e.target.closest('[data-c]');if(c)return openChat(c.dataset.c,false);const r=e.target.closest('[data-r]');if(r)return rateSheet(r.dataset.r,()=>{s.close();openOrders(mode)});const sv=e.target.closest('[data-sv]');if(sv)rateSheet(sv.dataset.sv,()=>{s.close();openOrders(mode)},'service')};
  }catch(e){s.querySelector('#ol').innerHTML=`<div class="empty">${esc(errMsg(e))}</div>`}
 }
 async function trackSheet(bid){
@@ -2143,6 +2153,7 @@ async function trackSheet(bid){
   const bad=b.status==='cancelled',k=stIdx(b.status);
   let h=STEPS.map((x,i)=>{const done=!bad?i<=k:i===0;return `<div class="st ${done?'on':'off'}"><span class="dot"></span><b>${x[1]}</b><span class="mu" style="font-size:12px">${at[x[0]]?fmtDT(at[x[0]]):(done?'':'بالانتظار')}</span></div>`}).join('');
   if(bad)h+=`<div class="st bad"><span class="dot"></span><b style="color:var(--bad)">تم إلغاء الطلب</b><span class="mu" style="font-size:12px">${at.cancelled?fmtDT(at.cancelled):''}</span></div>`;
+  if(b.status==='pending'){s.querySelector('#tk').innerHTML=`<div class="card"><b>${t(b.occasion)} - ${t(b.meal)}${b.urgent?' - طارئ':''}</b><div class="mu">${esc(b.event_date)} | ${money(b.total)}</div></div>`+pendBox(b);s.querySelector('#tk').onclick=e=>{const pc=e.target.closest('[data-pc]');if(pc)cancelPend(pc.dataset.pc,()=>{s.close()})};return}
   s.querySelector('#tk').innerHTML=`<div class="card"><b>${t(b.occasion)} - ${t(b.meal)}${b.urgent?' - طارئ':''}</b><div class="mu">${esc(b.event_date)} | ${money(b.total)}</div></div><div class="tl">${h}</div>`;
   if(b.status==='delivered'||bad)clearInterval(iv);
  }catch(e){s.querySelector('#tk').innerHTML=`<div class="empty">${esc(errMsg(e))}</div>`}};
@@ -2336,7 +2347,7 @@ function providerForm(){
 }
 
 /* ================= لوحة التحكم ================= */
-const ST=['new','confirmed','provider_found','delivered','cancelled'];
+const ST=['pending','new','confirmed','provider_found','delivered','cancelled'];
 const PERMS=[['orders','الطلبات'],['status','تغيير حالة الطلب'],['chat','الدردشة مع الزبائن'],['ratings','طلب تقييم المكالمة'],['items','الأيتمات والأسعار'],['reels','التحكم بالريلزات'],['providers','مقدمو الخدمات'],['profit','الأرباح والتقارير'],['settings','الإعدادات والمكافآت']];
 const A={tab:null,filter:'',code:''};
 function openAdmin(){
@@ -2391,7 +2402,7 @@ async function admOrders(){
  const box=$('#abd');
  try{
   let q=sb.from('bookings').select('*').order('created_at',{ascending:false}).limit(60);
-  if(A.filter)q=q.eq('status',A.filter);
+  if(A.filter)q=q.eq('status',A.filter);else q=q.neq('status','pending');
   const cd=String(A.code||'').toLowerCase().replace(/[^0-9a-f]/g,'').slice(0,12);
   if(cd.length>=4){const pad=(c,x)=>{const h=(c+x.repeat(32)).slice(0,32);return h.slice(0,8)+'-'+h.slice(8,12)+'-'+h.slice(12,16)+'-'+h.slice(16,20)+'-'+h.slice(20)};q=q.gte('id',pad(cd,'0')).lte('id',pad(cd,'f'))}
   const d=await Q(q);
