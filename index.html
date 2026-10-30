@@ -684,7 +684,7 @@ function renderTop(){$('#supBtn').innerHTML=ic('help')+'<span>'+supLbl()+'</span
 /* ================= الدخول والتسجيل ================= */
 const em=u=>[...new TextEncoder().encode(u.trim().toLowerCase())].map(b=>b.toString(16).padStart(2,'0')).join('')+'@tabakhkum.app';
 function requireAuth(cb){if(S.user&&S.me){cb();return}authSheet(cb,'login')}
-function forgotFlow(box,wa,done,back){
+function forgotFlow(box,wa,done,back,pre){
  var rid=null,tok=null,iv=0,dead=false,t0=0,busy=false;
  var CODE_ST='font-size:34px;font-weight:800;letter-spacing:6px;text-align:center;direction:ltr;margin:14px 0;color:var(--gold2,#c9a24a)';
  function stop(){dead=true;clearInterval(iv)}
@@ -694,6 +694,7 @@ function forgotFlow(box,wa,done,back){
  function s1(){
   clearInterval(iv);rid=null;tok=null;
   say('<h3>نسيت كلمة السر</h3><div class="mu" style="line-height:1.9;margin:8px 0">اكتب رقم موبايلك المسجل بحسابك (لازم يكون موثق). نعطيك رمز ترسله بواتساب من نفس الرقم، بعدها تكدر تغير كلمة السر بنفسك.</div><input id="fgp" type="tel" inputmode="numeric" maxlength="11" placeholder="07xxxxxxxxx" autocomplete="tel"><button class="btn" id="fgg">متابعة</button><button class="btn sec" id="fgb">رجوع</button>');
+  if(pre)q('fgp').value=pre;
   q('fgb').onclick=function(){stop();back&&back()};
   q('fgg').onclick=async function(ev){
    var p=ad(q('fgp').value).replace(/[\s\-]/g,'');
@@ -758,11 +759,11 @@ function forgotFlow(box,wa,done,back){
  }
  s1();
 }
-function forgotSheet(){
+function forgotSheet(pre,after){
  var box=null;
  var s=sheet('<div id="fgbox"></div>',function(){if(box&&box.__stop)box.__stop()});
  box=s.querySelector('#fgbox');
- forgotFlow(box,sv('wa','9647817964134'),async function(){s.close();try{await loadMe()}catch(e){}toast(S.me?S.me.username:'');try{checkRating()}catch(e){}},function(){s.close()});
+ forgotFlow(box,sv('wa','9647817964134'),async function(){s.close();try{await loadMe()}catch(e){}if(after){try{after()}catch(e){}return}toast(S.me?S.me.username:'');try{checkRating()}catch(e){}},function(){s.close()},pre);
 }
 
 let _cpIv=0;
@@ -2928,7 +2929,10 @@ async function reauth(pw){
  if(error)throw new Error('كلمة السر غير صحيحة');
 }
 PG.pw={t:'تغيير كلمة السر',r:async(a,post)=>{
- post(box=>{box.querySelector('#pwgo').onclick=async ev=>{
+ post(box=>{box.querySelector('#pwfg').onclick=()=>{
+  const ph=String((S.priv&&S.priv.phone)||'').replace(/^964/,'0');
+  forgotSheet(/^07[5789][0-9]{8}$/.test(ph)?ph:'',()=>{try{SX.stack.pop();showPage()}catch(e){}})
+ };box.querySelector('#pwgo').onclick=async ev=>{
   const o=box.querySelector('#pw0').value,n=box.querySelector('#pw1').value,c=box.querySelector('#pw2').value;
   if(n.length<6)return toast(t('shortpw'));
   if(n!==c)return toast('كلمتا السر الجديدتان غير متطابقتين');
@@ -2940,7 +2944,7 @@ PG.pw={t:'تغيير كلمة السر',r:async(a,post)=>{
  return `<label>كلمة السر الحالية</label><input id="pw0" type="password" autocomplete="current-password">
   <label>كلمة السر الجديدة</label><input id="pw1" type="password" autocomplete="new-password">
   <label>تأكيد كلمة السر الجديدة</label><input id="pw2" type="password" autocomplete="new-password">
-  <button class="btn" id="pwgo">تغيير</button>${nt('إذا نسيت كلمة السر، من شاشة تسجيل الدخول اضغط (نسيت كلمة السر؟) وتسترجعها برقمك الموثق عن طريق واتساب.')}`;
+  <button class="btn" id="pwgo">تغيير</button><button class="btn sec" id="pwfg" style="margin-top:10px">نسيت كلمة السر الحالية؟</button>${nt('إذا نسيت كلمة السر الحالية، اضغط الزر (نسيت كلمة السر الحالية؟) وتسترجعها برقمك الموثق عن طريق واتساب.')}`;
 }};
 PG.deact={t:'تعطيل الحساب',r:async(a,post)=>{
  post(box=>{box.querySelector('#dgo').onclick=async ev=>{
