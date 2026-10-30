@@ -2299,12 +2299,13 @@ function menuSheet(){
   <button class="dl" data-m="set">${t('settings')}</button>
   <button class="dl" data-m="lang">${t('language')}</button>
   <button class="dl" data-m="prov">${t('provider')}</button>
+  <button class="dl" data-m="pvdl">تحميل تطبيق شريك طباخكم (لمقدمي الخدمات)</button>
   <button class="dl" data-m="terms">${t('terms')}</button>
   ${isStandalone()?'':'<button class="dl" data-m="inst">تثبيت التطبيق على الشاشة الرئيسية</button>'}`);
  s.classList.add('drw');
  {let x0=null;const pn=s.querySelector('.sh');pn.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});pn.addEventListener('touchend',e=>{if(x0!==null&&e.changedTouches[0].clientX-x0<-60)s.close();x0=null},{passive:true})}
  s.onclick=e=>{const b=e.target.closest('[data-m]');if(!b)return;const m=b.dataset.m;s.close();
-  if(m==='set')openSettings();else if(m==='ord')requireAuth(openOrders);else if(m==='wal')walletSheet();else if(m==='login')authSheet(null,'login');else if(m==='prov')providerForm();else if(m==='sup')supportSheet();else if(m==='fb')feedbackSheet();else if(m==='shr')shareApp();else if(m==='inv')inviteSheet();else if(m==='lang')langSheet();else if(m==='inst')installApp();else termsSheet()};
+  if(m==='set')openSettings();else if(m==='ord')requireAuth(openOrders);else if(m==='wal')walletSheet();else if(m==='login')authSheet(null,'login');else if(m==='prov')providerForm();else if(m==='pvdl')provApp();else if(m==='sup')supportSheet();else if(m==='fb')feedbackSheet();else if(m==='shr')shareApp();else if(m==='inv')inviteSheet();else if(m==='lang')langSheet();else if(m==='inst')installApp();else termsSheet()};
 }
 function supportSheet(){
  const ph=[sv('support_phone',''),sv('support_phone2','')].filter(Boolean);
@@ -2323,8 +2324,12 @@ function termsSheet(){
   <p>3. يمنع نشر ريلزات أشخاص دون إذنهم، خصوصاً في مجالس العزاء.</p>
   <p>4. نحفظ اسم المستخدم ورقم الموبايل وعناوين الطلبات لأجل تنفيذ الخدمة فقط، ولا نبيعها.</p></div>`);
 }
+function provApp(){
+ const p=sheet(`<h3>تطبيق شريك طباخكم</h3><p class="mu" style="line-height:1.9;margin:8px 0">هذا تطبيق مقدمي الخدمات: تستلم الطلبات وتقبلها وتتابع أرباحك. بعد التنزيل سجّل دخول بنفس حسابك وأدخل كود التفعيل من الإدارة.</p><a class="btn" id="pvd" style="text-decoration:none;text-align:center" target="_blank" rel="noopener" href="https://tabakhkum-provider.github.io/">فتح وتنزيل التطبيق</a><button class="btn sec" id="pvc">نسخ الرابط</button>`);
+ p.querySelector('#pvc').onclick=async()=>{const u='https://tabakhkum-provider.github.io/';try{await navigator.clipboard.writeText(u);toast('تم نسخ الرابط، افتحه بمتصفح الموبايل وثبّت التطبيق',4500)}catch(e){toast(u,8000)}};
+}
 function provSent(){
- const p=sheet(`<h3>تم إرسال طلبك</h3><p class="mu" style="line-height:1.9;margin:8px 0">راح نتواصل ويّاك ونعطيك كود التفعيل. هسه نزّل تطبيق مقدم الخدمة من الزر هذا، وبعدها سجّل دخول بنفس اسمك وكلمة سرك وأدخل الكود.</p><a class="btn" id="pvd" style="text-decoration:none" target="_blank" rel="noopener" href="https://tabakhkum-provider.github.io/">تنزيل تطبيق مقدم الخدمة</a><button class="btn sec" id="pvc">نسخ الرابط وفتحه بالمتصفح</button><button class="btn sec" id="pvs">تواصل مع الدعم</button>`);
+ const p=sheet(`<h3>تم إرسال طلبك</h3><p class="mu" style="line-height:1.9;margin:8px 0">راح نتواصل ويّاك ونعطيك كود التفعيل. هسه نزّل تطبيق شريك طباخكم من الزر هذا، وبعدها سجّل دخول بنفس اسمك وكلمة سرك وأدخل الكود.</p><a class="btn" id="pvd" style="text-decoration:none" target="_blank" rel="noopener" href="https://tabakhkum-provider.github.io/">تنزيل تطبيق شريك طباخكم</a><button class="btn sec" id="pvc">نسخ الرابط وفتحه بالمتصفح</button><button class="btn sec" id="pvs">تواصل مع الدعم</button>`);
  p.querySelector('#pvs').onclick=()=>{p.close();supportSheet()};
  p.querySelector('#pvc').onclick=async()=>{const u='https://tabakhkum-provider.github.io/';try{await navigator.clipboard.writeText(u);toast('تم نسخ الرابط، افتحه بمتصفح الموبايل وثبّت التطبيق',4500)}catch(e){toast(u,8000)}};
 }
