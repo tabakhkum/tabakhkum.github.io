@@ -184,6 +184,12 @@ a{color:var(--gold2)}
 .it2 .ph2{aspect-ratio:16/10;border-radius:12px;background:radial-gradient(120% 120% at 20% 10%,#3a2a14 0%,#1f2a44 60%,#18223a 100%);overflow:hidden;display:flex;align-items:center;justify-content:center;color:rgba(251,191,36,.55);position:relative}
 .it2 .ph2 .ic{width:34px;height:34px;stroke-width:1.5}
 .it2 .ph2 img{width:100%;height:100%;object-fit:cover}
+.it2 .ph2,.it2 .nm{cursor:pointer}
+.gal{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:8px;border-radius:14px;margin:6px 0 10px;-webkit-overflow-scrolling:touch}
+.gal>div{flex:0 0 100%;scroll-snap-align:center;aspect-ratio:4/3;border-radius:14px;overflow:hidden;background:#1b2740;display:flex;align-items:center;justify-content:center}
+.gal img{width:100%;height:100%;object-fit:cover}
+.galn{text-align:center;font-size:12px;color:var(--mu);margin:-4px 0 8px}
+.dsc{white-space:pre-wrap;line-height:1.9;font-size:15px;margin:8px 0 12px}
 .it2 .bx{display:flex;flex-direction:column;gap:2px;min-width:0;padding:2px 4px 0}
 .it2 .nm{font-weight:700;font-size:15px;line-height:1.35;color:#f1f5f9}
 .it2 .mu{font-size:11.5px;color:#8b97ad}
@@ -655,7 +661,7 @@ const saveCart=()=>{store.set('cart',JSON.stringify(S.cart));store.set('hrs',JSO
 
 async function loadSettings(){try{const r=await Q(sb.from('settings').select('*'));S.set={};r.forEach(x=>S.set[x.key]=x.value)}catch(e){}}
 async function loadCatalog(){try{
- const [c,i]=await Promise.all([Q(sb.from('categories').select('*').order('sort')),Q(sb.from('items').select('id,category_id,name,unit,price,discount,image_url,occasions,active,sort,min_qty,step,options,avail,avail_note,kind,hours_incl,hour_price').order('sort'))]);
+ const [c,i]=await Promise.all([Q(sb.from('categories').select('*').order('sort')),Q(sb.from('items').select('id,category_id,name,unit,price,discount,image_url,occasions,active,sort,min_qty,step,options,avail,avail_note,kind,hours_incl,hour_price,description,gallery').order('sort'))]);
  S.cats=c;S.items=i;cleanCart();
 }catch(e){}}
 async function loadMe(){
@@ -1952,6 +1958,7 @@ function renderSvc(){
  cats.forEach(c=>{const its=S.items.filter(i=>i.category_id===c.id&&itemVisible(i));if(!its.length)return;h+=`<div class="cat">${esc(c.title)}</div><div class="igrid">`+its.map(itemCard).join('')+`</div>`});
  f.querySelector('#svl').innerHTML=h||`<div class="empty">${t('empty')}</div>`;
  f.querySelector('#svl').onclick=e=>{
+  const dt=e.target.closest('[data-det]');if(dt){const i=S.items.find(x=>x.id===dt.dataset.det);if(i)itemDetail(i);return}
   const b=e.target.closest('[data-q]'),o=e.target.closest('[data-opt]'),hh=e.target.closest('[data-hrs]');
   if(b){const key=b.dataset.key,n=stepKey(key,Number(b.dataset.q));qtyUpd(b,key,n);cartBar();return}
   if(o){const i=S.items.find(x=>x.id===o.dataset.opt);if(i&&(i.avail||'on')==='on')optSheet(i);return}
@@ -1971,7 +1978,25 @@ function itemCard(i){
  else if(opts)ctl=`<button class="btn sec" data-opt="${esc(i.id)}">${cc?'تعديل الاختيار':'اختر'}</button>`;
  else if(hrs)ctl=`<button class="btn${cc?' sec':''}" data-hrs="${esc(i.id)}">${cc?'تعديل الوقت':'حدد الوقت'}</button>`;
  else ctl=`<div class="qty"><button data-q="-1" data-key="${esc(i.id)}">${minusIc(i.id,S.cart[i.id]||0)}</button><span>${fmtN(S.cart[i.id]||0)}</span><button class="p" data-q="1" data-key="${esc(i.id)}">+</button></div>`;
- return `<div class="it2${off?' off':''}">${cc&&(opts||hrs)&&!off?`<span class="cb">${cc}</span>`:''}${ph}<div class="bx"><div class="nm">${esc(i.name)}</div>${rule?`<div class="rl">${esc(rule)}</div>`:''}<div class="pr">${off?'':dispPrice(i)}${(!off&&!opts&&minMul(i)>1)?`<small>لـ ${fmtN(minMul(i))} ${esc(String(i.unit||'').replace(/^لل/,'')||'وحدة')}</small>`:(!off&&!opts&&i.unit)?`<small>${esc(i.unit)}</small>`:''}</div></div><div class="ct">${ctl}</div></div>`;
+ return `<div class="it2${off?' off':''}">${cc&&(opts||hrs)&&!off?`<span class="cb">${cc}</span>`:''}${ph.replace('<div class="ph2">','<div class="ph2" data-det="'+esc(i.id)+'">')}<div class="bx"><div class="nm" data-det="${esc(i.id)}">${esc(i.name)}</div>${rule?`<div class="rl">${esc(rule)}</div>`:''}<div class="pr">${off?'':dispPrice(i)}${(!off&&!opts&&minMul(i)>1)?`<small>لـ ${fmtN(minMul(i))} ${esc(String(i.unit||'').replace(/^لل/,'')||'وحدة')}</small>`:(!off&&!opts&&i.unit)?`<small>${esc(i.unit)}</small>`:''}</div></div><div class="ct">${ctl}</div></div>`;
+}
+function itemDetail(i){
+ const off=(i.avail||'on')!=='on',opts=hasOpts(i),hrs=i.kind==='hours';
+ const imgs=[i.image_url].concat(Array.isArray(i.gallery)?i.gallery:[]).filter(u=>typeof u==='string'&&/^https?:\/\//.test(u));
+ const g=imgs.length?`<div class="gal" id="dg">${imgs.map(u=>`<div><img src="${esc(u)}" alt="" loading="lazy" onerror="this.remove()"></div>`).join('')}</div>${imgs.length>1?`<div class="galn" id="dgn">1 / ${imgs.length}</div>`:''}`:'';
+ let rule='';if(!opts&&!off){const li=cLine(i.id);if(li)rule=ruleTxt(li)}
+ const act=off?`<div class="na">${esc(availTxt(i))}</div>`:opts?`<button class="btn" id="dgo">اختر</button>`:hrs?`<button class="btn" id="dgo">حدد الوقت</button>`:`<button class="btn" id="dgo">إضافة للسلة</button>`;
+ const s=sheet(`<h3>${esc(i.name)}</h3>${g}<div class="row" style="align-items:center"><b style="color:var(--gold2)">${off?'':dispPrice(i)}</b>${i.unit?`<span class="mu" style="text-align:left">${esc(i.unit)}</span>`:''}</div>${rule?`<div class="mu" style="margin-top:4px">${esc(rule)}</div>`:''}${i.description?`<div class="dsc">${esc(i.description)}</div>`:''}${act}`);
+ const gl=s.querySelector('#dg'),gn=s.querySelector('#dgn');
+ if(gl&&gn)gl.onscroll=()=>{const k=Math.round(Math.abs(gl.scrollLeft)/gl.clientWidth)+1;gn.textContent=Math.min(k,imgs.length)+' / '+imgs.length};
+ const go_=s.querySelector('#dgo');
+ if(go_)go_.onclick=()=>{
+  if(opts){s.close();optSheet(i);return}
+  if(hrs){s.close();hoursSheet(i);return}
+  const li=cLine(i.id);if(!li)return;
+  if(!S.cart[i.id]){S.cart[i.id]=li.min;saveCart()}
+  toast('تمت الإضافة للسلة');s.close();renderSvc();cartBar();
+ };
 }
 function optSheet(i){
  const rows=i.options.map(o=>{
@@ -2514,9 +2539,10 @@ function catForm(){
  s.querySelector('#cg').onclick=async()=>{const n=s.querySelector('#cn').value.trim();if(!n)return;try{await Q(sb.from('categories').insert({title:n,tab:s.querySelector('#ct').value,sort:S.cats.length+1}));s.close();admItems()}catch(e){toast(errMsg(e))}};
 }
 async function itemForm(it,catId){
- if(it){try{const m=await Q(sb.rpc('admin_items'));const f=(m||[]).find(x=>x.id===it.id);if(f)it=Object.assign({},it,{profit_pct:f.profit_pct})}catch(e){}}
- const n=!it;it=it||{name:'',unit:'',price:0,discount:0,profit_pct:0,image_url:'',occasions:null,active:true,category_id:catId,min_qty:1,step:1,kind:'qty',hours_incl:3,hour_price:0,avail:'on',avail_note:'',options:null};
- const optTxt=(Array.isArray(it.options)?it.options:[]).map(o=>[o.l,o.price==null?'':o.price,o.min==null?'':o.min,o.step==null?'':o.step,o.unit||''].join('|')).join('\n');
+ if(it){try{const m=await Q(sb.rpc('admin_items2'));const f=(m||[]).find(x=>x.id===it.id);if(f)it=Object.assign({},it,{profit_pct:f.profit_pct,provider_pay:f.provider_pay,provider_pays:f.provider_pays})}catch(e){}}
+ const n=!it;it=it||{name:'',unit:'',price:0,discount:0,profit_pct:0,image_url:'',occasions:null,active:true,category_id:catId,min_qty:1,step:1,kind:'qty',hours_incl:3,hour_price:0,avail:'on',avail_note:'',options:null,description:'',gallery:[],provider_pay:null,provider_pays:null};
+ const pps=(it.provider_pays&&typeof it.provider_pays==='object')?it.provider_pays:{};
+ const optTxt=(Array.isArray(it.options)?it.options:[]).map(o=>[o.l,o.price==null?'':o.price,o.min==null?'':o.min,o.step==null?'':o.step,o.unit||'',pps[o.k]==null?'':pps[o.k]].join('|')).join('\n');
  const oc=it.occasions||[];
  const s=sheet(`<h3>${n?'أيتم جديد':'تعديل الأيتم'}</h3>
   <label>الاسم</label><input id="in" maxlength="80" value="${esc(it.name)}">
@@ -2525,10 +2551,13 @@ async function itemForm(it,catId){
   <div class="grid2"><div><label>أقل كمية</label><input id="imq" type="number" inputmode="decimal" step="any" min="0.1" value="${it.min_qty==null?1:it.min_qty}"></div><div><label>الزيادة (الخطوة)</label><input id="ist" type="number" inputmode="decimal" step="any" min="0.1" value="${it.step==null?1:it.step}"></div></div>
   <label>نوع الحجز</label><select id="ik"><option value="qty"${it.kind!=='hours'?' selected':''}>بالكمية</option><option value="hours"${it.kind==='hours'?' selected':''}>بالساعات (من وقت إلى وقت)</option></select>
   <div class="grid2"><div><label>الساعات المشمولة بالسعر (للساعات)</label><input id="ihi" type="number" inputmode="numeric" min="0" max="24" value="${it.hours_incl==null?3:it.hours_incl}"></div><div><label>سعر الساعة الإضافية (للساعات)</label><input id="ihp" type="number" inputmode="numeric" min="0" value="${it.hour_price==null?0:it.hour_price}"></div></div>
-  <label>الخيارات داخل الأيتم (اختياري). كل خيار بسطر: الاسم|السعر|أقل كمية|الزيادة|الوحدة</label><textarea id="iop" rows="4" placeholder="قلي|2000|1.5|0.5|للكيلو">${esc(optTxt)}</textarea>
+  <label>الخيارات داخل الأيتم (اختياري). كل خيار بسطر: الاسم|السعر|أقل كمية|الزيادة|الوحدة|أجرة المقدم</label><textarea id="iop" rows="4" placeholder="قلي|2000|1.5|0.5|للكيلو|1500">${esc(optTxt)}</textarea>
   <label>التوفر</label><select id="iav"><option value="on"${(it.avail||'on')==='on'?' selected':''}>متوفر</option><option value="booked"${it.avail==='booked'?' selected':''}>تم تأجير كامل العدد</option><option value="off"${it.avail==='off'?' selected':''}>غير متاح حالياً</option></select>
   <label>عبارة تظهر للزبون عند عدم التوفر (اختياري)</label><input id="ian" maxlength="60" value="${esc(it.avail_note||'')}">
+  <label>أجرة المقدم الثابتة (دينار لنفس وحدة السعر، تظهر للمقدم فقط وتنشر الطلب تلقائياً)</label><input id="ipp" type="number" inputmode="numeric" min="0" placeholder="مثلاً 18000" value="${it.provider_pay==null?'':it.provider_pay}">
   <label>نسبة ربحك من الأيتم %</label><input id="ir" type="number" inputmode="numeric" min="0" max="100" value="${it.profit_pct}">
+  <label>شرح الأيتم (يظهر للزبون عند الضغط عليه)</label><textarea id="ids" rows="4" maxlength="1500" placeholder="اكتب شرح الخدمة...">${esc(it.description||'')}</textarea>
+  <label>صور إضافية للأيتم (رابط بكل سطر) أو ارفع عدة صور</label><textarea id="igl" rows="3" placeholder="https://...">${esc((Array.isArray(it.gallery)?it.gallery:[]).join('\n'))}</textarea><input id="igf" type="file" accept="image/*" multiple>
   <label>الصورة (رفع صورة أو رابط)</label><input id="if" type="file" accept="image/*"><input id="iurl" placeholder="https://..." value="${esc(it.image_url||'')}" style="margin-top:6px"><button type="button" class="btn sm sec" id="isr" style="margin-top:6px">ابحث عن صورة بكوكل</button>
   <label>يظهر في المناسبات (بدون اختيار = كل المناسبات)</label>
   <div>${['engagement','wedding','mourning'].map(o=>`<label class="perm"><input type="checkbox" data-o="${o}" ${oc.includes(o)?'checked':''}> ${t(o)}</label>`).join('')}</div>
@@ -2546,7 +2575,7 @@ async function itemForm(it,catId){
    const num=(x,d)=>{const v=Number(ad(String(x||'')));return isFinite(v)&&v>0?v:d};
    const oldO=Array.isArray(it.options)?it.options:[];let mk=oldO.reduce((m,o)=>Math.max(m,Number(String(o.k||'').replace(/\D/g,''))||0),0);
    const lines=g('iop').split('\n').map(x=>x.trim()).filter(Boolean);
-   const opts=[];
+   const opts=[],pays={};
    for(const ln of lines){
     const p=ln.split('|').map(x=>x.trim());if(!p[0])throw new Error('اسم الخيار ناقص في سطر: '+ln);
     const pr=p[1]===undefined||p[1]===''?null:Number(ad(p[1]));if(pr!==null&&(!isFinite(pr)||pr<0))throw new Error('سعر غير صحيح في سطر: '+ln);
@@ -2554,12 +2583,18 @@ async function itemForm(it,catId){
     if(pr!==null)o.price=pr;
     const mn=p[2]?num(p[2],0):0,st=p[3]?num(p[3],0):0;if(p[2]&&!mn)throw new Error('أقل كمية غير صحيحة في سطر: '+ln);if(p[3]&&!st)throw new Error('الزيادة غير صحيحة في سطر: '+ln);
     if(mn)o.min=mn;if(st)o.step=st;if(p[4])o.unit=p[4];
+    if(p[5]!==undefined&&p[5]!==''){const pp_=Number(ad(p[5]));if(!isFinite(pp_)||pp_<0)throw new Error('أجرة المقدم غير صحيحة في سطر: '+ln);pays[o.k]=pp_}
     opts.push(o);
    }
    if(opts.length>12)throw new Error('الحد الأعلى 12 خياراً');
+   const gal=g('igl').split('\n').map(x=>x.trim()).filter(x=>/^https?:\/\//.test(x));
+   const gfs=[...(s.querySelector('#igf').files||[])].slice(0,8);
+   for(const gf of gfs){const gb=await imgBlob(gf,1000),gp='g_'+Date.now()+'_'+Math.random().toString(36).slice(2,6)+'.jpg';await Q(sb.storage.from('items').upload(gp,gb,{contentType:'image/jpeg'}));gal.push(sb.storage.from('items').getPublicUrl(gp).data.publicUrl)}
+   if(gal.length>12)throw new Error('الحد الأعلى 12 صورة إضافية');
+   const ppv=g('ipp')===''?null:Number(ad(g('ipp')));if(ppv!==null&&(!isFinite(ppv)||ppv<0))throw new Error('أجرة المقدم غير صحيحة');
    const row={name:g('in'),unit:g('iu'),price:Math.max(0,Number(ad(g('ip')))||0),discount:Math.min(100,Math.max(0,Number(ad(g('id')))||0)),profit_pct:Math.min(100,Math.max(0,Number(ad(g('ir')))||0)),image_url:url,occasions:occ.length?occ:null,active:s.querySelector('#ia').checked,
     min_qty:Math.min(5000,num(g('imq'),1)),step:Math.min(5000,num(g('ist'),1)),kind:s.querySelector('#ik').value==='hours'?'hours':'qty',hours_incl:Math.min(24,Math.max(0,Math.round(Number(ad(g('ihi')))||0))),hour_price:Math.max(0,Number(ad(g('ihp')))||0),
-    avail:['on','booked','off'].includes(s.querySelector('#iav').value)?s.querySelector('#iav').value:'on',avail_note:g('ian')||null,options:opts.length?opts:null};
+    avail:['on','booked','off'].includes(s.querySelector('#iav').value)?s.querySelector('#iav').value:'on',avail_note:g('ian')||null,options:opts.length?opts:null,description:g('ids')||null,gallery:gal,provider_pay:ppv,provider_pays:Object.keys(pays).length?pays:null};
    if(n)await Q(sb.from('items').insert({...row,category_id:it.category_id,sort:S.items.length+1}));else await Q(sb.from('items').update(row).eq('id',it.id));
    s.close();admItems();
   }catch(e){toast(errMsg(e))}finally{ev.target.disabled=false}
