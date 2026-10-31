@@ -2097,14 +2097,7 @@ function checkout(){
    const r=await Q(sb.rpc('place_booking',{p_name:g('cn'),p_phone:ad(g('cp')),p_phone2:ad(g('cp2'))||null,p_area:null,p_address:g('ca'),p_lat:loc?loc.lat:null,p_lng:loc?loc.lng:null,p_occasion:S.occ,p_meal:S.meal,p_date:date,p_items:{days:dys,items:items},p_use_wallet:!!(s.querySelector('#wlc')&&s.querySelector('#wlc').checked)}));
    const txt=`رمز الطلب: ${String(r.id||'').slice(0,8)}\nطلب جديد من تطبيق طباخكم${r.urgent?' (طارئ)':''}\nالمناسبة: ${t(S.occ)} - ${t(S.meal)}\nالتاريخ: ${date}\n${r.days>1?'مدة الحجز: '+r.days+' أيام\n':''}الاسم: ${g('cn')}\nالعنوان: ${g('ca')}\nالمجموع: ${money(r.total)}`;
    S.cart={};S.hrs={};saveCart();s.close();
-   const d=sheet(`<h3>طلبك محفوظ</h3><p class="mu" style="margin:8px 0">باقي خطوة وحدة: اضغط "إتمام الطلب" وأرسل الرسالة كما هي من رقمك بالواتساب حتى يوصل طلبك للفريق. رمز طلبك: <b style="direction:ltr;unicode-bidi:embed">${String(r.id).slice(0,8)}</b></p><div class="card"><b>${t('total')}: ${money(r.total)}</b>${r.days>1?`<div class="mu">مدة الحجز: ${r.days} أيام</div>`:''}${r.day_discount>0?`<div class="mu">خصم الأيام الإضافية: -${money(r.day_discount)}</div>`:''}${r.big_discount>0?`<div class="mu">خصم الطلب الكبير: -${money(r.big_discount)}</div>`:''}${r.discount>0?`<div class="mu">-${r.discount}%</div>`:''}${r.wallet_used>0?`<div class="mu">من المحفظة: ${money(r.wallet_used)}</div><b>المتبقي عليك: ${money(r.due)}</b>`:''}</div>
-    <button class="btn sec" id="dtr">تتبع الطلب</button>
-    <a class="btn" style="text-decoration:none;text-align:center" target="_blank" rel="noopener" href="https://wa.me/${esc(sv('wa','9647817964134'))}?text=${encodeURIComponent(txt)}">إتمام الطلب</a>
-    <button class="btn sec" id="dcx">إلغاء الطلب</button>
-    <button class="btn sec" id="dok">${t('close')}</button>`);
-   d.querySelector('#dcx').onclick=()=>cancelPend(r.id,()=>{d.close();go('feed')});
-   d.querySelector('#dok').onclick=()=>{d.close();go('feed')};
-   d.querySelector('#dtr').onclick=()=>{d.close();trackSheet(r.id)};
+   orderDone(r,txt);
    renderFlow();
   }catch(e){toast(errMsg(e),4500)}finally{btn.disabled=false}
  });
@@ -2157,7 +2150,7 @@ async function trackSheet(bid){
   s.querySelector('#tk').innerHTML=`<div class="card"><b>${t(b.occasion)} - ${t(b.meal)}${b.urgent?' - طارئ':''}</b><div class="mu">${esc(b.event_date)} | ${money(b.total)}</div></div><div class="tl">${h}</div>`;
   if(b.status==='delivered'||bad)clearInterval(iv);
  }catch(e){s.querySelector('#tk').innerHTML=`<div class="empty">${esc(errMsg(e))}</div>`}};
- load();iv=setInterval(()=>{if(!document.hidden)load()},15000);
+ load();iv=setInterval(()=>{if(!document.hidden)load()},5000);
 }
 function openChat(bid,staff){
  let iv=null;
@@ -2323,6 +2316,28 @@ function termsSheet(){
   <p>2. يمنع نشر المحتوى الإباحي أو كتابة وصف أو تعليق مخلّ بالحياء والشرف، وتُحذف المخالفة بدون تحذير وقد يُغلق الحساب.</p>
   <p>3. يمنع نشر ريلزات أشخاص دون إذنهم، خصوصاً في مجالس العزاء.</p>
   <p>4. نحفظ اسم المستخدم ورقم الموبايل وعناوين الطلبات لأجل تنفيذ الخدمة فقط، ولا نبيعها.</p></div>`);
+}
+function orderDone(r,txt){
+   let pv=null,vh=null;
+   const d=sheet(`<h3>طلبك محفوظ</h3><p class="mu" style="margin:8px 0">باقي خطوة وحدة: اضغط "إتمام الطلب" وأرسل الرسالة كما هي من رقمك بالواتساب حتى يوصل طلبك للفريق. رمز طلبك: <b style="direction:ltr;unicode-bidi:embed">${String(r.id).slice(0,8)}</b></p><div class="card"><b>${t('total')}: ${money(r.total)}</b>${r.days>1?`<div class="mu">مدة الحجز: ${r.days} أيام</div>`:''}${r.day_discount>0?`<div class="mu">خصم الأيام الإضافية: -${money(r.day_discount)}</div>`:''}${r.big_discount>0?`<div class="mu">خصم الطلب الكبير: -${money(r.big_discount)}</div>`:''}${r.discount>0?`<div class="mu">-${r.discount}%</div>`:''}${r.wallet_used>0?`<div class="mu">من المحفظة: ${money(r.wallet_used)}</div><b>المتبقي عليك: ${money(r.due)}</b>`:''}</div>
+    <button class="btn sec" id="dtr">تتبع الطلب</button>
+    <a class="btn" style="text-decoration:none;text-align:center" target="_blank" rel="noopener" href="https://wa.me/${esc(sv('wa','9647817964134'))}?text=${encodeURIComponent(txt)}">إتمام الطلب</a>
+    <button class="btn sec" id="dcx">إلغاء الطلب</button>
+    <button class="btn sec" id="dok">${t('close')}</button>`,()=>{clearInterval(pv);if(vh)document.removeEventListener('visibilitychange',vh)});
+   const chk=async()=>{try{
+    const x=await Q(sb.from('bookings').select('status').eq('id',r.id).single());
+    if(!x||x.status==='pending')return;
+    clearInterval(pv);
+    if(x.status==='cancelled')return;
+    d.close();
+    const d2=sheet(`<h3>تم توثيق طلبك</h3><p class="mu" style="margin:8px 0">وصل طلبك للفريق وراح نتواصل ويّاك قريباً. رمز طلبك: <b style="direction:ltr;unicode-bidi:embed">${String(r.id).slice(0,8)}</b></p><button class="btn" id="d2t">تتبع الطلب</button><button class="btn sec" id="d2c">${t('close')}</button>`);
+    d2.querySelector('#d2c').onclick=()=>{d2.close();go('feed')};
+    d2.querySelector('#d2t').onclick=()=>{d2.close();trackSheet(r.id)};
+   }catch(e){}};
+   pv=setInterval(chk,3000);vh=()=>{if(!document.hidden)chk()};document.addEventListener('visibilitychange',vh);
+   d.querySelector('#dcx').onclick=()=>cancelPend(r.id,()=>{d.close();go('feed')});
+   d.querySelector('#dok').onclick=()=>{d.close();go('feed')};
+   d.querySelector('#dtr').onclick=()=>{d.close();trackSheet(r.id)};
 }
 function provApp(){
  const p=sheet(`<h3>تطبيق فريق طباخكم</h3><p class="mu" style="line-height:1.9;margin:8px 0">هذا تطبيق مقدمي الخدمات: تستلم الطلبات وتقبلها وتتابع أرباحك. بعد التنزيل سجّل دخول بنفس حسابك وأدخل كود التفعيل من الإدارة.</p><a class="btn" id="pvd" style="text-decoration:none;text-align:center" target="_blank" rel="noopener" href="https://tabakhkum-provider.github.io/">فتح وتنزيل التطبيق</a><button class="btn sec" id="pvc">نسخ الرابط</button>`);
