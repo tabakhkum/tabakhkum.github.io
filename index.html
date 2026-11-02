@@ -14,9 +14,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Tabakhkum">
+<meta name="apple-mobile-web-app-title" content="Hayakum">
 <meta name="format-detection" content="telephone=no">
-<title>طباخكم</title>
+<title>حياكم</title>
 <style>
 :root{--bg:#0f172a;--card:#1e293b;--card2:#273449;--gold:#d97706;--gold2:#f59e0b;--tx:#f1f5f9;--mu:#94a3b8;--ok:#16a34a;--bad:#dc2626;--line:#334155}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -469,12 +469,12 @@ body{display:flex;justify-content:center;align-items:flex-start;background:#0508
 </head>
 <body>
 <div id="app">
- <div id="splash"><div class="lg">طباخكم</div></div>
+ <div id="splash"><div class="lg" style="text-align:center">حياكم<span style="display:block;margin-top:4px;font-size:15px;font-weight:600;opacity:.75;letter-spacing:0">تجهيز المناسبات</span></div></div>
  <section id="feed" class="screen"></section>
  <section id="flow" class="screen"></section>
  <section id="prof" class="screen"></section>
  <section id="adm" class="screen"></section>
- <div id="tagbar"></div><div id="top"><button id="supBtn" aria-label="support"></button><div id="logo">طباخكم</div><button id="svcBtn"></button><button id="srBtn" aria-label="search"></button><button id="bMenu" aria-label="menu"></button></div>
+ <div id="tagbar"></div><div id="top"><button id="supBtn" aria-label="support"></button><div id="logo">حياكم</div><button id="svcBtn"></button><button id="srBtn" aria-label="search"></button><button id="bMenu" aria-label="menu"></button></div>
  <div id="cartbar"></div>
  <button id="navh" aria-label="show"></button><div id="nav"><button class="nb" id="nHome"></button><button class="nb" id="nFr"></button><button class="npl" id="nPlus" aria-label="publish"><span></span></button><button class="nb" id="nNot"></button><button class="nb" id="nProf"></button></div>
  <div id="snav"><button class="on" data-s="home"></button><button data-s="wal"></button><button data-s="act"></button><button data-s="past"></button><button data-s="menu"></button></div>
@@ -602,7 +602,7 @@ function imgBlob(file,max){return new Promise((res,rej)=>{const im=new Image(),u
 /* ================= اللغات ================= */
 const L={
 ar:{iqd:'د.ع',neterr:'تعذر الاتصال بالإنترنت',denied:'غير مسموح أو الحساب غير موثق',dup:'هذا الاسم مستخدم من قبل',
-services:'خدمات طباخكم',settings:'الإعدادات والخصوصية',reels:'الريلزات',menu:'القائمة',login:'تسجيل الدخول',register:'إنشاء حساب',logout:'تسجيل الخروج',username:'اسم المستخدم',password:'كلمة السر',phone:'رقم الموبايل',
+services:'خدمات حياكم',settings:'الإعدادات والخصوصية',reels:'الريلزات',menu:'القائمة',login:'تسجيل الدخول',register:'إنشاء حساب',logout:'تسجيل الخروج',username:'اسم المستخدم',password:'كلمة السر',phone:'رقم الموبايل',
 needlogin:'سجّل الدخول أولاً',noacc:'ليس لديك حساب؟ أنشئ حساباً',hasacc:'لديك حساب؟ سجّل الدخول',badlogin:'اسم المستخدم أو كلمة السر غير صحيحة',shortpw:'كلمة السر 6 أحرف على الأقل',baduser:'اسم المستخدم من 2 إلى 14 حرفاً',badphone:'اكتب رقم موبايل صحيح',confirmoff:'تعذر الدخول التلقائي، يجب تعطيل تأكيد البريد من إعدادات Supabase',
 occ_q:'ما نوع المناسبة؟',engagement:'خطوبة',wedding:'حفل زفاف',mourning:'مجلس عزاء',other:'مناسبات أخرى',other_s:'تشمل كل الخدمات',
 meal_q:'ما هي الوجبة؟',lunch:'غداء',dinner:'عشاء',both:'غداء وعشاء',lunch_note:'',
@@ -624,7 +624,7 @@ reward:'مكافأة التفاعل',reward_t:'تفاعلات على ريلزا�
 verify:'توثيق رقمك عبر واتساب',verified:'رقمك موثق',verify_go:'وثّق الآن',verify_wait:'أرسل الرسالة من واتساب. الإدارة تراجع طلبك وتوثق حسابك',
 nofeed:'لا توجد ريلزات بعد',retry:'إعادة المحاولة',tap_sound:'اضغط لتشغيل الصوت',book:'احجز'},
 en:{iqd:'IQD',neterr:'No internet connection',denied:'Not allowed or account not verified',dup:'This name is already used',
-services:'Tabakhkum Services',settings:'Settings and privacy',reels:'Reels',menu:'Menu',login:'Log in',register:'Create account',logout:'Log out',username:'Username',password:'Password',phone:'Mobile number',
+services:'Hayakum Services',settings:'Settings and privacy',reels:'Reels',menu:'Menu',login:'Log in',register:'Create account',logout:'Log out',username:'Username',password:'Password',phone:'Mobile number',
 needlogin:'Please log in first',noacc:'No account? Create one',hasacc:'Have an account? Log in',badlogin:'Wrong username or password',shortpw:'Password must be 6+ characters',baduser:'Username must be 2 to 14 characters',badphone:'Enter a valid mobile number',confirmoff:'Auto login failed, disable email confirmation in Supabase',
 occ_q:'What is the occasion?',engagement:'Engagement',wedding:'Wedding',mourning:'Condolence',other:'Other occasions',other_s:'Shows all services',
 meal_q:'Which meal?',lunch:'Lunch',dinner:'Dinner',both:'Lunch and dinner',lunch_note:'',
@@ -1230,7 +1230,7 @@ function wmDraw(c,W,H,p,user){
  const x=right?W-pad:pad,y=right?pad+22*u:H-pad-70*u;
  c.save();c.direction='rtl';c.textAlign=right?'right':'left';c.textBaseline='top';
  c.shadowColor='rgba(0,0,0,.65)';c.shadowBlur=6*u;c.shadowOffsetY=1*u;
- c.fillStyle='rgba(255,255,255,.88)';c.font='800 '+(34*u)+'px system-ui,Tahoma,Arial';c.fillText('طباخكم',x,y);
+ c.fillStyle='rgba(255,255,255,.88)';c.font='800 '+(34*u)+'px system-ui,Tahoma,Arial';c.fillText('حياكم',x,y);
  c.direction='ltr';c.fillStyle='rgba(255,255,255,.8)';c.font='600 '+(22*u)+'px system-ui,Tahoma,Arial';c.fillText('@'+user,x,y+40*u);
  c.fillStyle='rgba(255,255,255,.6)';c.font='500 '+(16*u)+'px system-ui,Arial';c.fillText('tabakhkum.github.io',x,y+68*u);
  c.restore();
@@ -1330,7 +1330,7 @@ function likeReel(sl,onlyAdd){
  });
 }
 async function shareReel(sl){
- const r=sl._r,url=location.origin+location.pathname+'?r='+r.id,txt=(r.caption||'طباخكم').slice(0,90),own=S.user&&S.user.id===r.user_id;
+ const r=sl._r,url=location.origin+location.pathname+'?r='+r.id,txt=(r.caption||'حياكم').slice(0,90),own=S.user&&S.user.id===r.user_id;
  const count=()=>sb.rpc('add_share',{p_reel:r.id}).then(()=>{r.shares=(r.shares||0)+1;const n=sl.querySelector('[data-act=share] .n');if(n)n.textContent=r.shares});
  const VL={public:'عام',friends:'الأصدقاء',private:'خاص'};
  const vis=()=>['public','friends','private'].map(k=>`<button class="btn sm${(r.visibility||'public')===k?'':' sec'}" data-vis="${k}">${VL[k]}</button>`).join('');
@@ -1354,7 +1354,7 @@ async function shareReel(sl){
   if(k==='wa')window.open('https://wa.me/?text='+encodeURIComponent(txt+'\n'+url),'_blank','noopener');
   else if(k==='tg')window.open('https://t.me/share/url?url='+encodeURIComponent(url)+'&text='+encodeURIComponent(txt),'_blank','noopener');
   else if(k==='cp'){try{await navigator.clipboard.writeText(url);toast('تم نسخ الرابط')}catch(x){toast(url)}}
-  else{try{await navigator.share({title:'طباخكم',text:txt,url})}catch(x){return}}
+  else{try{await navigator.share({title:'حياكم',text:txt,url})}catch(x){return}}
   sh.close();count()};
 }
 async function commentsSheet(sl){
@@ -1573,7 +1573,7 @@ function publishSheet(snd){
   if(!s.isConnected)return;
   rv();const url=pu=URL.createObjectURL(blob);
   s.querySelector('#pbox').innerHTML=`<video src="${url}" controls playsinline style="width:100%;max-height:calc(var(--vh,1vh)*36);margin-top:12px;border-radius:12px;background:#000"></video>
-   <label>${t('caption')}</label><textarea id="pcap" maxlength="200" rows="2" placeholder="اكتب وصف وهاشتاك مثل #طباخكم"></textarea>
+   <label>${t('caption')}</label><textarea id="pcap" maxlength="200" rows="2" placeholder="اكتب وصف وهاشتاك مثل #حياكم"></textarea>
    <label>من يشاهد المنشور؟</label><select id="pvis"><option value="public">عام</option><option value="friends">الأصدقاء فقط</option><option value="private">خاص (أنا فقط)</option></select><div class="plz">ممنوع نشر المحتوى الإباحي أو كتابة وصف مخلّ بالشرف، وأي مخالفة تُحذف بدون تحذير.</div><button class="btn" id="pgo">${t('upload')}</button>`;
   s.querySelector('#pvis').value=(S.me&&S.me.default_vis)||'public';
   s.querySelector('#pgo').onclick=async ev=>{
@@ -1596,7 +1596,7 @@ function publishSheet(snd){
   const n=phItems.length;
   box.innerHTML=`<div class="pgrid">${phItems.map((x,i)=>`<div class="pth${i===0?' first':''}" data-i="${i}"><img src="${x.url}" alt=""><button class="px" data-x="${i}" aria-label="حذف">${ic('x')}</button>${i===0?'<span class="pcv">الغلاف</span>':`<button class="pmk" data-f="${i}">اجعلها الأولى</button>`}</div>`).join('')}${n<MAXP?'<button class="padd" id="pad">+ إضافة</button>':''}</div>
    <div class="mu" style="margin-top:6px">${n} من ${MAXP} صور. الصورة الأولى تطلع غلاف المنشور، والباقي يتصفحهن الناس بالسحب.</div>
-   <label>${t('caption')}</label><textarea id="pcap" maxlength="200" rows="2" placeholder="اكتب وصف وهاشتاك مثل #طباخكم">${esc(phCap)}</textarea>
+   <label>${t('caption')}</label><textarea id="pcap" maxlength="200" rows="2" placeholder="اكتب وصف وهاشتاك مثل #حياكم">${esc(phCap)}</textarea>
    <label>من يشاهد المنشور؟</label><select id="pvis"><option value="public">عام</option><option value="friends">الأصدقاء فقط</option><option value="private">خاص (أنا فقط)</option></select><div class="plz">ممنوع نشر المحتوى الإباحي أو كتابة وصف مخلّ بالشرف، وأي مخالفة تُحذف بدون تحذير.</div><button class="btn" id="pgo"${n?'':' disabled'}>${t('upload')}</button>`;
   const cp=box.querySelector('#pcap'),vs=box.querySelector('#pvis');vs.value=phVis;cp.oninput=()=>{phCap=cp.value};vs.onchange=()=>{phVis=vs.value};
   const ad2=box.querySelector('#pad');if(ad2)ad2.onclick=phPick;
@@ -1808,7 +1808,7 @@ async function recorder(done){
  };
 }
 
-/* ================= خدمات طباخكم: المناسبة، الوجبة، الأقسام ================= */
+/* ================= خدمات حياكم: المناسبة، الوجبة، الأقسام ================= */
 const OCC=['engagement','wedding','mourning','other'],TABS=['cooks','butchers','rentals','photo','supplies'];
 const itemVisible=i=>i.active&&(!i.occasions||!i.occasions.length||S.occ==='other'||i.occasions.includes(S.occ));
 const urgOn=()=>sv('urgent_on','1')==='1';
@@ -2120,7 +2120,7 @@ function checkout(){
    const items=Object.keys(S.cart).map(k=>{const li=cLine(k);if(!li)return null;const o={id:li.i.id};if(li.o)o.opt=li.o.k;if(li.hours){const h=S.hrs[k];if(!h)return null;o.from=h.f;o.to=h.t}else o.qty=Math.round(S.cart[k]*10)/10;return o}).filter(Boolean);
    if(!items.length){toast('السلة فارغة');return}
    const r=await Q(sb.rpc('place_booking',{p_name:g('cn'),p_phone:ad(g('cp')),p_phone2:ad(g('cp2'))||null,p_area:null,p_address:g('ca'),p_lat:loc?loc.lat:null,p_lng:loc?loc.lng:null,p_occasion:S.occ,p_meal:S.meal,p_date:date,p_items:{days:dys,items:items},p_use_wallet:!!(s.querySelector('#wlc')&&s.querySelector('#wlc').checked)}));
-   const txt=`رمز الطلب: ${String(r.id||'').slice(0,8)}\nطلب جديد من تطبيق طباخكم${r.urgent?' (طارئ)':''}\nالمناسبة: ${t(S.occ)} - ${t(S.meal)}\nالتاريخ: ${date}\n${r.days>1?'مدة الحجز: '+r.days+' أيام\n':''}الاسم: ${g('cn')}\nالعنوان: ${g('ca')}\nالمجموع: ${money(r.total)}`;
+   const txt=`رمز الطلب: ${String(r.id||'').slice(0,8)}\nطلب جديد من تطبيق حياكم${r.urgent?' (طارئ)':''}\nالمناسبة: ${t(S.occ)} - ${t(S.meal)}\nالتاريخ: ${date}\n${r.days>1?'مدة الحجز: '+r.days+' أيام\n':''}الاسم: ${g('cn')}\nالعنوان: ${g('ca')}\nالمجموع: ${money(r.total)}`;
    S.cart={};S.hrs={};saveCart();s.close();
    orderDone(r,txt);
    renderFlow();
@@ -2129,7 +2129,7 @@ function checkout(){
 }
 
 /* ================= الطلبات والدردشة والتقييم ================= */
-const ordWaTxt=b=>`رمز الطلب: ${String(b.id||'').slice(0,8)}\nطلب جديد من تطبيق طباخكم${b.urgent?' (طارئ)':''}\nالمناسبة: ${t(b.occasion)} - ${t(b.meal)}\nالتاريخ: ${b.event_date}\nالاسم: ${b.name||''}\nالعنوان: ${b.address||''}\nالمجموع: ${money(b.total)}`;
+const ordWaTxt=b=>`رمز الطلب: ${String(b.id||'').slice(0,8)}\nطلب جديد من تطبيق حياكم${b.urgent?' (طارئ)':''}\nالمناسبة: ${t(b.occasion)} - ${t(b.meal)}\nالتاريخ: ${b.event_date}\nالاسم: ${b.name||''}\nالعنوان: ${b.address||''}\nالمجموع: ${money(b.total)}`;
 const ordWaHref=b=>'https://wa.me/'+esc(sv('wa','9647817964134'))+'?text='+encodeURIComponent(ordWaTxt(b));
 const pendBox=b=>`<div class="card" style="border-color:#b45309"><b>طلبك محفوظ ومعلق</b><div class="mu" style="margin:6px 0">حتى يوصل للفريق لازم ترسل رسالة الواتساب كما هي من رقمك. تتأكد تلقائياً بعد ما ترسلها. رمز طلبك: <b style="direction:ltr;unicode-bidi:embed">${String(b.id).slice(0,8)}</b></div><a class="btn" style="text-decoration:none;text-align:center" target="_blank" rel="noopener" href="${ordWaHref(b)}">إتمام الطلب</a><button class="btn sec" data-pc="${b.id}">إلغاء الطلب</button></div>`;
 async function cancelPend(id,after){
@@ -2214,7 +2214,7 @@ setInterval(checkRating,45000);
 
 
 /* ================= المحفظة وكود الدعوة ================= */
-const shareApp=async(extra)=>{const url=location.origin+location.pathname,txt='طباخكم: ريلزات وخدمات المناسبات بميسان'+(extra?'\n'+extra:'');try{if(navigator.share){await navigator.share({title:'طباخكم',text:txt,url});return}}catch(e){if(e&&e.name==='AbortError')return}try{await navigator.clipboard.writeText(txt+'\n'+url);toast('تم نسخ الرابط')}catch(e){toast(url,5000)}};
+const shareApp=async(extra)=>{const url=location.origin+location.pathname,txt='حياكم: ريلزات وخدمات المناسبات بميسان'+(extra?'\n'+extra:'');try{if(navigator.share){await navigator.share({title:'حياكم',text:txt,url});return}}catch(e){if(e&&e.name==='AbortError')return}try{await navigator.clipboard.writeText(txt+'\n'+url);toast('تم نسخ الرابط')}catch(e){toast(url,5000)}};
 function walletSheet(){requireAuth(async()=>{
  const s=sheet(`<h3>المحفظة</h3><div id="wb"><div class="empty">...</div></div>`);s.classList.add('full');
  try{
@@ -2308,7 +2308,7 @@ s.querySelector('#nl').onclick=async e=>{const c=e.target.closest('[data-i]');if
 
 /* ================= القائمة، مقدم خدمات، الشروط ================= */
 function menuSheet(){
- const s=sheet(`<div class="dh">${S.user?`<div class="av" style="width:44px;height:44px;font-size:18px">${S.me&&S.me.avatar_url?`<img src="${esc(S.me.avatar_url)}" alt="">`:esc((S.me&&S.me.username||'?').slice(0,1))}</div><b dir="ltr">@${esc(S.me?S.me.username:'')}</b>`:`<b>Tabakhkum</b>`}</div>
+ const s=sheet(`<div class="dh">${S.user?`<div class="av" style="width:44px;height:44px;font-size:18px">${S.me&&S.me.avatar_url?`<img src="${esc(S.me.avatar_url)}" alt="">`:esc((S.me&&S.me.username||'?').slice(0,1))}</div><b dir="ltr">@${esc(S.me?S.me.username:'')}</b>`:`<b>حياكم</b>`}</div>
   ${S.user?`<button class="dl" data-m="ord">${t('my_orders')}</button><button class="dl" data-m="wal">المحفظة</button>`:`<button class="dl" data-m="login" style="color:var(--ac,#d97706);font-weight:700">${t('login')}</button>`}
   <button class="dl" data-m="sup">${t('support')}</button>
   <button class="dl" data-m="fb">شكوى أو اقتراح</button>
@@ -2317,7 +2317,7 @@ function menuSheet(){
   <button class="dl" data-m="set">${t('settings')}</button>
   <button class="dl" data-m="lang">${t('language')}</button>
   <button class="dl" data-m="prov">${t('provider')}</button>
-  <button class="dl" data-m="pvdl">تحميل تطبيق فريق طباخكم (لمقدمي الخدمات)</button>
+  <button class="dl" data-m="pvdl">تحميل تطبيق فريق حياكم (لمقدمي الخدمات)</button>
   <button class="dl" data-m="terms">${t('terms')}</button>
   ${isStandalone()?'':'<button class="dl" data-m="inst">تثبيت التطبيق على الشاشة الرئيسية</button>'}`);
  s.classList.add('drw');
@@ -2365,11 +2365,11 @@ function orderDone(r,txt){
    d.querySelector('#dtr').onclick=()=>{d.close();trackSheet(r.id)};
 }
 function provApp(){
- const p=sheet(`<h3>تطبيق فريق طباخكم</h3><p class="mu" style="line-height:1.9;margin:8px 0">هذا تطبيق مقدمي الخدمات: تستلم الطلبات وتقبلها وتتابع أرباحك. بعد التنزيل سجّل دخول بنفس حسابك وأدخل كود التفعيل من الإدارة.</p><a class="btn" id="pvd" style="text-decoration:none;text-align:center" target="_blank" rel="noopener" href="https://tabakhkum-provider.github.io/">فتح وتنزيل التطبيق</a><button class="btn sec" id="pvc">نسخ الرابط</button>`);
+ const p=sheet(`<h3>تطبيق فريق حياكم</h3><p class="mu" style="line-height:1.9;margin:8px 0">هذا تطبيق مقدمي الخدمات: تستلم الطلبات وتقبلها وتتابع أرباحك. بعد التنزيل سجّل دخول بنفس حسابك وأدخل كود التفعيل من الإدارة.</p><a class="btn" id="pvd" style="text-decoration:none;text-align:center" target="_blank" rel="noopener" href="https://tabakhkum-provider.github.io/">فتح وتنزيل التطبيق</a><button class="btn sec" id="pvc">نسخ الرابط</button>`);
  p.querySelector('#pvc').onclick=async()=>{const u='https://tabakhkum-provider.github.io/';try{await navigator.clipboard.writeText(u);toast('تم نسخ الرابط، افتحه بمتصفح الموبايل وثبّت التطبيق',4500)}catch(e){toast(u,8000)}};
 }
 function provSent(){
- const p=sheet(`<h3>تم إرسال طلبك</h3><p class="mu" style="line-height:1.9;margin:8px 0">راح نتواصل ويّاك ونعطيك كود التفعيل. هسه نزّل تطبيق فريق طباخكم من الزر هذا، وبعدها سجّل دخول بنفس اسمك وكلمة سرك وأدخل الكود.</p><a class="btn" id="pvd" style="text-decoration:none" target="_blank" rel="noopener" href="https://tabakhkum-provider.github.io/">تنزيل تطبيق فريق طباخكم</a><button class="btn sec" id="pvc">نسخ الرابط وفتحه بالمتصفح</button><button class="btn sec" id="pvs">تواصل مع الدعم</button>`);
+ const p=sheet(`<h3>تم إرسال طلبك</h3><p class="mu" style="line-height:1.9;margin:8px 0">راح نتواصل ويّاك ونعطيك كود التفعيل. هسه نزّل تطبيق فريق حياكم من الزر هذا، وبعدها سجّل دخول بنفس اسمك وكلمة سرك وأدخل الكود.</p><a class="btn" id="pvd" style="text-decoration:none" target="_blank" rel="noopener" href="https://tabakhkum-provider.github.io/">تنزيل تطبيق فريق حياكم</a><button class="btn sec" id="pvc">نسخ الرابط وفتحه بالمتصفح</button><button class="btn sec" id="pvs">تواصل مع الدعم</button>`);
  p.querySelector('#pvs').onclick=()=>{p.close();supportSheet()};
  p.querySelector('#pvc').onclick=async()=>{const u='https://tabakhkum-provider.github.io/';try{await navigator.clipboard.writeText(u);toast('تم نسخ الرابط، افتحه بمتصفح الموبايل وثبّت التطبيق',4500)}catch(e){toast(u,8000)}};
 }
@@ -3048,7 +3048,7 @@ PG.del={t:'حذف الحساب',r:async(a,post)=>{
 /* ----- الإشعارات ----- */
 PG.notifs={t:'الإشعارات',r:async()=>{
  if(!needMe())return '';
- const N=[['like','الإعجابات','عندما يعجب أحد بمنشورك'],['comment','التعليقات','عندما يعلّق أحد على منشورك'],['follow','متابعون جدد','عندما يبدأ أحد بمتابعتك'],['follow_req','طلبات المتابعة','طلبات جديدة وقبول طلباتك'],['repost','إعادة النشر','عندما يعيد أحد نشر منشورك'],['general','إشعارات طباخكم العامة','عروض وإعلانات من الإدارة']];
+ const N=[['like','الإعجابات','عندما يعجب أحد بمنشورك'],['comment','التعليقات','عندما يعلّق أحد على منشورك'],['follow','متابعون جدد','عندما يبدأ أحد بمتابعتك'],['follow_req','طلبات المتابعة','طلبات جديدة وقبول طلباتك'],['repost','إعادة النشر','عندما يعيد أحد نشر منشورك'],['general','إشعارات حياكم العامة','عروض وإعلانات من الإدارة']];
  let h=hd('أنواع الإشعارات');
  N.forEach(n=>{h+=rw({t:n[1],s:n[2],tg:1,on:S.up.notif[n[0]]!==false,set:async v=>{S.up.notif[n[0]]=v;try{await saveUP()}catch(e){S.up.notif[n[0]]=!v;throw e}}})});
  h+=nt('رسائل خدمة الزبائن وتحديثات طلباتك تصل دائماً. الإشعارات تظهر داخل التطبيق (أيقونة الجرس). الإشعارات الفورية خارج التطبيق غير متوفرة حالياً.');
@@ -3252,7 +3252,7 @@ PG.accounts={t:'تبديل الحساب',r:async(a,post)=>{
 
 /* ----- المساعدة والشروط ----- */
 const FAQ=[
- ['كيف أحجز خدمة لمناسبتي؟','من الصفحة الرئيسية اضغط «خدمات طباخكم» واختر نوع المناسبة والوجبة، ثم اختر الطباخ أو الخدمات المطلوبة وأكمل الطلب. تتصل بك خدمة الزبائن لتأكيد التفاصيل.'],
+ ['كيف أحجز خدمة لمناسبتي؟','من الصفحة الرئيسية اضغط «خدمات حياكم» واختر نوع المناسبة والوجبة، ثم اختر الطباخ أو الخدمات المطلوبة وأكمل الطلب. تتصل بك خدمة الزبائن لتأكيد التفاصيل.'],
  ['كيف أنشر ريل؟','اضغط زر + بالأسفل، ثم صوّر الآن أو اختر فيديو من المعرض (حد أقصى 40 ميجا و90 ثانية)، واكتب وصفاً واختر من يشاهده.'],
  ['كيف أحفظ فيديو بالعلامة المائية؟','اضغط ضغطة مطولة على أي مكان بالفيديو واختر «حفظ الفيديو بالعلامة المائية». لازم تبقى بالتطبيق لين يخلص التجهيز.'],
  ['نسيت كلمة السر','من شاشة تسجيل الدخول اضغط (نسيت كلمة السر؟)، اكتب رقمك المسجل، وأرسل الرمز بواتساب من نفس الرقم وبعدها تغير كلمة السر بنفسك. هذا يشتغل فقط إذا رقمك موثق بحسابك. إذا رقمك مو موثق تواصل مع الدعم من زر واتساب أدناه وأعطنا اسم المستخدم.'],
@@ -3266,7 +3266,7 @@ PG.help={t:'مركز المساعدة',r:async(a,post)=>{
  const wa=sv('wa','9647817964134'),ph=[sv('support_phone',''),sv('support_phone2','')].filter(Boolean);
  return FAQ.map(q=>`<div class="faq"><b>${esc(q[0])}</b><div>${esc(q[1])}</div></div>`).join('')
   +hd('تواصل مع الدعم')
-  +`<a class="btn" style="text-decoration:none" target="_blank" rel="noopener" href="https://wa.me/${esc(wa)}?text=${encodeURIComponent('مشكلة بتطبيق طباخكم'+(S.me?'\nاسم المستخدم: '+S.me.username:''))}">${t('whats')}</a>`
+  +`<a class="btn" style="text-decoration:none" target="_blank" rel="noopener" href="https://wa.me/${esc(wa)}?text=${encodeURIComponent('مشكلة بتطبيق حياكم'+(S.me?'\nاسم المستخدم: '+S.me.username:''))}">${t('whats')}</a>`
   +ph.map(p=>`<a class="btn sec" style="text-decoration:none" href="tel:${esc(p)}">${t('callus')} ${esc(p)}</a>`).join('');
 }};
 PG.terms={t:'الخصوصية والشروط',r:async()=>`<div style="font-size:14px;line-height:1.9;color:var(--mu)">
@@ -3286,7 +3286,7 @@ PG.terms={t:'الخصوصية والشروط',r:async()=>`<div style="font-size:
 async function shareProfile(name){
  const n=typeof name==='string'?name:(S.me&&S.me.username);if(!n)return;
  const url=location.origin+location.pathname+'?u='+encodeURIComponent(n);
- try{if(navigator.share){await navigator.share({title:'طباخكم',text:'@'+n,url});return}}catch(e){if(e&&e.name==='AbortError')return}
+ try{if(navigator.share){await navigator.share({title:'حياكم',text:'@'+n,url});return}}catch(e){if(e&&e.name==='AbortError')return}
  try{await navigator.clipboard.writeText(url);toast('تم نسخ رابط الملف الشخصي')}catch(e){toast(url,6000)}
 }
 async function openByName(u){
@@ -3397,7 +3397,7 @@ const isStandalone=()=>window.matchMedia&&window.matchMedia('(display-mode: stan
 function installApp(){
  if(_ip){_ip.prompt();_ip.userChoice.finally(()=>{_ip=null});return}
  const ios=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
- const s=sheet(`<h3>تثبيت طباخكم</h3><div style="line-height:2">${ios?'اضغط زر المشاركة بأسفل المتصفح ثم اختر <b>إضافة إلى الشاشة الرئيسية</b>.':'اضغط القائمة (النقاط الثلاث) بالمتصفح ثم اختر <b>تثبيت التطبيق</b> أو <b>إضافة إلى الشاشة الرئيسية</b>.'}</div><button class="btn" id="ik">تمام</button>`);
+ const s=sheet(`<h3>تثبيت حياكم</h3><div style="line-height:2">${ios?'اضغط زر المشاركة بأسفل المتصفح ثم اختر <b>إضافة إلى الشاشة الرئيسية</b>.':'اضغط القائمة (النقاط الثلاث) بالمتصفح ثم اختر <b>تثبيت التطبيق</b> أو <b>إضافة إلى الشاشة الرئيسية</b>.'}</div><button class="btn" id="ik">تمام</button>`);
  s.querySelector('#ik').onclick=()=>s.close();
 }
 let _updAsked=false;
@@ -3437,7 +3437,7 @@ function askLocation(first){
  if(first&&!$('#locgate').classList.contains('on'))locGate('اضغط <b>سماح</b> عند ظهور سؤال الموقع حتى يفتح التطبيق.');
  const ok=p=>{locFails=0;S.loc={lat:p.coords.latitude,lng:p.coords.longitude};$('#locgate').classList.remove('on')};
  navigator.geolocation.getCurrentPosition(ok,e=>{
-  if(e.code===1){locFails++;locGate('يحتاج طباخكم الوصول لموقعك لتحديد منطقتك وتوصيل الخدمات.')}
+  if(e.code===1){locFails++;locGate('يحتاج حياكم الوصول لموقعك لتحديد منطقتك وتوصيل الخدمات.')}
   else navigator.geolocation.getCurrentPosition(ok,()=>{$('#locgate').classList.remove('on')},{enableHighAccuracy:false,timeout:15000,maximumAge:600000});
  },{enableHighAccuracy:false,timeout:15000,maximumAge:600000});
 }
@@ -3447,7 +3447,7 @@ if(!window._locVis){window._locVis=1;document.addEventListener('visibilitychange
 function setMedia(el){
  if(!('mediaSession' in navigator)||!el||!el._r)return;
  const r=el._r;
- try{navigator.mediaSession.metadata=new MediaMetadata({title:(r.caption||'طباخكم').slice(0,80),artist:'@'+r.username,album:'طباخكم'})}catch(e){}
+ try{navigator.mediaSession.metadata=new MediaMetadata({title:(r.caption||'حياكم').slice(0,80),artist:'@'+r.username,album:'حياكم'})}catch(e){}
  const cv=()=>F.cur&&F.cur.querySelector('video');
  const set=(n,f)=>{try{navigator.mediaSession.setActionHandler(n,f)}catch(e){}};
  set('play',()=>{const v=cv();v&&v.play().catch(()=>{})});set('pause',()=>{const v=cv();v&&v.pause()});
